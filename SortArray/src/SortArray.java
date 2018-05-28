@@ -124,3 +124,7 @@ class Student{
     }
 
 }
+
+class test{
+
+}
