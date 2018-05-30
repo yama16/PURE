@@ -6,8 +6,7 @@ CREATE TABLE bulletin_boards (
     created_at      DATETIME    NOT NULL,
     updated_at      DATETIME    NOT NULL,
     view_quantity   INTEGER     NOT NULL,
-    pure_quantity   INTEGER     NOT NULL,
-    is_deleted      BOOLEAN     DEFAULT false NOT NULL
+    pure_quantity   INTEGER     NOT NULL
 );
 
 
@@ -24,7 +23,8 @@ CREATE TABLE accounts (
     nickname    VARCHAR(10)  NOT NULL,
     password    VARCHAR(16)  NOT NULL,
     created_at  DATETIME     NOT NULL,
-    updated_at  DATETIME     NOT NULL
+    updated_at  DATETIME     NOT NULL,
+    is_deleted      BOOLEAN     DEFAULT false NOT NULL
 );
 
 /* コメントテーブル */
