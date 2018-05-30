@@ -18,7 +18,7 @@ CREATE TABLE tags (
     PRIMARY KEY (bulletin_board_id, tag)
 );
 
-/* ユーザーテーブル */
+/* アカウントテーブル */
 CREATE TABLE accounts (
     id          VARCHAR(12)  PRIMARY KEY,
     nickname    VARCHAR(10)  NOT NULL,
