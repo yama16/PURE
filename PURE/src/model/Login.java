@@ -1,12 +1,14 @@
 
 package model;
 
+import java.io.Serializable;
+
 /**
  * ユーザーが入力したログイン情報を保持するクラス。
  *
  * @author furukawa
  */
-public class Login {
+public class Login implements Serializable {
 
     /** アカウントID */
     private String id;
