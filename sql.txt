@@ -28,7 +28,7 @@ CREATE TABLE accounts (
 
 /* コメントテーブル */
 CREATE TABLE comments (
-    id                  INTEGER
+    id                  INTEGER,
     bulletin_board_id   INTEGER      REFERENCES bulletin_boards (id),
     account_id          VARCHAR(12)  REFERENCES accounts (id),
     comment             VARCHAR(200) NOT NULL,
