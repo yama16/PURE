@@ -15,6 +15,9 @@ public class Login implements Serializable {
     /** パスワード */
     private String password;
 
+    /** 引数なしのコンストラクタ */
+    public Login(){}
+
     /**
      * アカウントIDとパスワードを引数に持つコンストラクタ。
      * @param id アカウントID
