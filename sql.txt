@@ -3,7 +3,6 @@ CREATE TABLE bulletin_boards (
     id              INTEGER     PRIMARY KEY AUTO_INCREMENT,
     title           VARCHAR(30) UNIQUE NOT NULL,
     account_id      VARCHAR(12) REFERENCES accounts (id),
-    category_id     INTEGER     REFERENCES categories (id),
     created_at      DATETIME    NOT NULL,
     updated_at      DATETIME    NOT NULL,
     view_quantity   INTEGER     NOT NULL,
