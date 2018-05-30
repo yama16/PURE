@@ -1,0 +1,48 @@
+﻿/* 掲示板テーブル */
+CREATE TABLE bulletin_boards (
+    id              INTEGER     PRIMARY KEY AUTO_INCREMENT,
+    title           VARCHAR(30) UNIQUE NOT NULL,
+    account_id      VARCHAR(12) REFERENCES accounts (id),
+    category_id     INTEGER     REFERENCES categories (id),
+    created_at      DATETIME    NOT NULL,
+    updated_at      DATETIME    NOT NULL,
+    view_quantity   INTEGER     NOT NULL,
+    pure_quantity   INTEGER     NOT NULL
+);
+
+
+/* タグーテーブル */
+CREATE TABLE tags (
+    bulletin_board_id  INTEGER   REFERENCES bulletin_boards (id),
+    tag    VARCHAR(10)     ,
+    PRIMARY KEY (bulletin_board_id, tag)
+);
+
+/* ユーザーテーブル */
+CREATE TABLE accounts (
+    id          VARCHAR(12)  PRIMARY KEY,
+    nickname    VARCHAR(10)  NOT NULL,
+    password    VARCHAR(16)  NOT NULL,
+    created_at  DATETIME     NOT NULL,
+    updated_at  DATETIME     NOT NULL
+);
+
+/* コメントテーブル */
+CREATE TABLE comments (
+    id                  INTEGER
+    bulletin_board_id   INTEGER      REFERENCES bulletin_boards (id),
+    account_id          VARCHAR(12)  REFERENCES accounts (id),
+    comment             VARCHAR(200) NOT NULL,
+    created_at          DATETIME     NOT NULL,
+    updated_at          DATETIME     NOT NULL,
+    pure_quantity       INTEGER      NOT NULL,
+    PRIMARY KEY (id, bulletin_board_id)
+);
+
+/* PUREしたコメント */
+CREATE TABLE accounts_pures(
+    account_id          INTEGER     REFERENCES accounts (id),
+    comment_id          INTEGER     REFERENCES comments (id),
+    bulletin_board_id   INTEGER     REFERENCES bulletin_boards (id),
+    PRIMARY KEY (account_id, comment_id, bulletin_board_id)
+);
