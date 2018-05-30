@@ -117,14 +117,14 @@ public class AccountsDAO {
         try{
             conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-            String sql = "SELECT id, nickname, password, created_at, updated_at FROM accounts WHERE id = ? AND password = ?";
+            String sql = "SELECT id, nickname, password, created_at, updated_at, is_deleted FROM accounts WHERE id = ? AND password = ?";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, login.getId());
             pStmt.setString(2, login.getPassword());
 
             ResultSet resultSet = pStmt.executeQuery();
 
-            if(resultSet.next()){
+            if(resultSet.next() && !resultSet.getBoolean("is_deleted")){
                 String id = resultSet.getString("id");
                 String nickname = resultSet.getString("nickname");
                 String password = resultSet.getString("password");
@@ -161,7 +161,7 @@ public class AccountsDAO {
         try{
             conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-            String sql = "DELETE Accounts WHERE id = ?;";
+            String sql = "UPDATE Accounts SET is_deleted = TRUE WHERE id = ?;";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, account.getId());
             int result = pStmt.executeUpdate();
