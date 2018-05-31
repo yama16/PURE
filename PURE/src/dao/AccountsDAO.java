@@ -14,7 +14,7 @@ import model.Account;
 import model.Login;
 
 /**
- * Accountsテーブルを操作するクラス。
+ * Accountsテーブルを操作するDAO。
  *
  * @author furukawa
  */
