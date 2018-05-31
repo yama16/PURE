@@ -2,10 +2,16 @@
     pageEncoding="UTF-8"%>
 <%@ page import = "model.Login" %>
 <%
-//リクエストスコープに保存されたAccountインスタンスを取得
-Login login = (Login) request.getAttribute("againLogin");
-%>
+Login login = (Login) request.getAttribute("login");
 
+//ID、パスワードを取得
+String id = "";
+String pass = "";
+if(login != null) {
+	id = login.getId();
+	pass = login.getPassword();
+}
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,20 +19,27 @@ Login login = (Login) request.getAttribute("againLogin");
 	<title>ログイン</title>
 </head>
 <body>
-	<!--  -->
-	<% if(login == null) {%>
-		<form action="/PURE/LoginServlet" method="post">
-			ユーザーID:<input type="text" name="id"><br>
-			パスワード:<input type="password" name="pass"><br>
-			<input type="submit" value="ログイン">
-		</form>
-	<% }else{ %>
-		<form action="/PURE/LoginServlet" method="post">
-			ユーザーID:<input type="text" name="id" value=<%= login.getId() %>><br>
-			パスワード:<input type="password" name="pass" value=<%= login.getPassword() %>><br>
-			<input type="submit" value="ログイン">
-		</form>
+	<% if(login != null) { %>
 		<p>ID又はパスワードが間違っています</p>
 	<% } %>
+	<p><output id="empty"></output></p>
+	<form action="/PURE/LoginServlet" method="post" onsubmit="return check()">
+		ユーザーID:<input type="text" name="id" id="id" value=<%= id %>><br>
+		パスワード:<input type="password" name="pass" id="pass"  value=<%= pass %>><br>
+		<input type="submit" value="ログイン" id="submit">
+	</form>
+	<script type="text/javascript">
+			var id = document.getElementById("id");
+			var pass = document.getElementById("pass");
+			function check(){
+				if(id.value.length <= 0 || pass.value.length <= 0) {
+					var empty = document.getElementById("empty");
+					empty.innerHTML = "未入力の項目があります";
+					return false;
+				}else{
+					return true;
+				}
+			}
+	</script>
 </body>
 </html>

@@ -29,7 +29,6 @@ public class LoginServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		String id = request.getParameter("id");
 		String pass = request.getParameter("pass");
-		System.out.println(id.length());
 
 		//Loginインスタンス（入力情報）の生成
 		Login login = new Login(id,pass);
@@ -50,7 +49,7 @@ public class LoginServlet extends HttpServlet {
 		//アカウントが見つからない時
 		}else{
 			//入力情報を保持してloginページに再度アクセス
-			request.setAttribute("againLogin", login);
+			request.setAttribute("login", login);
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
 			dispatcher.forward(request, response);
 		}
