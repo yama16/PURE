@@ -34,7 +34,6 @@ CREATE TABLE comments (
     account_id          VARCHAR(12)  REFERENCES accounts (id),
     comment             VARCHAR(200) NOT NULL,
     created_at          DATETIME     NOT NULL,
-    updated_at          DATETIME     NOT NULL,
     pure_quantity       INTEGER      NOT NULL,
     PRIMARY KEY (id, bulletin_board_id)
 );
