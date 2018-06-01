@@ -91,6 +91,7 @@ public class AccountsDAO {
                 return false;
             }
         } catch (SQLException e) {
+        	e.printStackTrace();
             return false;
         }finally{
             if(connection != null){
@@ -170,6 +171,7 @@ public class AccountsDAO {
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         } finally {
             if(conn != null){
                 try {
@@ -208,6 +210,7 @@ public class AccountsDAO {
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         } finally {
             if(conn != null){
                 try {

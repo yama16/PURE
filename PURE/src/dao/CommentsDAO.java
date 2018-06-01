@@ -111,4 +111,41 @@ public class CommentsDAO {
     	return newCommentList.size() == 0 ? null : newCommentList;
     }
 
+    /**
+     * commentsテーブルに引数で渡されたコメントを追加するメソッド。
+     * @param comment 追加するコメント。
+     * @return 追加できたときtrueを返す。追加できなかったときfalseを返す。
+     */
+    public boolean create(Comment comment){
+    	Connection conn = null;
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+
+    		String sql = "INSERT INTO comments VALUES(?,?,?,?,?,?)";
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setInt(1, comment.getId());
+    		pStmt.setInt(2, comment.getBulletin_board_id());
+    		pStmt.setString(3, comment.getAccount_id());
+    		pStmt.setString(4, comment.getComment());
+    		pStmt.setTimestamp(5, comment.getCreated_at());
+    		pStmt.setInt(6, comment.getPure_quantity());
+    		int result = pStmt.executeUpdate();
+    		if(result != 1){
+    			return false;
+    		}
+    	} catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }
+    	return true;
+    }
+
 }
