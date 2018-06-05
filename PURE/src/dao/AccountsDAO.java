@@ -55,7 +55,7 @@ public class AccountsDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return true;
-        }finally{
+        } finally {
             if(conn != null){
                 try {
                     conn.close();
