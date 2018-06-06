@@ -14,7 +14,7 @@ import javax.servlet.annotation.WebFilter;
  * request.setCharacterEncoding("UTF-8");を実行するフィルター
  * @author furukawa
  */
-@WebFilter("/EncodingFilter")
+@WebFilter("/*")
 public class EncodingFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

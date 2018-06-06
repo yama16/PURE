@@ -47,5 +47,8 @@
     <form action="/PURE/LoginServlet" method="get">
     	<input type="submit" value="test">
     </form>
+    <form action="/PURE/AccountCreateServlet" method="get">
+    	<input type="submit" value="testAcounteCreate">
+    </form>
   </body>
 </html>

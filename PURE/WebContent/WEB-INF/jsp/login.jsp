@@ -19,27 +19,35 @@ if(login != null) {
 	<title>ログイン</title>
 </head>
 <body>
-	<% if(login != null) { %>
+	<!-- ログイン失敗時にメッセージ表示 -->
+	<% if( login != null) { %>
 		<p>ID又はパスワードが間違っています</p>
 	<% } %>
+
+	<!-- 未入力の項目がある場合エラーメッセージを表示 -->
 	<p><output id="empty"></output></p>
-	<form action="/PURE/LoginServlet" method="post" onsubmit="return check()">
+
+	<!-- ログインページ -->
+	<form action="/PURE/LoginServlet" method="post" id="form">
 		ユーザーID:<input type="text" name="id" id="id" value=<%= id %>><br>
 		パスワード:<input type="password" name="pass" id="pass"  value=<%= pass %>><br>
 		<input type="submit" value="ログイン" id="submit">
 	</form>
-	<script type="text/javascript">
-			var id = document.getElementById("id");
-			var pass = document.getElementById("pass");
-			function check(){
-				if(id.value.length <= 0 || pass.value.length <= 0) {
-					var empty = document.getElementById("empty");
-					empty.innerHTML = "未入力の項目があります";
-					return false;
-				}else{
-					return true;
-				}
+
+	<!-- ID、パスワードが未入力でないかの確認 -->
+	<script>
+		let id = document.getElementById("id");			//入力されたIDを取得
+		let pass = document.getElementById("pass");		//入力されたパスワードを取得
+		let form = document.getElementById("form");
+		form.onsubmit = function(){
+			if(!(id.value) || !(pass.value)) {
+				let empty = document.getElementById("empty");
+				empty.innerHTML = "未入力の項目があります";
+				return false;
+			}else{
+				return true;
 			}
+		};
 	</script>
 </body>
 </html>
