@@ -3,10 +3,10 @@ CREATE TABLE bulletin_boards (
     id              INTEGER     PRIMARY KEY AUTO_INCREMENT,
     title           VARCHAR(30) UNIQUE NOT NULL,
     account_id      VARCHAR(12) REFERENCES accounts (id),
-    created_at      DATETIME    NOT NULL,
-    updated_at      DATETIME    NOT NULL,
-    view_quantity   INTEGER     NOT NULL,
-    pure_quantity   INTEGER     NOT NULL
+    created_at      TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at      TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    view_quantity   INTEGER     NOT NULL DEFAULT 0,
+    pure_quantity   INTEGER     NOT NULL DEFAULT 0
 );
 
 
@@ -22,19 +22,19 @@ CREATE TABLE accounts (
     id          VARCHAR(12)  PRIMARY KEY,
     nickname    VARCHAR(10)  NOT NULL,
     password    VARCHAR(16)  NOT NULL,
-    created_at  DATETIME     NOT NULL,
-    updated_at  DATETIME     NOT NULL,
-    is_deleted      BOOLEAN     DEFAULT false NOT NULL
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    is_deleted  BOOLEAN      NOT NULL DEFAULT false 
 );
 
 /* コメントテーブル */
 CREATE TABLE comments (
-    id                  INTEGER,
+    id                  INTEGER      ,
     bulletin_board_id   INTEGER      REFERENCES bulletin_boards (id),
     account_id          VARCHAR(12)  REFERENCES accounts (id),
     comment             VARCHAR(200) NOT NULL,
-    created_at          DATETIME     NOT NULL,
-    pure_quantity       INTEGER      NOT NULL,
+    created_at          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    pure_quantity       INTEGER      NOT NULL DEFAULT 0,
     PRIMARY KEY (id, bulletin_board_id)
 );
 
