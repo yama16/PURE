@@ -14,13 +14,13 @@ import model.IdUseCheckLogic;
 /**
  * Servlet implementation class IdCheckServlet
  */
-@WebServlet("/IdCheckServlet")
+@WebServlet("/InputCheckServlet")
 public class InputCheckServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//入力されたIDを取得
-		String id = request.getParameter("name");
+		String id = request.getParameter("id");
 
 		//IDがすでに登録されているかの確認
 		IdUseCheckLogic idCheck = new IdUseCheckLogic();

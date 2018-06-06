@@ -41,18 +41,20 @@
 		let pass = document.getElementById("pass");
 		let passConfirm = document.getElementById("passConfirm");
 		let form = document.getElementById("form");
+		let errorId = document.getElementById("errorId");
 
 		//入力されたときに実行
-		id.oninput = function() {
-			let errorId = document.getElementById("errorId");
+		id.oninput = idCheck;
+		function idCheck() {
 			let req = new XMLHttpRequest();
 
+			//入力文字数をチェック
 			if(id.value.length < 6) {
 				errorId.innerHTML = "文字数が足りていません";
-				return;
+				return false;
 			}else if(id.value.length > 12) {
 				errorId.innerHTML = "登録できる文字数を超えています";
-				return;
+				return false;
 			}else{
 				errorId.innerHTML = null;
 			}
@@ -71,11 +73,12 @@
 			};
 
 			//IdCheckServletに入力されたIDを送信
-			req.open("GET", "/PURE/IdCheckServlet?name="
+			req.open("GET", "/PURE/InputCheckServlet?id="
 					+ encodeURIComponent(id.value), true);
 			req.send(null);
 		};
 
+		//入力されたニックネームの文字数をチェック
 		nicname.oninput = function() {
 			let errorMsg = document.getElementById("errorNicname");
 			if (!nicname.value) {
@@ -87,6 +90,7 @@
 			}
 		};
 
+		//入力されたパスワードの文字数をチェック
 		pass.oninput = function() {
 			let errorMsg = document.getElementById("errorPass");
 			if (pass.value.length < 8) {
@@ -98,6 +102,7 @@
 			}
 		};
 
+		//入力された確認パスワードの文字数をチェック
 		passConfirm.oninput = function() {
 			let errorMsg = document.getElementById("errorPassConfirm");
 			if (passConfirm.value.length < 8) {
@@ -109,12 +114,18 @@
 			}
 		};
 
+		//送信時に入力の不具合がある場合送信を中止
 		form.onsubmit = function() {
 			let errorForm = document.getElementById("errorForm");
-			if ((nicname.value.length < 1) || (nicname.value.length > 10)
-					|| (id.value.length < 6) || (id.value.length > 12)
-					|| (pass.value.length < 8) || (pass.value.length > 16)
-					|| (passConfirm.value.length < 8) || (passConfirm.value.length > 16)) {
+			if ((nicname.value.length < 1)
+					|| (nicname.value.length > 10)
+					|| (id.value.length < 6)
+					|| (id.value.length > 12)
+					|| (pass.value.length < 8)
+					|| (pass.value.length > 16)
+					|| (passConfirm.value.length < 8)
+					|| (passConfirm.value.length > 16)
+					|| !(idCheck())) {
 
 				return false;
 			}else if(pass.value !== passConfirm.value) {

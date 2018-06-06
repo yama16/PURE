@@ -21,7 +21,7 @@ public class AccountCreateServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/account_create.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/accountCreate.jsp");
 		dispatcher.forward(request, response);
 	}
 
@@ -42,7 +42,7 @@ public class AccountCreateServlet extends HttpServlet {
 		session.setAttribute("createAccount", account);
 
 		//確認画面にフォワード
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/confirm.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/accountCreateConfirm.jsp");
 		dispatcher.forward(request, response);
 
 	}
