@@ -51,10 +51,9 @@
 			//入力文字数をチェック
 			if(id.value.length < 6) {
 				errorId.innerHTML = "文字数が足りていません";
-				return false;
+
 			}else if(id.value.length > 12) {
 				errorId.innerHTML = "登録できる文字数を超えています";
-				return false;
 			}else{
 				errorId.innerHTML = null;
 			}
@@ -125,7 +124,7 @@
 					|| (pass.value.length > 16)
 					|| (passConfirm.value.length < 8)
 					|| (passConfirm.value.length > 16)
-					|| !(idCheck())) {
+					) {
 
 				return false;
 			}else if(pass.value !== passConfirm.value) {
