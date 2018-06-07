@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import model.Account;
 
-@WebServlet("ConfirmCreateAccountServlet")
+@WebServlet("/ConfirmCreateAccountServlet")
 public class ConfirmCreateAccountServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
