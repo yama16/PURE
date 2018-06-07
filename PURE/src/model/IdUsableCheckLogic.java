@@ -8,7 +8,7 @@ import dao.AccountsDAO;
  *
  * @author furukawa
  */
-public class IdUseCheckLogic {
+public class IdUsableCheckLogic {
 
     /**
      * 指定したidが、既にAccountsテーブルに登録されているか調べるメソッド。

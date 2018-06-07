@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.IdUseCheckLogic;
+import model.IdUsableCheckLogic;
 
 /**
  * Servlet implementation class IdCheckServlet
  */
-@WebServlet("/InputCheckServlet")
-public class InputCheckServlet extends HttpServlet {
+@WebServlet("/IdUsableCheckServlet")
+public class IdUsableCheckServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -23,7 +23,7 @@ public class InputCheckServlet extends HttpServlet {
 		String id = request.getParameter("id");
 
 		//IDがすでに登録されているかの確認
-		IdUseCheckLogic idCheck = new IdUseCheckLogic();
+		IdUsableCheckLogic idCheck = new IdUsableCheckLogic();
 		boolean check = idCheck.execute(id);
 
 		response.setContentType("application/json;charset=UTF-8");

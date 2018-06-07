@@ -5,25 +5,25 @@
 Account account = (Account) session.getAttribute("createAccount");
 
 String id = account.getId();
-String nicname = account.getNickname();
-String pass = account.getPassword();
+String nickname = account.getNickname();
 %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset=UTF-8">
-<title>アカウント作成</title>
+<title>アカウント作成確認</title>
 </head>
 <body>
-	<p>ID：<%= id %></p><br>
-	<p>ニックネーム：<%= nicname %></p><br>
+	<h1>アカウント作成確認画面</h1>
+	<p>ID：<%= id %></p>
+	<p>ニックネーム：<%= nickname %></p>
 	<p>よろしいですか？</p>
 
-	<form action="AccountRegistrationServlet" method="post">
+	<form action="CreateAccountServlet" method="post">
 		<input type="submit" value="確定">
 	</form>
-	<form action="AccountRegistrationServlet" method="get">
-		<input type="submit" value="取り消し">
+	<form action="CreateAccountServlet" method="get">
+		<input type="submit" value="訂正">
 	</form>
 </body>
 </html>
