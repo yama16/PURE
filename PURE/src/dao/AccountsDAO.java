@@ -84,8 +84,8 @@ public class AccountsDAO {
             pStmt.setString(1, account.getId());
             pStmt.setString(2, account.getNickname());
             pStmt.setString(3, account.getPassword());
-            pStmt.setTimestamp(4, account.getCreated_at());
-            pStmt.setTimestamp(5, account.getUpdated_at());
+            pStmt.setTimestamp(4, account.getCreatedAt());
+            pStmt.setTimestamp(5, account.getUpdatedAt());
             int result = pStmt.executeUpdate();
             if(result != 1){
                 return false;
@@ -202,7 +202,7 @@ public class AccountsDAO {
             pStmt.setString(1, account.getId());
             pStmt.setString(2, account.getNickname());
             pStmt.setString(3, account.getPassword());
-            pStmt.setTimestamp(4, account.getUpdated_at());
+            pStmt.setTimestamp(4, account.getUpdatedAt());
             pStmt.setString(5, id);
             int result = pStmt.executeUpdate();
             if(result != 1){

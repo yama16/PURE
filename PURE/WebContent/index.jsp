@@ -45,10 +45,10 @@
       </div>
     </div>
     <form action="/PURE/LoginServlet" method="get">
-    	<input type="submit" value="test">
+    	<input type="submit" value="ログイン">
     </form>
     <form action="/PURE/CreateAccountServlet" method="get">
-    	<input type="submit" value="testAcounteCreate">
+    	<input type="submit" value="アカウント作成">
     </form>
   </body>
 </html>

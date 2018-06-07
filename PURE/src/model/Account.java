@@ -19,9 +19,9 @@ public class Account implements Serializable {
     /** パスワード */
     private String password;
     /** アカウント作成をした日時 */
-    private Timestamp created_at;
+    private Timestamp createdAt;
     /** アカウント情報を更新した日時 */
-    private Timestamp updated_at;
+    private Timestamp updatedAt;
 
     /** 引数なしのコンストラクタ */
     public Account(){}
@@ -33,12 +33,12 @@ public class Account implements Serializable {
      * @param created_at アカウント作成をした日時
      * @param updated_at アカウント情報を更新した日時
      */
-    public Account(String id, String nickname, String password, Timestamp created_at, Timestamp updated_at){
+    public Account(String id, String nickname, String password, Timestamp createdAt, Timestamp updatedAt){
         this.id = id;
         this.nickname = nickname;
         this.password = password;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     //全フィールドのgetterとsetter
@@ -48,9 +48,9 @@ public class Account implements Serializable {
     public void setNickname(String nickname){ this.nickname = nickname; }
     public String getPassword(){ return password; }
     public void setPassword(String password){ this.password = password; }
-    public Timestamp getCreated_at(){ return created_at; }
-    public void setCreated_at(Timestamp created_at){ this.created_at = created_at; }
-    public Timestamp getUpdated_at(){ return updated_at; }
-    public void setUpdated_at(Timestamp updated_at){ this.updated_at = updated_at; }
+    public Timestamp getCreatedAt(){ return createdAt; }
+    public void setCreatedAt(Timestamp createdAt){ this.createdAt = createdAt; }
+    public Timestamp getUpdatedAt(){ return updatedAt; }
+    public void setUpdatedAt(Timestamp updatedAt){ this.updatedAt = updatedAt; }
 
 }

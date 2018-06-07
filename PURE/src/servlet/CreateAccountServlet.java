@@ -31,8 +31,8 @@ public class CreateAccountServlet extends HttpServlet {
 		Account account =(Account) session.getAttribute("createAccount");
 
 		long now = System.currentTimeMillis();
-		account.setCreated_at(new Timestamp(now));
-		account.setUpdated_at(new Timestamp(now));
+		account.setCreatedAt(new Timestamp(now));
+		account.setUpdatedAt(new Timestamp(now));
 		CreateAccountLogic createAccountLogic = new CreateAccountLogic();
 		boolean isCreated = createAccountLogic.execute(account);
 		if(isCreated) {

@@ -11,35 +11,35 @@ public class BulletinBoard {
 
 	private int id;
 	private String title;
-	private String account_id;
-	private Timestamp created_at;
-	private Timestamp updated_at;
-	private int view_quantity;
-	private int pure_quantity;
+	private String accountId;
+	private Timestamp createdAt;
+	private Timestamp updatedAt;
+	private int viewQuantity;
+	private int pureQuantity;
 
 	public BulletinBoard(){}
-	public BulletinBoard(int id, String title, String account_id, Timestamp created_at, Timestamp updated_at, int view_quantity, int pure_quantity){
+	public BulletinBoard(int id, String title, String accountId, Timestamp createdAt, Timestamp updatedAt, int viewQuantity, int pureQuantity){
 		this.id = id;
 		this.title = title;
-		this.account_id = account_id;
-		this.created_at = created_at;
-		this.updated_at = updated_at;
-		this.view_quantity = view_quantity;
-		this.pure_quantity = pure_quantity;
+		this.accountId = accountId;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.viewQuantity = viewQuantity;
+		this.pureQuantity = pureQuantity;
 	}
 
 	public int getId(){ return id; }
 	public void setId(int id){ this.id = id; }
 	public String getTitle(){ return title; }
 	public void setTitle(String title){ this.title = title; }
-	public String getAccount_id(){ return account_id; }
-	public void setAccount_id(String account_id){ this.account_id = account_id; }
-	public Timestamp getCreated_at(){ return created_at; }
-	public void setCreated_at(Timestamp created_at){ this.created_at = created_at; }
-	public Timestamp getUpdated_at(){ return updated_at; }
-	public void setUpdated_at(Timestamp updated_at){ this.updated_at = updated_at; }
-	public int getView_quantity(){ return view_quantity; }
-	public void setView_quantity(int view_quantity){ this.view_quantity = view_quantity; }
-	public int getPure_quantity(){ return pure_quantity; }
-	public void setPure_quantity(int pure_quantity){ this.pure_quantity = pure_quantity; }
+	public String getAccountId(){ return accountId; }
+	public void setAccountId(String accountId){ this.accountId = accountId; }
+	public Timestamp getCreatedAt(){ return createdAt; }
+	public void setCreatedAt(Timestamp createdAt){ this.createdAt = createdAt; }
+	public Timestamp getUpdatedAt(){ return updatedAt; }
+	public void setUpdatedAt(Timestamp updatedAt){ this.updatedAt = updatedAt; }
+	public int getViewQuantity(){ return viewQuantity; }
+	public void setViewQuantity(int viewQuantity){ this.viewQuantity = viewQuantity; }
+	public int getPureQuantity(){ return pureQuantity; }
+	public void setPureQuantity(int pureQuantity){ this.pureQuantity = pureQuantity; }
 }

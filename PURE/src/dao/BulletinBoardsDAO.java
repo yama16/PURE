@@ -41,11 +41,11 @@ public class BulletinBoardsDAO {
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoard.getId());
     		pStmt.setString(2, bulletinBoard.getTitle());
-    		pStmt.setString(3, bulletinBoard.getAccount_id());
-    		pStmt.setTimestamp(4, bulletinBoard.getCreated_at());
-    		pStmt.setTimestamp(5, bulletinBoard.getUpdated_at());
-    		pStmt.setInt(6, bulletinBoard.getView_quantity());
-    		pStmt.setInt(7, bulletinBoard.getPure_quantity());
+    		pStmt.setString(3, bulletinBoard.getAccountId());
+    		pStmt.setTimestamp(4, bulletinBoard.getCreatedAt());
+    		pStmt.setTimestamp(5, bulletinBoard.getUpdatedAt());
+    		pStmt.setInt(6, bulletinBoard.getViewQuantity());
+    		pStmt.setInt(7, bulletinBoard.getPureQuantity());
     		int result = pStmt.executeUpdate();
     		if(result != 1){
     			return false;

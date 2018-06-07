@@ -47,11 +47,11 @@ public class CommentsDAO {
     		while(resultSet.next()){
     			Comment comment = new Comment();
     			comment.setId(resultSet.getInt("id"));
-    			comment.setBulletin_board_id(resultSet.getInt("bulletin_board_id"));
-    			comment.setAccount_id(resultSet.getString("account_id"));
+    			comment.setBulletinBoardId(resultSet.getInt("bulletin_board_id"));
+    			comment.setAccountId(resultSet.getString("account_id"));
     			comment.setComment(resultSet.getString("comment"));
-    			comment.setCreated_at(resultSet.getTimestamp("created_at"));
-    			comment.setPure_quantity(resultSet.getInt("pure_quantity"));
+    			comment.setCreatedAt(resultSet.getTimestamp("created_at"));
+    			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
     			commentList.add(comment);
     		}
     	} catch (SQLException e) {
@@ -90,11 +90,11 @@ public class CommentsDAO {
     		while(resultSet.next()){
     			Comment comment = new Comment();
     			comment.setId(resultSet.getInt("id"));
-    			comment.setBulletin_board_id(resultSet.getInt("bulletin_board_id"));
-    			comment.setAccount_id(resultSet.getString("account_id"));
+    			comment.setBulletinBoardId(resultSet.getInt("bulletin_board_id"));
+    			comment.setAccountId(resultSet.getString("account_id"));
     			comment.setComment(resultSet.getString("comment"));
-    			comment.setCreated_at(resultSet.getTimestamp("created_at"));
-    			comment.setPure_quantity(resultSet.getInt("pure_quantity"));
+    			comment.setCreatedAt(resultSet.getTimestamp("created_at"));
+    			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
     			newCommentList.add(comment);
     		}
     	} catch (SQLException e) {
@@ -124,11 +124,11 @@ public class CommentsDAO {
     		String sql = "INSERT INTO comments VALUES(?,?,?,?,?,?)";
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, comment.getId());
-    		pStmt.setInt(2, comment.getBulletin_board_id());
-    		pStmt.setString(3, comment.getAccount_id());
+    		pStmt.setInt(2, comment.getBulletinBoardId());
+    		pStmt.setString(3, comment.getAccountId());
     		pStmt.setString(4, comment.getComment());
-    		pStmt.setTimestamp(5, comment.getCreated_at());
-    		pStmt.setInt(6, comment.getPure_quantity());
+    		pStmt.setTimestamp(5, comment.getCreatedAt());
+    		pStmt.setInt(6, comment.getPureQuantity());
     		int result = pStmt.executeUpdate();
     		if(result != 1){
     			return false;

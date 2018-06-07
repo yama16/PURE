@@ -10,34 +10,34 @@ import java.sql.Timestamp;
 public class Comment {
 
 	private int id;
-	private int bulletin_board_id;
-	private String account_id;
+	private int bulletinBoardId;
+	private String accountId;
 	private String comment;
-	private Timestamp created_at;
-	private int pure_quantity;
+	private Timestamp createdAt;
+	private int pureQuantity;
 
 	public Comment(){}
-	public Comment(int id, int bulletin_board_id, String account_id, String comment, Timestamp created_at, int pure_quantity){
+	public Comment(int id, int bulletinBoardId, String accountId, String comment, Timestamp createdAt, int pureQuantity){
 		this.id = id;
-		this.bulletin_board_id = bulletin_board_id;
-		this.account_id = account_id;
+		this.bulletinBoardId = bulletinBoardId;
+		this.accountId = accountId;
 		this.comment = comment;
-		this.created_at = created_at;
-		this.pure_quantity = pure_quantity;
+		this.createdAt = createdAt;
+		this.pureQuantity = pureQuantity;
 	}
 
 	public int getId(){ return id; }
 	public void setId(int id){ this.id = id; }
-	public int getBulletin_board_id(){ return bulletin_board_id; }
-	public void setBulletin_board_id(int bulletin_board_id){ this.bulletin_board_id = bulletin_board_id; }
-	public String getAccount_id(){ return account_id; }
-	public void setAccount_id(String account_id){ this.account_id = account_id; }
+	public int getBulletinBoardId(){ return bulletinBoardId; }
+	public void setBulletinBoardId(int bulletinBoardId){ this.bulletinBoardId = bulletinBoardId; }
+	public String getAccountId(){ return accountId; }
+	public void setAccountId(String accountId){ this.accountId = accountId; }
 	public String getComment(){ return comment; }
 	public void setComment(String comment){ this.comment = comment; }
-	public Timestamp getCreated_at(){ return created_at; }
-	public void setCreated_at(Timestamp created_at){ this.created_at = created_at; }
-	public int getPure_quantity(){ return pure_quantity; }
-	public void setPure_quantity(int pure_quantity){ this.pure_quantity = pure_quantity; }
+	public Timestamp getCreatedAt(){ return createdAt; }
+	public void setCreatedAt(Timestamp createdAt){ this.createdAt = createdAt; }
+	public int getPureQuantity(){ return pureQuantity; }
+	public void setPureQuantity(int pureQuantity){ this.pureQuantity = pureQuantity; }
 
 
 }
