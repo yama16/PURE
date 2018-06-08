@@ -24,17 +24,21 @@ public class ConfirmCreateAccountServlet extends HttpServlet {
 		//リクエストパラメータの取得
 		String nickname = request.getParameter("nickname");
 		String id = request.getParameter("id");
-		String password = request.getParameter("password");
+		String pass = request.getParameter("pass");
 
 		//アカウント情報の作成
 		Account account = new Account();
 		account.setNickname(nickname);
 		account.setId(id);
-		account.setPassword(password);
+		account.setPassword(pass);
 
 		//セッションスコープにアカウント情報を保存
 		HttpSession session = request.getSession();
 		session.setAttribute("createAccount", account);
+
+		if(!nickname.matches(".{1,10}") || !id.matches("[a-zA-Z0-9]{6,12}") || !pass.matches("[a-zA-Z0-9]{8,16}")){
+			response.sendRedirect("/PURE/CreateAccountServlet");
+		}
 
 		//確認画面にフォワード
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/confirmCreateAccount.jsp");

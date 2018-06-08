@@ -40,7 +40,7 @@ public class AccountsDAO {
      * @param id 登録されているか調べるid
      * @return idが既に登録されていればtrue。されていなければfalse。
      */
-    public boolean isUse(String id){
+    public boolean isUsable(String id){
         Connection conn = null;
         try{
             conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);

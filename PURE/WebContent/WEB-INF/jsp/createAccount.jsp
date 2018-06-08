@@ -1,6 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
+<%@ page import="model.Account" %>
+<%
+Account account = (Account)session.getAttribute("createAccount");
+String nickname = "";
+String id = "";
+String pass = "";
+if(account != null){
+	nickname = account.getNickname();
+	id = account.getId();
+	pass = account.getPassword();
+}
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,20 +22,20 @@
 	<!--入力フォーム-->
 	<form id="form" action="ConfirmCreateAccountServlet" method="post">
 		<p>
-			ニックネーム：<input id="nickname" type="text" name="nickname">
+			ニックネーム：<input id="nickname" type="text" name="nickname" value=<%= nickname %>>
 			<output id="nicknameErrMsg"></output>
 		</p>
 		<p>
-			ID:<input id="id" type="text" name="id">
+			ID:<input id="id" type="text" name="id" value=<%= id %>>
 			<output id="idErrMsg"></output>
 		</p>
 		<p>
-			パスワード：<input id="password" type="password" name="password">
-			<output id="passwordErrMsg"></output>
+			パスワード：<input id="pass" type="password" name="pass" value=<%= pass %>>
+			<output id="passErrMsg"></output>
 		</p>
 		<p>
-			パスワード再入力：<input id="passwordConfirm" type="password" name="passConfirm">
-			<output id="passwordConfirmErrMsg"></output>
+			パスワード再入力：<input id="passConfirm" type="password" name="passConfirm">
+			<output id="passConfirmErrMsg"></output>
 		</p><br>
 		キャプチャー<br>
 		<input type="submit" value="作成">
@@ -34,61 +45,64 @@
 	document.addEventListener('DOMContentLoaded', function(){
 		const id = document.getElementById("id");
 		const nickname = document.getElementById("nickname");
-		const password = document.getElementById("password");
-		const passwordConfirm = document.getElementById("passwordConfirm");
+		const pass = document.getElementById("pass");
+		const passConfirm = document.getElementById("passConfirm");
 		const form = document.getElementById("form");
 
 		const nicknameErrMsg = document.getElementById("nicknameErrMsg");
 		const idErrMsg = document.getElementById("idErrMsg");
-		const passwordErrMsg = document.getElementById("passwordErrMsg");
-		const passwordConfirmErrMsg = document.getElementById("passwordConfirmErrMsg");
+		const passErrMsg = document.getElementById("passErrMsg");
+		const passConfirmErrMsg = document.getElementById("passConfirmErrMsg");
+
+		let idUsable = false;
 
 		//
 		id.oninput = idCheck;
-		nickname.oninput = nicknameLengthCheck;
-		password.oninput = passwordLengthCheck;
-		passwordConfirm.oninput = passwordConfirmLengthCheck;
+		nickname.oninput = nicknameCheck;
+		pass.oninput = passCheck;
+		passConfirm.oninput = passConfirmCheck;
 
 		//送信時に入力の不具合がある場合送信を中止
 		form.onsubmit = function() {
-			let isUnappropriate = false;
-			if(!nicknameLengthCheck()){
-				isUnappropriate = true;
+			let isAppropriate = true;
+			let isPassLenAppropriate = true;
+			if(!nicknameCheck()){
+				isAppropriate = false;
 			}
-			if(!idLengthCheck()){
-				isUnappropriate = true;
+			if(!idCheck()){
+				isAppropriate = false;
 			}
-			if(!passwordLengthCheck()){
-				isUnappropriate = true;
+			if(!passCheck()){
+				isAppropriate = false;
+				isPassLenAppropriate = false;
 			}
-			if(!passwordConfirmLengthCheck()){
-				isUnappropriate = true;
+			if(!passConfirmCheck()){
+				isAppropriate = false;
+				isPassLenAppropriate = false;
+			}
+			if(isPassLenAppropriate && pass.value !== passConfirm.value){
+				errMsgAppend(passConfirmErrMsg, "パスワードと確認パスワードが違う");
+				isAppropriate = false;
+			}
+			if(idUsable){
+				isAppropriate = false;
 			}
 
-			if (isUnappropriate) {
-				return false;
-			}else if(password.value !== passwordConfirm.value) {
-				errMsgAppend(passwordConfirmErrMsg, "パスワードと確認パスワードが違う");
-				return false;
-			}else{
-				return true;
-			}
+			return isAppropriate;
 		};
 
-		function idCheck() {
-			//入力文字数をチェック
-			if(!idLengthCheck()){
-				return false;
-			}
 
+		function idUsableCheck(){
 			let req = new XMLHttpRequest();
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
 					//IDが使われていたら注意メッセージを表示
 					if (JSON.parse(req.response)) {
 						errMsgAppend(idErrMsg, "既にそのIDは使われています");
+						idUsable = true;
 					} else {
 						idErrMsg.textContent = null;
+						idUsable = false;
 					}
 				}
 			};
@@ -98,8 +112,48 @@
 			req.send(null);
 		}
 
+
+		function idCheck(){
+			let regexStr = /^[a-zA-Z0-9]*$/;
+			if(!inputFormatCheck(regexStr, id, idErrMsg)){
+				return false;
+			}
+			if(!inputLenCheck(6, 12, id, idErrMsg)){
+				return false;
+			}
+			idUsableCheck();
+			return true;
+		}
+		function nicknameCheck() {
+			if(!inputLenCheck(1, 10, nickname, nicknameErrMsg)){
+				return false;
+			}
+			return true;
+		}
+		function passCheck() {
+			let regexStr = /^[a-zA-Z0-9]*$/;
+			if(!inputFormatCheck(regexStr, pass, passErrMsg)){
+				return false;
+			}
+			if(!inputLenCheck(8, 16, pass, passErrMsg)){
+				return false;
+			}
+			return true;
+		}
+		function passConfirmCheck() {
+			let regexStr = /^[a-zA-Z0-9]*$/;
+			if(!inputFormatCheck(regexStr, passConfirm, passConfirmErrMsg)){
+				return false;
+			}
+			if(!inputLenCheck(8, 16, passConfirm, passConfirmErrMsg)){
+				return false;
+			}
+			return true;
+		}
+
+
 		//
-		function inputLengthCheck(low, high, checkNode, errMsgNode){
+		function inputLenCheck(low, high, checkNode, errMsgNode){
 			if(checkNode.value.length < low){
 				errMsgAppend(errMsgNode, "文字数が足りていません");
 				return false;
@@ -112,23 +166,20 @@
 			}
 		}
 
+		function inputFormatCheck(regexStr, checkNode, errMsgNode){
+			let regex = new RegExp(regexStr);
+			if(regex.test(checkNode.value)){
+				return true;
+			}else{
+				errMsgAppend(errMsgNode, "使用できない文字が含まれています。");
+				return false;
+			}
+		}
+
 		function errMsgAppend(errMsgNode, errMsg){
 			let errMsgTextNode = document.createTextNode(errMsg);
 			errMsgNode.textContent = null;
 			errMsgNode.appendChild(errMsgTextNode);
-		}
-
-		function idLengthCheck(){
-			return inputLengthCheck(6, 12, id, idErrMsg);
-		}
-		function nicknameLengthCheck() {
-			return inputLengthCheck(1, 10, nickname, nicknameErrMsg);
-		}
-		function passwordLengthCheck() {
-			return inputLengthCheck(8, 16, password, passwordErrMsg);
-		}
-		function passwordConfirmLengthCheck() {
-			return inputLengthCheck(8, 16, passwordConfirm, passwordConfirmErrMsg);
 		}
 	}, false);
 	</script>

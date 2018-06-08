@@ -19,7 +19,7 @@ public class IdUsableCheckLogic {
      */
     public boolean execute(String id){
         AccountsDAO dao = new AccountsDAO();
-        return dao.isUse(id);
+        return dao.isUsable(id);
     }
 
 }
