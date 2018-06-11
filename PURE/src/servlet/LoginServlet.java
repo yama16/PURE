@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
 		if(account != null) {
 			//セッションスコープにアカウント情報を保存
 			HttpSession session = request.getSession();
-			session.setAttribute("loginAccount", account);
+			session.setAttribute("account", account);
 
 			//個人設定画面にリダイレクト
 			response.sendRedirect("/PURE/AccountHomeServlet");
