@@ -1,13 +1,15 @@
 package model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  *
  * @author furukawa
  *
  */
-public class BulletinBoard {
+public class BulletinBoard implements Serializable {
 
 	private int id;
 	private String title;
@@ -16,6 +18,7 @@ public class BulletinBoard {
 	private Timestamp updatedAt;
 	private int viewQuantity;
 	private int pureQuantity;
+	private List<Comment> commentList;
 
 	public BulletinBoard(){}
 	public BulletinBoard(int id, String title, String accountId, Timestamp createdAt, Timestamp updatedAt, int viewQuantity, int pureQuantity){
@@ -42,4 +45,6 @@ public class BulletinBoard {
 	public void setViewQuantity(int viewQuantity){ this.viewQuantity = viewQuantity; }
 	public int getPureQuantity(){ return pureQuantity; }
 	public void setPureQuantity(int pureQuantity){ this.pureQuantity = pureQuantity; }
+	public List<Comment> getCommentList(){ return commentList; }
+	public void setCommentList(List<Comment> commentList){ this.commentList = commentList; }
 }
