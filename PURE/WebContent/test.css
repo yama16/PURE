@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+#page {
+	margin: 0 auto;
+	width: 900px;
+}
+
+main {
+	float: left;
+	width: 250px;
+}
+
+#sub {
+	float: right;
+	width: 650px;
+	background: blue;
+}

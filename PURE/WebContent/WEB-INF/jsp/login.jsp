@@ -39,6 +39,7 @@ if(login != null) {
 		let id = document.getElementById("id");			//入力されたIDを取得
 		let pass = document.getElementById("pass");		//入力されたパスワードを取得
 		let form = document.getElementById("form");
+
 		form.onsubmit = function(){
 			if(!(id.value) || !(pass.value)) {
 				let empty = document.getElementById("empty");
