@@ -15,13 +15,12 @@ public class GetNewCommentLogic {
      * 引数で指定した掲示板のコメントの中から、引数で指定したコメントより新しいコメントのリストを返すメソッド。
      *
      * @param bulletin_board_id 検索する掲示板のID
-     * @param comment_id 最新のコメントのID
+     * @param comment_id ブラウザに表示している中で最新のコメントのID
      * @return 引数のcomment_idよりも最新のコメントのリストを返す。
-     * 引数のcomment_idよりも最新のコメントが無ければnullを返す。
      */
-	public List<Comment> execute(int bulletin_board_id, int comment_id){
+	public List<Comment> execute(int bulletinBoardId, int commentId){
 		CommentsDAO dao = new CommentsDAO();
-		return dao.findNewComment(bulletin_board_id, comment_id);
+		return dao.findNewComment(bulletinBoardId, commentId);
 	}
 
 }

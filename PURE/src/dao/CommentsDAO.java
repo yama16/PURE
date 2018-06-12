@@ -32,9 +32,9 @@ public class CommentsDAO {
     /**
      * 掲示板IDからその掲示板のコメントのリストを返すメソッド。
      * @param bulletin_board_id 検索する掲示板のID
-     * @return 検索した掲示板のコメントのリストを返す。コメントが無ければnullを返す。
+     * @return 検索した掲示板のコメントのリストを返す。
      */
-    public List<Comment> findByBulletin_board_id(int bulletin_board_id){
+    public List<Comment> findByBulletinBoardId(int bulletinBoardId){
     	Connection conn = null;
     	List<Comment> commentList = new ArrayList<>();
     	try{
@@ -42,7 +42,7 @@ public class CommentsDAO {
 
     		String sql = "SELECT * FROM comments WHERE bulletin_board_id = ?";
     		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, bulletin_board_id);
+    		pStmt.setInt(1, bulletinBoardId);
     		ResultSet resultSet = pStmt.executeQuery();
     		while(resultSet.next()){
     			Comment comment = new Comment();
@@ -65,7 +65,7 @@ public class CommentsDAO {
                 }
             }
         }
-    	return commentList.size() == 0 ? null : commentList;
+    	return commentList;
     }
 
     /**
@@ -74,9 +74,8 @@ public class CommentsDAO {
      * @param bulletin_board_id 検索する掲示板のID
      * @param comment_id 最新のコメントのID
      * @return 引数のcomment_idよりも最新のコメントのリストを返す。
-     * 引数のcomment_idよりも最新のコメントが無ければnullを返す。
      */
-    public List<Comment> findNewComment(int bulletin_board_id, int comment_id){
+    public List<Comment> findNewComment(int bulletinBoardId, int commentId){
     	Connection conn = null;
     	List<Comment> newCommentList = new ArrayList<>();
     	try {
@@ -84,8 +83,8 @@ public class CommentsDAO {
 
     		String sql = "SELECT * FROM comments WHERE bulletin_board_id = ? AND comment_id > ?";
     		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, bulletin_board_id);
-    		pStmt.setInt(2, comment_id);
+    		pStmt.setInt(1, bulletinBoardId);
+    		pStmt.setInt(2, commentId);
     		ResultSet resultSet = pStmt.executeQuery();
     		while(resultSet.next()){
     			Comment comment = new Comment();
@@ -108,7 +107,7 @@ public class CommentsDAO {
                 }
             }
         }
-    	return newCommentList.size() == 0 ? null : newCommentList;
+    	return newCommentList;
     }
 
     /**
@@ -121,9 +120,11 @@ public class CommentsDAO {
     	try{
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-    		String sql = "INSERT INTO comments VALUES(?,?,?,?,?,?)";
+    		String sql = "INSERT INTO comments(*) VALUES("
+    				+ "(SELECT COALESCE(MAX(id),0)+1 FROM comments WHERE bulletin_board_id=?)"
+    				+ ",?,?,?,?,?)";
     		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, comment.getId());
+    		pStmt.setInt(1, comment.getBulletinBoardId());
     		pStmt.setInt(2, comment.getBulletinBoardId());
     		pStmt.setString(3, comment.getAccountId());
     		pStmt.setString(4, comment.getComment());

@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -7,7 +8,7 @@ import java.sql.Timestamp;
  * @author furukawa
  *
  */
-public class Comment {
+public class Comment implements Serializable{
 
 	private int id;
 	private int bulletinBoardId;

@@ -3,7 +3,9 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import model.BulletinBoard;
 
@@ -63,6 +65,46 @@ public class BulletinBoardsDAO {
             }
         }
     	return true;
+    }
+
+    /**
+     * 掲示板を探すメソッド。
+     * @param findId 検索する掲示板のID
+     * @return 見つかったらその掲示板の情報を持ったインスタンスを返す。見つからなければnullを返す。
+     */
+    public BulletinBoard findById(int findId){
+    	BulletinBoard bulletinBoard = null;
+    	Connection conn = null;
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+
+    		String sql = "SELECT * FROM bulletin_boards WHERE id=?";
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setInt(1, findId);
+    		ResultSet resultSet = pStmt.executeQuery(sql);
+    		if(resultSet.next()){
+    			int id = resultSet.getInt("id");
+    			String title = resultSet.getString("title");
+    			String accountId = resultSet.getString("accont_id");
+    			Timestamp createdAt = resultSet.getTimestamp("created_at");
+    			Timestamp updatedAt = resultSet.getTimestamp("updated_at");
+    			int viewQuantity = resultSet.getInt("view_quantity");
+    			int pureQuantity = resultSet.getInt("pure_quantity");
+
+    			bulletinBoard = new BulletinBoard(id, title, accountId, createdAt, updatedAt, viewQuantity, pureQuantity);
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	} finally {
+    		if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e2) {
+                    e2.printStackTrace();
+                }
+            }
+    	}
+    	return bulletinBoard;
     }
 
 }
