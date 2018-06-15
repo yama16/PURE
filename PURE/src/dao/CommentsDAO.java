@@ -56,6 +56,7 @@ public class CommentsDAO {
     		}
     	} catch (SQLException e) {
             e.printStackTrace();
+            return null;
         } finally {
             if(conn != null){
                 try {

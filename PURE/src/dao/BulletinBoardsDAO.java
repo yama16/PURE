@@ -38,8 +38,9 @@ public class BulletinBoardsDAO {
     	Connection conn = null;
     	try{
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+    		conn.setAutoCommit(false);
 
-    		String sql = "INSERT INTO bulletin_boards(id,title,account_id,created_at,updated_at,view_quantity,pure_quantity) VALUES(?,?,?,?,?,?,?);";
+    		String sql = "INSERT INTO bulletin_boards(id,title,account_id,created_at,updated_at,view_quantity) VALUES(?,?,?,?,?,?);";
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoard.getId());
     		pStmt.setString(2, bulletinBoard.getTitle());
@@ -47,13 +48,32 @@ public class BulletinBoardsDAO {
     		pStmt.setTimestamp(4, bulletinBoard.getCreatedAt());
     		pStmt.setTimestamp(5, bulletinBoard.getUpdatedAt());
     		pStmt.setInt(6, bulletinBoard.getViewQuantity());
-    		pStmt.setInt(7, bulletinBoard.getPureQuantity());
     		int result = pStmt.executeUpdate();
     		if(result != 1){
+				conn.rollback();
     			return false;
     		}
+
+			sql = "INSERT INTO tags(bulletin_board_id, tag) VALUES(?, ?);";
+			pStmt = conn.prepareStatement(sql);
+			pStmt.setInt(1, bulletinBoard.getId());
+    		for(String tag : bulletinBoard.getTagList()){
+    			pStmt.setString(2, tag);
+    			result = pStmt.executeUpdate();
+    			if(result != 1){
+    				conn.rollback();
+    				return false;
+    			}
+    		}
+
+    		conn.commit();
     	} catch (SQLException e) {
             e.printStackTrace();
+            try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
             return false;
         } finally {
             if(conn != null){
@@ -89,9 +109,8 @@ public class BulletinBoardsDAO {
     			Timestamp createdAt = resultSet.getTimestamp("created_at");
     			Timestamp updatedAt = resultSet.getTimestamp("updated_at");
     			int viewQuantity = resultSet.getInt("view_quantity");
-    			int pureQuantity = resultSet.getInt("pure_quantity");
 
-    			bulletinBoard = new BulletinBoard(id, title, accountId, createdAt, updatedAt, viewQuantity, pureQuantity);
+    			bulletinBoard = new BulletinBoard(id, title, accountId, createdAt, updatedAt, viewQuantity);
     		}
     	} catch(SQLException e) {
     		e.printStackTrace();

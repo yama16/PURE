@@ -166,6 +166,13 @@ if(account != null){
 			}
 		}
 
+		/**
+		 *
+		 * @param {object} 正規表現
+		 * @param {object} 正規表現でチェックする要素
+		 * @param {object} 正規表現に従っていなかった場合にメッセージを表示する要素
+		 * @return {boolean} 正規表現に従っていればtrue。従っていなければfalse。
+		 */
 		function inputFormatCheck(regexStr, checkNode, errMsgNode){
 			let regex = new RegExp(regexStr);
 			if(regex.test(checkNode.value)){
@@ -176,6 +183,11 @@ if(account != null){
 			}
 		}
 
+		/**
+		 * errMsgNodeにerrMsgを表示する。
+		 * @param {Object} errMsgNode メッセージを表示する要素
+		 * @param {String} errMsg 表示するメッセージ
+		 */
 		function errMsgAppend(errMsgNode, errMsg){
 			let errMsgTextNode = document.createTextNode(errMsg);
 			errMsgNode.textContent = null;
