@@ -17,18 +17,17 @@ public class BulletinBoard implements Serializable {
 	private Timestamp createdAt;
 	private Timestamp updatedAt;
 	private int viewQuantity;
-	private int pureQuantity;
 	private List<Comment> commentList;
+	private List<String> tagList;
 
 	public BulletinBoard(){}
-	public BulletinBoard(int id, String title, String accountId, Timestamp createdAt, Timestamp updatedAt, int viewQuantity, int pureQuantity){
+	public BulletinBoard(int id, String title, String accountId, Timestamp createdAt, Timestamp updatedAt, int viewQuantity){
 		this.id = id;
 		this.title = title;
 		this.accountId = accountId;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 		this.viewQuantity = viewQuantity;
-		this.pureQuantity = pureQuantity;
 	}
 
 	public int getId(){ return id; }
@@ -43,8 +42,8 @@ public class BulletinBoard implements Serializable {
 	public void setUpdatedAt(Timestamp updatedAt){ this.updatedAt = updatedAt; }
 	public int getViewQuantity(){ return viewQuantity; }
 	public void setViewQuantity(int viewQuantity){ this.viewQuantity = viewQuantity; }
-	public int getPureQuantity(){ return pureQuantity; }
-	public void setPureQuantity(int pureQuantity){ this.pureQuantity = pureQuantity; }
 	public List<Comment> getCommentList(){ return commentList; }
 	public void setCommentList(List<Comment> commentList){ this.commentList = commentList; }
+	public List<String> getTagList(){ return tagList; }
+	public void setTagList(List<String> tagList){ this.tagList = tagList; }
 }
