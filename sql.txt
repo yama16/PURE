@@ -1,11 +1,11 @@
 ﻿/* 掲示板テーブル */
 CREATE TABLE bulletin_boards (
-    id              INTEGER     PRIMARY KEY AUTO_INCREMENT,
-    title           VARCHAR(30) UNIQUE NOT NULL,
-    account_id      VARCHAR(12) REFERENCES accounts (id),
-    created_at      TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at      TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    view_quantity   INTEGER     NOT NULL DEFAULT 0
+    id                INTEGER     PRIMARY KEY AUTO_INCREMENT,
+    title             VARCHAR(30) UNIQUE NOT NULL,
+    account_id        VARCHAR(12) REFERENCES accounts (id),
+    created_at        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    view_quantity     INTEGER     NOT NULL DEFAULT 0,
+    favorite_quantity INTEGER     NOT NULL DEFAULT 0
 );
 
 
