@@ -32,7 +32,7 @@ public class GetBulletinBoardLogic {
 		}
 		bulletinBoard.setCommentList(commentList);
 		TagsDAO tagsDAO = new TagsDAO();
-		List<String> tagList = tagsDAO.fingByBulletinBoardId(bulletinBoardId);
+		List<String> tagList = tagsDAO.findByBulletinBoardId(bulletinBoardId);
 		if(tagList == null){
 			return null;
 		}

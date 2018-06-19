@@ -29,7 +29,7 @@ public class AccountsDAO {
         try {
             Class.forName("org.h2.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        	Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -41,10 +41,7 @@ public class AccountsDAO {
      * @return idが既に登録されていればtrue。されていなければfalse。
      */
     public boolean isUsable(String id){
-        Connection conn = null;
-        try{
-            conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
-
+        try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
             String sql = "SELECT id FROM accounts WHERE id = ?";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, id);
@@ -53,16 +50,8 @@ public class AccountsDAO {
                 return true;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+        	Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, e);
             return true;
-        } finally {
-            if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException e2) {
-                    e2.printStackTrace();
-                }
-            }
         }
         return false;
     }
@@ -71,16 +60,13 @@ public class AccountsDAO {
      * Accountsテーブルに登録するメソッド。
      * 登録したいアカウント情報を持ったAccountインスタンスを引数で渡す。
      * 登録できればtrueを返す。できなければfalseを返す。
-     * @param account 本登録するアカウント
-     * @return 本登録できればtrue。できなければfalse。
+     * @param account 登録するアカウント
+     * @return 登録できればtrue。できなければfalse。
      */
     public boolean create(Account account){
-        Connection connection = null;
-        try{
-            connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
-
+        try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
             String sql = "INSERT INTO accounts (id, nickname, password, created_at, updated_at) VALUES (?,?,?,?,?)";
-            PreparedStatement pStmt = connection.prepareStatement(sql);
+            PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, account.getId());
             pStmt.setString(2, account.getNickname());
             pStmt.setString(3, account.getPassword());
@@ -91,16 +77,8 @@ public class AccountsDAO {
                 return false;
             }
         } catch (SQLException e) {
-        	e.printStackTrace();
+        	Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, e);
             return false;
-        }finally{
-            if(connection != null){
-                try{
-                    connection.close();
-                }catch(SQLException e){
-                    e.printStackTrace();
-                }
-            }
         }
         return true;
     }
@@ -113,39 +91,24 @@ public class AccountsDAO {
      * @return アカウントが見つかればそのアカウントを返す。見つからなければnullを返す。
      */
     public Account findByLogin(Login login){
-        Connection conn = null;
         Account account = null;
-        try{
-            conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
-
+        try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
             String sql = "SELECT id, nickname, password, created_at, updated_at, is_deleted FROM accounts WHERE id = ? AND password = ?";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, login.getId());
             pStmt.setString(2, login.getPassword());
-
             ResultSet resultSet = pStmt.executeQuery();
-
             if(resultSet.next() && !resultSet.getBoolean("is_deleted")){
                 String id = resultSet.getString("id");
                 String nickname = resultSet.getString("nickname");
                 String password = resultSet.getString("password");
                 Timestamp created_at = resultSet.getTimestamp("created_at");
                 Timestamp updated_at = resultSet.getTimestamp("updated_at");
-
                 account = new Account(id, nickname, password, created_at, updated_at);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+        	Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, e);
             return null;
-        } finally {
-            if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException e2) {
-                    e2.printStackTrace();
-                    return null;
-                }
-            }
         }
         return account;
     }
@@ -158,10 +121,7 @@ public class AccountsDAO {
      * @return 削除できればtrue。できなければfalse。
      */
     public boolean delete(Account account){
-        Connection conn = null;
-        try{
-            conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
-
+        try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
             String sql = "UPDATE Accounts SET is_deleted = TRUE WHERE id = ?;";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, account.getId());
@@ -172,14 +132,6 @@ public class AccountsDAO {
         } catch (SQLException ex) {
             Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-        } finally {
-            if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
         }
         return true;
     }
@@ -193,10 +145,7 @@ public class AccountsDAO {
      * @return 更新できればtrue。できなければfalse。
      */
     public boolean update(String id, Account account){
-        Connection conn = null;
-        try{
-            conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
-
+        try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
             String sql = "UPDATE accounts SET id = ?, nickname = ?, password = ?, updated_at = ? WHERE id = ?;";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, account.getId());
@@ -211,14 +160,6 @@ public class AccountsDAO {
         } catch (SQLException ex) {
             Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-        } finally {
-            if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
         }
         return true;
     }

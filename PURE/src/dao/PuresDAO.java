@@ -35,7 +35,7 @@ public class PuresDAO {
      */
     public boolean create(String accountId, int commentId, int bulletinBoardId){
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-    		String sql = "INSERT INTO pures(*) VALUES(?,?,?)";
+    		String sql = "INSERT INTO pures VALUES(?,?,?)";
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, accountId);
     		pStmt.setInt(2, commentId);

@@ -5,7 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import model.BulletinBoard;
 
@@ -25,12 +28,13 @@ public class BulletinBoardsDAO {
         try {
             Class.forName("org.h2.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        	Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
     /**
      * 掲示板をbulletin_boardsテーブルに登録するメソッド。
+     * タグの追加はTagsDAOのcreateに任せる。
      * @param bulletinBoard 作成する掲示板
      * @return 作成できればtrueを返す。できなければfalseを返す。
      */
@@ -40,47 +44,43 @@ public class BulletinBoardsDAO {
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
     		conn.setAutoCommit(false);
 
-    		String sql = "INSERT INTO bulletin_boards(id,title,account_id,created_at,updated_at,view_quantity) VALUES(?,?,?,?,?,?);";
+    		String sql = "INSERT INTO bulletin_boards(id,title,account_id,created_at,view_quantity,favorite_quantity) VALUES(?,?,?,?,?,?);";
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoard.getId());
     		pStmt.setString(2, bulletinBoard.getTitle());
     		pStmt.setString(3, bulletinBoard.getAccountId());
     		pStmt.setTimestamp(4, bulletinBoard.getCreatedAt());
-    		pStmt.setTimestamp(5, bulletinBoard.getUpdatedAt());
-    		pStmt.setInt(6, bulletinBoard.getViewQuantity());
+    		pStmt.setInt(5, bulletinBoard.getViewQuantity());
+    		pStmt.setInt(6, bulletinBoard.getFavoriteQuantity());
     		int result = pStmt.executeUpdate();
     		if(result != 1){
 				conn.rollback();
     			return false;
     		}
 
-			sql = "INSERT INTO tags(bulletin_board_id, tag) VALUES(?, ?);";
-			pStmt = conn.prepareStatement(sql);
-			pStmt.setInt(1, bulletinBoard.getId());
+			TagsDAO dao = new TagsDAO();
     		for(String tag : bulletinBoard.getTagList()){
-    			pStmt.setString(2, tag);
-    			result = pStmt.executeUpdate();
-    			if(result != 1){
+    			if(!dao.create(bulletinBoard.getId(), tag, conn)){
     				conn.rollback();
     				return false;
     			}
     		}
 
     		conn.commit();
-    	} catch (SQLException e) {
-            e.printStackTrace();
+    	} catch (SQLException e1) {
+    		Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e1);
             try {
 				conn.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
+			} catch (SQLException e2) {
+				Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e2);
 			}
             return false;
         } finally {
             if(conn != null){
                 try {
                     conn.close();
-                } catch (SQLException e2) {
-                    e2.printStackTrace();
+                } catch (SQLException e) {
+                	Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
         }
@@ -92,38 +92,69 @@ public class BulletinBoardsDAO {
      * @param findId 検索する掲示板のID
      * @return 見つかったらその掲示板の情報を持ったインスタンスを返す。見つからなければnullを返す。
      */
-    public BulletinBoard findById(int findId){
+    public BulletinBoard findById(int bulletinBoardId){
     	BulletinBoard bulletinBoard = null;
-    	Connection conn = null;
-    	try{
-    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
-
+    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
     		String sql = "SELECT * FROM bulletin_boards WHERE id=?";
     		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, findId);
+    		pStmt.setInt(1, bulletinBoardId);
     		ResultSet resultSet = pStmt.executeQuery(sql);
     		if(resultSet.next()){
-    			int id = resultSet.getInt("id");
-    			String title = resultSet.getString("title");
-    			String accountId = resultSet.getString("accont_id");
-    			Timestamp createdAt = resultSet.getTimestamp("created_at");
-    			Timestamp updatedAt = resultSet.getTimestamp("updated_at");
-    			int viewQuantity = resultSet.getInt("view_quantity");
-
-    			bulletinBoard = new BulletinBoard(id, title, accountId, createdAt, updatedAt, viewQuantity);
+    			bulletinBoard = new BulletinBoard();
+    			bulletinBoard.setId(resultSet.getInt("id"));
+    			bulletinBoard.setTitle(resultSet.getString("title"));
+    			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+    			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+    			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+    			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
     		}
     	} catch(SQLException e) {
-    		e.printStackTrace();
-    	} finally {
-    		if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException e2) {
-                    e2.printStackTrace();
-                }
-            }
+    		Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		return null;
     	}
     	return bulletinBoard;
     }
+
+    /**
+     * 引数のアカウントの作った掲示板のリストを返す。
+     * それぞれの掲示板は掲示板情報とその掲示板のタグを持つ。コメントは持たない。
+     * @param accountId 検索するアカウントのID
+     * @return 検索した掲示板のリスト。取得に失敗したらnullを返す。
+     */
+    public List<BulletinBoard> findByAccountId(String accountId){
+    	List<BulletinBoard> list = new ArrayList<>();
+    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+
+    		String sql = "SELECT * FROM bulletin_boards WHERE account_id=?;";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setString(1, accountId);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		while(resultSet.next()){
+    			BulletinBoard bulletinBoard = new BulletinBoard();
+    			int bulletinBoardId = resultSet.getInt("id");
+    			bulletinBoard.setId(bulletinBoardId);
+    			bulletinBoard.setTitle(resultSet.getString("title"));
+    			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+    			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+    			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+    			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+    			TagsDAO tagsDAO = new TagsDAO();
+    			bulletinBoard.setTagList(tagsDAO.findByBulletinBoardId(bulletinBoardId, conn));
+    			list.add(bulletinBoard);
+    		}
+
+    	} catch (SQLException e) {
+    		Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		return null;
+		}
+
+    	return list;
+    }
+
+    /*public List<BulletinBoard> ranking(){
+
+    }*/
 
 }
