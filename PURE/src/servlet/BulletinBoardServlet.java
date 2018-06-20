@@ -24,9 +24,13 @@ public class BulletinBoardServlet extends HttpServlet {
 		int id = Integer.parseInt(request.getParameter("id"));
 		GetBulletinBoardLogic getBulletinBoard = new GetBulletinBoardLogic();
 		BulletinBoard bulletinBoard = getBulletinBoard.execute(id);
-		request.setAttribute("bulletinBoard", bulletinBoard);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/createBulletinBoard.jsp");
-		dispatcher.forward(request, response);
+		if(bulletinBoard != null) {
+			request.setAttribute("bulletinBoard", bulletinBoard);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/createBulletinBoard.jsp");
+			dispatcher.forward(request, response);
+		} else {
+			// エラーメッセージを表示
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <h1>PURE</h1>
+    <!-- 　コメント欄　 -->
+    <div id="commentField">
+      <div id="title"><p>掲示板タイトル</p></div>
+    </div>
+
+    <form id="inputComment">
+      <label>ここに入力：</label><br>
+      <textarea id="inputField" rows="5" cols="40" maxlength="200"></textarea><br>
+      <input id="sendButton" type="button" value="送信">
+    </form>
+
+    <footer>
+      <address></address>
+    </footer>
+  </body>
+  <script type="text/javascript">
+    // 5秒ごとに更新情報を取得
+    /*setInterval(function() {
+      // 初期処理
+      let req = new XMLHttpRequest();
+      let cmtObj = createCommentObj();
+      // リクエスト処理
+      req.onreadystatechange = function() {
+        if(req.readyState == 4) {
+          if(req.status == 200) {
+            // データ受信成功時の処理
+            commentDisplay( JSON.parse(req.response) );
+          }
+        }
+      }
+      req.open("POST", "");
+      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      req.send(commen);
+    }, 5000);*/
+
+    // 送信ボタンを押したらコメントを送信
+    document.getElementById("sendButton").onclick = function() {
+      console.log("sendButton入力確認");
+      // 初期処理
+      let text = document.getElementById("inputField");
+      let comment = text.value;
+      // textareaに文字列が入力されているかチェック
+      if(comment) {
+        let req = new XMLHttpRequest();
+        // リクエスト処理
+        req.onreadystatechange = function() {
+          if(req.readyState == 4) {
+            if(req.status == 200) {
+              // データ受信成功時の処理
+              if(req.response) {
+                console.log("送信成功です！");
+              }
+              text.value = ""; // 入力欄をクリア
+            }
+          }
+        }
+        req.open("POST", "http://localhost:8080/PURE/BulletinBoardTestServlet");
+        req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        req.send( "commentData=" + comment ); // コメントオブジェクトを送信
+      }
+    };
+
+    //
+  </script>
+</html>
