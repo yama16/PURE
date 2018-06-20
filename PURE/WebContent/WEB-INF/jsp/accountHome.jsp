@@ -25,8 +25,9 @@ Timestamp updateTime = account.getUpdatedAt();
 			<form id="confirm">
 				<fieldset>
 					個人設定:<input type="button" value="TEST" id="test"><br>
-					パスワード変更:<input type="button" value="testRemove" id="te"><br>
-					掲示板:<br>
+					掲示板:<input type="button" value="test" id="te"><br>
+					お気に入り:<br>
+					コメント履歴：
 				</fieldset>
 			</form>
 		</main>
@@ -43,46 +44,33 @@ Timestamp updateTime = account.getUpdatedAt();
 			menu.textContent = null;
 
 			//現在のニックネームを表示
-			let nicknameDisplay = document.createElement("p");
-			let nickname = document.createTextNode("<%= nickname %>");
-			let nicknameChangeButton = document.createElement("input");
-			nicknameChangeButton.setAttribute("id","nicknameChange");
-			nicknameChangeButton.setAttribute("type","button");
-			nicknameChangeButton.setAttribute("value","変更");
+			let nicknameDisplay = elt("p", null, "<%= nickname %>");
+			let nicknameChangeButton = elt("input", {type: "button", id: "nicknameChange", value: "変更"});
 			menu.appendChild(nicknameDisplay);
-			nicknameDisplay.appendChild(nickname);
 			menu.appendChild(nicknameChangeButton);
 			console.log("ok");
 
 			//現在のIDを表示
-			let idDisplay = document.createElement("p");
-			let id = document.createTextNode("<%= id %>");
+			let idDisplay = elt("p", null, "<%= id %>");
 			menu.appendChild(idDisplay);
-			idDisplay.appendChild(id);
 
 			//パスワード変更
-			let passChangeDisplay = document.createElement("p");
-			let passChangeMsg = document.createTextNode("パスワード変更");
-			let passChange = document.createElement("input");
-			passChange.setAttribute("type","button");
-			passChange.setAttribute("value","変更");
+			let passChangeDisplay = elt("p", null, "パスワード変更");
+			let passChangeButton = elt("input", {type: "button", id: "passChange", value: "変更"});
 			menu.appendChild(passChangeDisplay);
-			passChangeDisplay.appendChild(passChangeMsg);
-			menu.appendChild(passChange);
+			menu.appendChild(passChangeButton);
 
 			//アカウント作成日時を表示
-			let createTimeDisplay = document.createElement("p");
-			let createTime = document.createTextNode("作成日時："+"<%= createTime %>");
+			let createTimeDisplay = elt("p", null, "作成日時："+"<%= createTime %>");
 			menu.appendChild(createTimeDisplay);
-			createTimeDisplay.appendChild(createTime);
 
 			//アカウント更新日時を表示
-			let updateTimeDisplay = document.createElement("p");
-			let updateTime = document.createTextNode("最終更新日時："+"<%= updateTime %>");
+			let updateTimeDisplay = elt("p", null, "最終更新日："+"<%= updateTime %>");
 			menu.appendChild(updateTimeDisplay);
-			updateTimeDisplay.appendChild(updateTime);
 
+			//変更ボタンが押されたら入力ページを表示
 			document.getElementById("nicknameChange").onclick = nicknameChange;
+			document.getElementById("passChange").onclick = passChange;
 		}
 
 		//ニックネーム変更ボタンが押されたら入力画面を表示
@@ -91,59 +79,190 @@ Timestamp updateTime = account.getUpdatedAt();
 			menu.textContent = null;
 
 			//ニックネーム入力フォームj
-			let inputNicknameForm = document.createElement("form");
-			inputNicknameForm.setAttribute("action","/PURE/nicknameChangeServlet");
-			inputNicknameForm.setAttribute("method","post");
+			let inputNicknameForm = elt("form",{action: "/PURE/NicknameChangeServlet", method: "post", id: "nicknameForm"});
 			menu.appendChild(inputNicknameForm);
 
 			//現在のニックネームを表示
-			let nicknameDisplay = document.createElement("p");
-			let nickname = document.createTextNode("現在："+"<%= nickname %>");
+			let nicknameDisplay = elt("p", null, "<%= nickname %>");
 			inputNicknameForm.appendChild(nicknameDisplay);
-			nicknameDisplay.appendChild(nickname);
 
 			//新しいニックネームの入力設定
-			let guideDisplayMsg = document.createElement("p");
-			let guideMsg = document.createTextNode("新しいニックネームを入力してください");
-			let inputNewNickname = document.createElement("input");
-			inputNewNickname.setAttribute("type","text");
-			inputNewNickname.setAttribute("name","newNickname");
+			let guideDisplayMsg = elt("p", null, "新しいニックネームを入力してください");
+			let inputNewNickname = elt("input",{type: "text", id: "newNickname", name: "newNickname"});
 			inputNicknameForm.appendChild(guideDisplayMsg);
-			guideDisplayMsg.appendChild(guideMsg);
 			inputNicknameForm.appendChild(inputNewNickname);
 
 			//送信ボタンの設定
-			let submit = document.createElement("input");
-			submit.setAttribute("type","submit");
-			submit.setAttribute("value","変更");
-			inputNicknameForm.appendChild(submit);
+			let changeSubmit = elt("input",{type: "submit", id: "changeSubmit", value: "変更"});
+			inputNicknameForm.appendChild(changeSubmit);
+
+			//ニックネームが未入力または入力制限を超えていた場合送信を中止
+			document.getElementById("nicknameForm").onsubmit = function() {
+				let newNickname = document.getElementById("newNickname");
+				let inputNicknameCheck = true;
+				if(newNickname.value.length <= 0) {
+					inputNicknameCheck = false;
+				}else if(newNickname.value.length > 10) {
+					inputNicknameCheck = false;
+				}
+				return inputNicknameCheck;
+			}
 
 			//戻るボタン設定
-			let back = document.createElement("input");
-			back.setAttribute("id","back")
-			back.setAttribute("type","button");
-			back.setAttribute("value","戻る")
+			let back = elt("input", {id: "back", type: "button", value: "戻る"});
 			inputNicknameForm.appendChild(back);
-
 			document.getElementById("back").onclick = personalSetting;
 
 		}
 
 		function passChange() {
+			console.log("ohaa");
 			menu.textContent = null;
+			let passUsable = false;
 
 			//パスワード入力フォーム
-			let inputPassForm = document.createElement("form");
-			inputPassForm.setAttribute("action","/PURE/PassChangeServlet");
-			inputPassForm.setAttribute("method","post");
+			let inputPassForm = elt("form", {action: "/PURE/PassChangeServlet", method: "post", id: "passForm"});
 			menu.appendChild(inputPassForm);
 
 			//現在のパスワードを入力
-			let pass = document
+			let guideNowDisplay = elt("p", null, "現在のパスワードを入力してください");
+			let inputNowPass = elt("input",{type: "password", id: "nowPass", name: "nowPass"});
+			inputPassForm.appendChild(guideNowDisplay);
+			inputPassForm.appendChild(inputNowPass);
+
+			//新しいパスワードを入力
+			let guideNewDisplay = elt("p", null, "新しいパスワードを入力してください");
+			let inputNewPass = elt("input",{type: "password", id: "newPass", name: "pass"});
+			inputPassForm.appendChild(guideNewDisplay);
+			inputPassForm.appendChild(inputNewPass);
+
+			//確認パスワードを入力
+			let guideConfirmDisplay = elt("p", null, "もう一度入力してください");
+			let inputConfirmPass = elt("input",{type: "password", id: "confirmPass"});
+			inputPassForm.appendChild(guideConfirmDisplay);
+			inputPassForm.appendChild(inputConfirmPass);
+
+			//戻るボタン
+			let back = elt("input", {type: "button",id: "back", value: "戻る"});
+			inputPassForm.appendChild(back);
+			document.getElementById("back").onclick = personalSetting;
+
+			//送信ボタンの作成
+			let passSubmit = elt("input", {type: "submit", value: "送信", id: "passSubmit"});
+			inputPassForm.appendChild(passSubmit);
+
+			document.getElementById("nowPass").onblue = passCheck();
+
+			//送信設定
+			document.getElementById("passForm").onsubmit = function() {
+				let newPass = document.getElementById("newPass").value;
+				let newPassConfirm = document.getElementById("confirmPass").value;
+				let isAppropriate = false;
+
+				if(newPass.length < 8 || newPass < 16) {
+					isAppropriate = false;
+				}
+
+				if(newPassConfirm.length < 8 || newPassConfirm.length < 16) {
+					isAppropriate = false;
+				}
+
+				console.log("testttt");
+				if(passUseble) {
+					console.log("pas");
+					isAppropriate = false;
+				}
+
+				if(newPass !== newPassConfirm) {
+					console.log("passssssss");
+					isAppropriate = false;
+				}
+
+				return false;
+			}
+
+		}
+
+		function passCheck(){
+			let req = new XMLHttpRequest();
+			let nowPass = document.getElementById("nowPass");
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status == 200) {
+					//Passwordがあっていなかったら注意メッセージを表示
+					console.log(req.response);
+					if (!(JSON.parse(req.response))) {
+						console.log("ojoj");
+						let errorMsg = elt("p", null, "パスワードの入力が正しくありません");
+						passUseble = true;
+					} else {
+						passUseble = false;
+					}
+				}
+			};
+
+			//PassCheckServletに入力されたPassを送信
+			req.open("POST","/PURE/PassCheckServlet");
+			req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+			req.send("pass=" + nowPass.value);
+		}
+
+		function elt(name, attributes) {
+			let node = document.createElement(name);
+
+			if(attributes) {
+				for(let attr in attributes) {
+					if(attributes.hasOwnProperty(attr)) {
+						node.setAttribute(attr, attributes[attr])
+					}
+				}
+			}
+
+			for(let i=2; i < arguments.length; i++) {
+				let child = arguments[i];
+				if(typeof child == "string") {
+					child = document.createTextNode(child);
+				}
+				node.appendChild(child);
+			}
+			return node;
 		}
 
 		document.getElementById("te").onclick = function() {
 			menu.textContent = null;
+
+			//作成画面への遷移ボタンの設定
+			let createBoardButton = elt("input",{type: "button", id: "createBoard", value: "作成"});
+			menu.appendChild(createBoardButton);
+
+			//掲示板作成画面
+			document.getElementById("createBoard").onclick = function() {
+				menu.textContent = null;
+
+				//掲示板作成フォーム設定
+				let createBoardForm = elt("form",{action: "", method: "post", id: "boardForm"});
+				menu.appendChild(createBoardForm);
+
+				//タイトル入力設定
+				let inputTitleDisplay = elt("p", null, "タイトルを入力してください");
+				let inputTitle = elt("input",{type: "text", id: "title"});
+				createBoardForm.appendChild(inputTitleDisplay);
+				createBoardForm.appendChild(inputTitle);
+
+				//タグ入力設定
+				let inputTagDisplay = elt("p", null, "タグを入力してください");
+				let inputTag = elt("input",{type: "text", id: "tag"});
+				createBoardForm.appendChild(inputTagDisplay);
+				createBoardForm.appendChild(inputTag);
+
+				//戻るボタン設定
+				let back = elt("input", {type: "button",id: "back", value: "戻る"});
+				createBoardForm.appendChild(back);
+				document.getElementById("back").onclick = personalSetting;
+
+				//掲示板作成の確定ボタン設定
+				let createConfirm = elt("input", {type: "submit", value: "確定"});
+				createBoardForm.appendChild(createConfirm);
+			}
 		}
 	</script>
 </body>

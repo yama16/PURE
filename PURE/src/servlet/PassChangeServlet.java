@@ -14,20 +14,17 @@ import javax.servlet.http.HttpSession;
 import model.Account;
 import model.UpdateAccountLogic;
 
-@WebServlet("/nicknameChangeServlet")
-public class nicknameChangeServlet extends HttpServlet {
+@WebServlet("/PassChangeServlet")
+public class PassChangeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String nickname = request.getParameter("newNickname");
+		System.out.println("huhuhuh");
+		String pass = request.getParameter("pass");
 		HttpSession session = request.getSession();
 		Account account = (Account) session.getAttribute("account");
-		account.setNickname(nickname);
+		System.out.println(pass);
+		account.setPassword(pass);
 		long now = System.currentTimeMillis();
 		account.setUpdatedAt(new Timestamp(now));
 
