@@ -153,8 +153,126 @@ public class BulletinBoardsDAO {
     	return list;
     }
 
-    /*public List<BulletinBoard> ranking(){
+    public List<BulletinBoard> ranking(int order){
+    	String orderStr = "";
+    	if(order == 1){
+    		orderStr = "favorite_quantity";
+    	}else if(order == 2){
+    		orderStr = "view_quantity";
+    	}else{
+    		return null;
+    	}
+    	List<BulletinBoard> list = new ArrayList<>();
 
-    }*/
+    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards ORDER BY " + orderStr + " DESC LIMIT 100;";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		ResultSet resultSet = pStmt.executeQuery();
+    		while(resultSet.next()){
+    			BulletinBoard bulletinBoard = new BulletinBoard();
+    			int bulletinBoardId = resultSet.getInt("id");
+    			bulletinBoard.setId(bulletinBoardId);
+    			bulletinBoard.setTitle(resultSet.getString("title"));
+    			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+    			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+    			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+    			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+    			TagsDAO tagsDAO = new TagsDAO();
+    			bulletinBoard.setTagList(tagsDAO.findByBulletinBoardId(bulletinBoardId, conn));
+    			list.add(bulletinBoard);
+    		}
+
+    	} catch (SQLException e) {
+    		Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		return null;
+		}
+
+    	return list;
+    }
+
+    /**
+     * 引数のキーワードで掲示板のタイトルを部分検索する。
+     * 並び替え、LIMITをやらねば
+     * @param keyword 検索する部分文字列
+     * @return 検索結果の掲示板のリスト
+     */
+    public List<BulletinBoard> findByKeyword(String keyword){
+    	List<BulletinBoard> list = new ArrayList<>();
+    	keyword = "%" + keyword + "%";
+
+    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE title LIKE ?;";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setString(1, keyword);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		while(resultSet.next()){
+    			BulletinBoard bulletinBoard = new BulletinBoard();
+    			int bulletinBoardId = resultSet.getInt("id");
+    			bulletinBoard.setId(bulletinBoardId);
+    			bulletinBoard.setTitle(resultSet.getString("title"));
+    			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+    			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+    			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+    			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+    			TagsDAO tagsDAO = new TagsDAO();
+    			bulletinBoard.setTagList(tagsDAO.findByBulletinBoardId(bulletinBoardId, conn));
+    			list.add(bulletinBoard);
+    		}
+
+    	} catch (SQLException e) {
+    		Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		return null;
+		}
+
+    	return list;
+    }
+
+    /**
+     * 引数で指定したタグから掲示板を検索するメソッド。
+     * 第2引数にtrueを指定すれば部分一致検索、falseを指定すれば完全一致検索になる。
+     * @param tag 検索するタグ
+     * @param partial 部分一致検索ならtrue、完全一致検索ならfalseを指定。
+     * @return 検索した掲示板のリスト
+     */
+    public List<BulletinBoard> findByTag(String tag, boolean partial){
+    	if(partial){
+    		tag = "%" + tag + "%";
+    	}
+    	List<BulletinBoard> list = new ArrayList<>();
+
+    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE id IN (SELECT bulletin_board_id FROM tags WHERE tag LIKE ?);";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setString(1, tag);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		while(resultSet.next()){
+    			BulletinBoard bulletinBoard = new BulletinBoard();
+    			int bulletinBoardId = resultSet.getInt("id");
+    			bulletinBoard.setId(bulletinBoardId);
+    			bulletinBoard.setTitle(resultSet.getString("title"));
+    			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+    			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+    			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+    			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+    			TagsDAO tagsDAO = new TagsDAO();
+    			bulletinBoard.setTagList(tagsDAO.findByBulletinBoardId(bulletinBoardId, conn));
+    			list.add(bulletinBoard);
+    		}
+
+    	} catch (SQLException e) {
+    		Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		return null;
+		}
+
+    	return list;
+    }
 
 }
