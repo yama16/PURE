@@ -58,12 +58,14 @@ public class BulletinBoardsDAO {
     			return false;
     		}
 
-			TagsDAO dao = new TagsDAO();
-    		for(String tag : bulletinBoard.getTagList()){
-    			if(!dao.create(bulletinBoard.getId(), tag, conn)){
-    				conn.rollback();
-    				return false;
-    			}
+    		if(bulletinBoard.getTagList() != null){
+				TagsDAO dao = new TagsDAO();
+	    		for(String tag : bulletinBoard.getTagList()){
+	    			if(!dao.create(bulletinBoard.getId(), tag, conn)){
+	    				conn.rollback();
+	    				return false;
+	    			}
+	    		}
     		}
 
     		conn.commit();
