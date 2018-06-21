@@ -12,15 +12,17 @@ public class Comment implements Serializable{
 
 	private int id;
 	private int bulletinBoardId;
+	private String nickName;
 	private String accountId;
 	private String comment;
 	private Timestamp createdAt;
 	private int pureQuantity;
 
 	public Comment(){}
-	public Comment(int id, int bulletinBoardId, String accountId, String comment, Timestamp createdAt, int pureQuantity){
+	public Comment(int id, int bulletinBoardId, String nickName, String accountId, String comment, Timestamp createdAt, int pureQuantity){
 		this.id = id;
 		this.bulletinBoardId = bulletinBoardId;
+		this.nickName = nickName;
 		this.accountId = accountId;
 		this.comment = comment;
 		this.createdAt = createdAt;
@@ -31,6 +33,8 @@ public class Comment implements Serializable{
 	public void setId(int id){ this.id = id; }
 	public int getBulletinBoardId(){ return bulletinBoardId; }
 	public void setBulletinBoardId(int bulletinBoardId){ this.bulletinBoardId = bulletinBoardId; }
+	public String getNickName() { return nickName; }
+	public void setNickName(String nickName) { this.nickName = nickName; }
 	public String getAccountId(){ return accountId; }
 	public void setAccountId(String accountId){ this.accountId = accountId; }
 	public String getComment(){ return comment; }
