@@ -261,31 +261,18 @@ Timestamp updateTime = account.getUpdatedAt();
 				createBoardForm.appendChild(elt("br"));
 
 				//タグ入力設定
-				let inputTagDisplay = elt("label", null, "タグを入力:");
-				let inputTag = elt("input",{type: "text", id: "tag", name: "tag"});
-				createBoardForm.appendChild(inputTagDisplay);
-				inputTagDisplay.appendChild(inputTag);
-				createBoardForm.appendChild(elt("br"));
+				let inputTagDisplay = new Array();
+				let inputTag = new Array();
 
-				//タグ
-				let inputTags = elt("select",{id: "tags", name: "tags"});
-				createBoardForm.appendChild(inputTags);
-				createBoardForm.appendChild(elt("br"));
+				for(let i = 1; i <= 6; i++) {
+					inputTagDisplay.push(elt("label", null, "タグ"+i+":"));
+					inputTag.push(elt("input",{type: "text", name: "tag"+i}));
 
-				//タグ追加ボタン
-				let addTag = elt("input",{type: "button", id: "addTag", value: "タグ追加"});
-				createBoardForm.appendChild(addTag);
-				createBoardForm.appendChild(elt("br"));
-				document.getElementById("addTag").addEventListener("click",function(e) {
-					let tag = document.getElementById("tag").value;
-					let tags = document.getElementById("tags").length;
+					createBoardForm.appendChild(inputTagDisplay[i-1]);
+					inputTagDisplay[i-1].appendChild(inputTag[i-1]);
 
-					if(!(tag.length <= 0) && !(tag.length > 10) && tags < 6) {
-						let option = elt("option", {name: "option",id: "option"}, tag);
-						inputTags.appendChild(option);
-						console.log(document.getElementById("tags").value);
-					}
-				},false);
+					createBoardForm.appendChild(elt("br"));
+				}
 
 				//戻るボタン設定
 				let back = elt("input", {type: "button",id: "back", value: "戻る"});
@@ -305,8 +292,6 @@ Timestamp updateTime = account.getUpdatedAt();
 					if(title.length <= 0) {
 						e.preventDefault();
 					}
-
-					let options = document.getElementById(inputTags).options;
 
 				},false);
 			}
