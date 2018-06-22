@@ -1,9 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="model.BulletinBoard" %>
+<%@ page import="model.Comment" %>
+<%@ page import="java.util.List" %>
 <%
-BulletinBoard bulletinBoard = (BulletinBoard) request.getAttribute("bulletinBoard");
-String title = bulletinBoard.getTitle();
+BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
+List<Comment> commentList = bulletinBoard.getCommentList();
+String bulletinBoardTitle = bulletinBoard.getTitle();
 String ceatedAt = bulletinBoard.getCreatedAt().toString();
 %>
 <!DOCTYPE html>
@@ -17,7 +20,24 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     <h1>PURE</h1>
     <!-- 　コメント欄　 -->
     <div id="commentField">
-      <div id="title"><p>掲示板タイトル</p></div>
+      <div id="title">
+      	<p><%= bulletinBoardTitle %></p>
+      	<input id="favoriteButton" type="button" value="お気に入り">
+      </div>
+      <!-- 以下コメントが入る -->
+      <% for(Comment cmt: commentList) { %>
+      	<div class="comment" id="<%= cmt.getId() %>">
+      		<dl>
+      			<dt><span>No<%= cmt.getId() %></span></dt>
+      			<dt><span><%= cmt.getNickName() %></span></dt>
+      			<dt><span><%= cmt.getAccountId() %></span></dt>
+      			<dt><span><%= cmt.getCreatedAt() %></span></dt>
+      			<dd><span><%= cmt.getComment() %></span></dd>
+      		</dl>
+      		<input class="pureButton" type="button" value="PURE">
+      		<input class="replyButton" type="button" value="返信">
+      	</div>
+      <% } %>
     </div>
 
     <form id="inputComment">
@@ -32,6 +52,16 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     </footer>
   </body>
   <script type="text/javascript">
+    // ボタン初期設定
+    let pureButtons = document.getElementsByClassName("pureButton");
+    let replyButtons = document.getElementsByClassName("replyButton");
+    for(let button of pureButton) {
+      button.addEventListener("click", pureButtonEvent, false);
+    }
+    for(let button of replyButton) {
+      button.addEventListener("click", replyButtonEvent, false);
+    }
+
     // 5秒ごとに更新情報を取得
     setInterval(function() {
       // 初期処理
@@ -134,7 +164,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       for(let i = 0; i < lines.length; i++) {
         let cText = document.createTextNode( lines[i] );               // textNode生成
         ddElementComment.appendChild(cText);                           // TextNodeをp要素に追加
-        ddElementComment.appendChild( document.createElement("br") );　// <br>を生成してp要素に追加
+        ddElementComment.appendChild( document.createElement("br") );  // <br>を生成してp要素に追加
       }
 
       // dl要素にdt要素とdd要素を追加
@@ -143,28 +173,9 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
 
       // PUREボタンと返信ボタンにイベントハンドラを登録
       // PUREボタン
-      pureButton.addEventListener("click", function(e) {
-        // 初期処理
-        let commentId =  e.currentTarget.parentNode.getAttribute("id");
-        let req = new XMLHttpRequest();
-        // リクエスト処理
-        req.onreadystatechange = function() {
-          if(req.readyState == 4) {
-            if(req.status == 200) {
-              // データ受信成功時の処理
-              // PURE解除の場合も考慮する処理！！
-            }
-          }
-        }
-        req.open("POST", "");
-        req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        req.send( "commentId=" + commentId );
-      }, false);
+      pureButton.addEventListener("click", pureButtonEvent, false);
       // 返信ボタン
-      replyButton.addEventListener("click", function(e) {
-        let commentId = e.currentTarget.parentNode.getAttribute("id");
-        document.getElementById("inputField").value += ">>>" + commentId;
-      }, false);
+      replyButton.addEventListener("click", replyButtonEvent, false);
 
       // コメント枠に追加
       commentFrame.appendChild(dlElement);
@@ -172,6 +183,29 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       commentFrame.appendChild(replyButton);
 
       return commentFrame;
+    }
+
+    function pureButtonEvent(e) {
+      // 初期処理
+      let commentId =  e.currentTarget.parentNode.getAttribute("id");
+      let req = new XMLHttpRequest();
+      // リクエスト処理
+      req.onreadystatechange = function() {
+        if(req.readyState == 4) {
+          if(req.status == 200) {
+            // データ受信成功時の処理
+            // PURE解除の場合も考慮する処理！！
+          }
+        }
+      }
+      req.open("POST", "");
+      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      req.send( "commentId=" + commentId );
+    }
+
+    function replyButtonEvent(e) {
+      let commentId = e.currentTarget.parentNode.getAttribute("id");
+      document.getElementById("inputField").value += ">>>" + commentId;
     }
   </script>
 </html>
