@@ -44,14 +44,13 @@ public class BulletinBoardsDAO {
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
     		conn.setAutoCommit(false);
 
-    		String sql = "INSERT INTO bulletin_boards(id,title,account_id,created_at,view_quantity,favorite_quantity) VALUES(?,?,?,?,?,?);";
+    		String sql = "INSERT INTO bulletin_boards(title,account_id,created_at) VALUES(?,?,COALESCE(?, DEFAULT));";
+
     		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, bulletinBoard.getId());
-    		pStmt.setString(2, bulletinBoard.getTitle());
-    		pStmt.setString(3, bulletinBoard.getAccountId());
-    		pStmt.setTimestamp(4, bulletinBoard.getCreatedAt());
-    		pStmt.setInt(5, bulletinBoard.getViewQuantity());
-    		pStmt.setInt(6, bulletinBoard.getFavoriteQuantity());
+    		pStmt.setString(1, bulletinBoard.getTitle());
+    		pStmt.setString(2, bulletinBoard.getAccountId());
+    		pStmt.setTimestamp(3, bulletinBoard.getCreatedAt());
+
     		int result = pStmt.executeUpdate();
     		if(result != 1){
 				conn.rollback();
