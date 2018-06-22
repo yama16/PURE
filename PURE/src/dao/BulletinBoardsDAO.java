@@ -100,18 +100,19 @@ public class BulletinBoardsDAO {
     		String sql = "SELECT * FROM bulletin_boards WHERE id=?";
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoardId);
-    		ResultSet resultSet = pStmt.executeQuery(sql);
+    		ResultSet resultSet = pStmt.executeQuery();
     		if(resultSet.next()){
     			bulletinBoard = new BulletinBoard();
     			bulletinBoard.setId(resultSet.getInt("id"));
     			bulletinBoard.setTitle(resultSet.getString("title"));
-    			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+    			bulletinBoard.setAccountId(resultSet.getString("account_id"));
     			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
     			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
     			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
     		}
     	} catch(SQLException e) {
     		Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
     		return null;
     	}
     	return bulletinBoard;

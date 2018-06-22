@@ -62,6 +62,7 @@ public class CommentsDAO {
 
     	} catch (SQLException e) {
     		Logger.getLogger(CommentsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
             return null;
         }
 

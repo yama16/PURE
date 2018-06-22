@@ -52,15 +52,33 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     </footer>
   </body>
   <script type="text/javascript">
-    // ボタン初期設定
+    // ボタン初期設定(PUREボタン, 返信ボタン, お気に入りボタン)
     let pureButtons = document.getElementsByClassName("pureButton");
     let replyButtons = document.getElementsByClassName("replyButton");
+    let favoriteButton = document.getElementById("favoriteButton");
+
     for(let button of pureButton) {
       button.addEventListener("click", pureButtonEvent, false);
     }
     for(let button of replyButton) {
       button.addEventListener("click", replyButtonEvent, false);
     }
+    favoriteButton.addEventListener("click", function() {
+      // 初期処理
+      let req = new XMLHttpRequest();
+      // リクエスト処理
+      req.onreadystatechange = function() {
+        if(req.readyState == 4) {
+          if(req.status == 200) {
+            // データ受信成功時の処理
+            // お気に入りボタンの色を変える！！
+          }
+        }
+      }
+      req.open("POST", "");
+      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      req.send(null);
+    }, false)
 
     // 5秒ごとに更新情報を取得
     setInterval(function() {
@@ -71,11 +89,13 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
         if(req.readyState == 4) {
           if(req.status == 200) {
             // データ受信成功時の処理
-            commentDisplay( JSON.parse(req.response) );
+            if(req.response) {
+              commentDisplay( JSON.parse(req.response) );
+            }
           }
         }
       }
-      req.open("POST", "");
+      req.open("POST", "/PURE/GetNewCommentServlet");
       req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       req.send(lastCommentId);
     }, 5000);
@@ -103,15 +123,15 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
             if(req.status == 200) {
               // データ受信成功時の処理
               if(req.response) {
-                console.log("送信成功です！");
+                commentDisplay( JSON.parse(req.response) );
               }
               text.value = ""; // 入力欄をクリア
             }
           }
         }
-        req.open("POST", "http://localhost:8080/PURE/BulletinBoardTestServlet");
+        req.open("POST", "/PURE/PostCommentServlet");
         req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        req.send( "commentData=" + comment ); // コメントオブジェクトを送信
+        req.send( "comment=" + comment ); // コメントオブジェクトを送信
       }
     }, false);
 

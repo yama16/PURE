@@ -101,6 +101,7 @@ public class TagsDAO {
 
     	} catch (SQLException e) {
     		Logger.getLogger(TagsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
     		return false;
 		}
 
