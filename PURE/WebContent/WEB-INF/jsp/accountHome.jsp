@@ -24,10 +24,10 @@ Timestamp updateTime = account.getUpdatedAt();
 		<main>
 			<form id="confirm">
 				<fieldset>
-					個人設定:<input type="button" value="TEST" id="test"><br>
-					掲示板:<input type="button" value="test" id="te"><br>
-					お気に入り:<br>
-					コメント履歴：
+					<input type="button" value="個人設定" id="personal"><br>
+					<input type="button" value="掲示板" id="bulletinBoard"><br>
+					<input type="button" value="お気に入り" id="favorite"><br>
+					<input type="button" value="コメント履歴" id="commentHistory">
 				</fieldset>
 			</form>
 		</main>
@@ -37,9 +37,17 @@ Timestamp updateTime = account.getUpdatedAt();
 	</div>
 	<script>
 		let menu = document.getElementById("menu");
+		let personal = document.getElementById("personal");
+		let bulletinBoard = document.getElementById("bulletinBoard");
+		let favorite = document.getElementById("favorite");
+		let commentHistory = document.getElementById("commentHistory");
 
-		//選択されたメニュー画面を表示
-		document.getElementById("test").onclick = personalSetting;
+		//個人設定画面を表示
+		personal.addEventListener("click",personalSetting,false);
+
+		window.onload = personalSetting;
+
+		//個人設定画面の作成
 		function personalSetting() {
 			menu.textContent = null;
 
@@ -69,8 +77,11 @@ Timestamp updateTime = account.getUpdatedAt();
 			menu.appendChild(updateTimeDisplay);
 
 			//変更ボタンが押されたら入力ページを表示
-			document.getElementById("nicknameChange").onclick = nicknameChange;
-			document.getElementById("passChange").onclick = passChange;
+			let nickname = document.getElementById("nicknameChange");
+			let pass = document.getElementById("passChange");
+
+			nickname.addEventListener("click",nicknameChange,false);
+			pass.addEventListener("click",passChange,false);
 		}
 
 		//ニックネーム変更ボタンが押されたら入力画面を表示
@@ -121,7 +132,7 @@ Timestamp updateTime = account.getUpdatedAt();
 			let passUsable = false;
 
 			//パスワード入力フォーム
-			let inputPassForm = elt("form", {action: "/PURE/PassChangeServlet", method: "post", id: "passForm"});
+			let inputPassForm = elt("form", {action: "/PURE/TestServlet", method: "post", id: "passForm"});
 			menu.appendChild(inputPassForm);
 
 			//現在のパスワードを入力
@@ -151,37 +162,35 @@ Timestamp updateTime = account.getUpdatedAt();
 			let passSubmit = elt("input", {type: "submit", value: "送信", id: "passSubmit"});
 			inputPassForm.appendChild(passSubmit);
 
-			document.getElementById("nowPass").onblue = passCheck();
-
 			//送信設定
+			document.getElementById("passForm").onclick = function() {
+				console.log("hoge");
+			}
 			document.getElementById("passForm").onsubmit = function() {
+				console.log("moge");
+				let nowPass = document.getElementById("nowPass").value;
 				let newPass = document.getElementById("newPass").value;
 				let newPassConfirm = document.getElementById("confirmPass").value;
-				let isAppropriate = false;
+				let isAppropriate = true;
 
-				if(newPass.length < 8 || newPass < 16) {
+				if(newPass.length < 8 || newPass.length > 16) {
 					isAppropriate = false;
 				}
 
-				if(newPassConfirm.length < 8 || newPassConfirm.length < 16) {
+				if(newPassConfirm.length < 8 || newPassConfirm.length > 16) {
 					isAppropriate = false;
 				}
 
-				console.log("testttt");
-				if(passUseble) {
-					console.log("pas");
-					isAppropriate = false;
-				}
-
-				if(newPass !== newPassConfirm) {
-					console.log("passssssss");
-					isAppropriate = false;
-				}
-
-				return false;
+				return isAppropriate;
 			}
 
 		}
+
+		/*function passCheck() {
+			if() {
+
+			}
+		}*/
 
 		function passCheck(){
 			let req = new XMLHttpRequest();
@@ -227,7 +236,9 @@ Timestamp updateTime = account.getUpdatedAt();
 			return node;
 		}
 
-		document.getElementById("te").onclick = function() {
+		//掲示板画面の表示
+		bulletinBoard.addEventListener("click",bulletinBoardCreate,false);
+		function bulletinBoardCreate() {
 			menu.textContent = null;
 
 			//作成画面への遷移ボタンの設定
@@ -239,29 +250,65 @@ Timestamp updateTime = account.getUpdatedAt();
 				menu.textContent = null;
 
 				//掲示板作成フォーム設定
-				let createBoardForm = elt("form",{action: "", method: "post", id: "boardForm"});
+				let createBoardForm = elt("form",{action: "/PURE/CreateBulletinBoardServlet", method: "post", id: "boardForm"});
 				menu.appendChild(createBoardForm);
 
 				//タイトル入力設定
-				let inputTitleDisplay = elt("p", null, "タイトルを入力してください");
-				let inputTitle = elt("input",{type: "text", id: "title"});
+				let inputTitleDisplay = elt("label", null, "タイトル入力:");
+				let inputTitle = elt("input",{type: "text", id: "title", name: "title"});
 				createBoardForm.appendChild(inputTitleDisplay);
-				createBoardForm.appendChild(inputTitle);
+				inputTitleDisplay.appendChild(inputTitle);
+				createBoardForm.appendChild(elt("br"));
 
 				//タグ入力設定
-				let inputTagDisplay = elt("p", null, "タグを入力してください");
-				let inputTag = elt("input",{type: "text", id: "tag"});
+				let inputTagDisplay = elt("label", null, "タグを入力:");
+				let inputTag = elt("input",{type: "text", id: "tag", name: "tag"});
 				createBoardForm.appendChild(inputTagDisplay);
-				createBoardForm.appendChild(inputTag);
+				inputTagDisplay.appendChild(inputTag);
+				createBoardForm.appendChild(elt("br"));
+
+				//タグ
+				let inputTags = elt("select",{id: "tags", name: "tags"});
+				createBoardForm.appendChild(inputTags);
+				createBoardForm.appendChild(elt("br"));
+
+				//タグ追加ボタン
+				let addTag = elt("input",{type: "button", id: "addTag", value: "タグ追加"});
+				createBoardForm.appendChild(addTag);
+				createBoardForm.appendChild(elt("br"));
+				document.getElementById("addTag").addEventListener("click",function(e) {
+					let tag = document.getElementById("tag").value;
+					let tags = document.getElementById("tags").length;
+
+					if(!(tag.length <= 0) && !(tag.length > 10) && tags < 6) {
+						let option = elt("option", {name: "option",id: "option"}, tag);
+						inputTags.appendChild(option);
+						console.log(document.getElementById("tags").value);
+					}
+				},false);
 
 				//戻るボタン設定
 				let back = elt("input", {type: "button",id: "back", value: "戻る"});
 				createBoardForm.appendChild(back);
-				document.getElementById("back").onclick = personalSetting;
+				document.getElementById("back").onclick = bulletinBoardCreate;
 
 				//掲示板作成の確定ボタン設定
 				let createConfirm = elt("input", {type: "submit", value: "確定"});
 				createBoardForm.appendChild(createConfirm);
+
+				//掲示板作成時の入力値チェック
+				let boardForm = document.getElementById("boardForm");
+				boardForm.addEventListener("submit",function(e) {
+					let title = document.getElementById("title").value;
+					let isAppropriate = true;
+
+					if(title.length <= 0) {
+						e.preventDefault();
+					}
+
+					let options = document.getElementById(inputTags).options;
+
+				},false);
 			}
 		}
 	</script>
