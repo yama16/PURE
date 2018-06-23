@@ -30,9 +30,16 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 		String title = request.getParameter("title");
 		long now = System.currentTimeMillis();
 		List<String> test = new ArrayList<String>();
-		test.add("test1");
-		test.add("test2");
+		for(int i = 1; i <= 6; i++) {
+			String tag = request.getParameter("tag"+i);
+			if(!(tag.equals(null))) {
+				test.add(tag);
+			}
+		}
 
+		for(String s : test) {
+			System.out.println(s);
+		}
 		System.out.println(account.getId());
 		System.out.println("testBoardCreate");
 

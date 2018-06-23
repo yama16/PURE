@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -28,6 +29,46 @@ public class BulletinBoard implements Serializable {
 		this.createdAt = createdAt;
 		this.viewQuantity = viewQuantity;
 		this.favoriteQuantity = favoriteQuantity;
+	}
+
+	@Override
+	public String toString(){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/H:m:s");
+		StringBuffer json = new StringBuffer();
+		json.append("{\"id\":")
+			.append(id)
+			.append(", \"title\":\"")
+			.append(title)
+			.append("\", \"accountId\":\"")
+			.append(accountId)
+			.append("\", \"createdAt\":\"")
+			.append(sdf.format(createdAt.getTime()))
+			.append("\", \"viewQuantity\":")
+			.append(viewQuantity)
+			.append(", \"favoriteQuantity\":")
+			.append(favoriteQuantity)
+			.append(", \"commentList\":[");
+		if(commentList != null){
+			for(int i = 0; i < commentList.size(); i++){
+				if(i != 0){
+					json.append(", ");
+				}
+				json.append(commentList.get(i).toString());
+			}
+		}
+		json.append("], \"tagList\":[");
+		if(tagList != null){
+			for(int i = 0; i < tagList.size(); i++){
+				if(i != 0){
+					json.append(", ");
+				}
+				json.append("\"");
+				json.append(tagList.get(i));
+				json.append("\"");
+			}
+		}
+		json.append("]}");
+		return json.toString();
 	}
 
 	public int getId(){ return id; }

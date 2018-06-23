@@ -1,0 +1,88 @@
+@charset "UTF-8";
+body{
+  margin: 0;
+  padding: 0;
+  font-size: small;
+  color: #333;
+  background: #fff;
+  margin: 0px auto;
+  width: 1000px
+}
+h1{
+  font-size: 100px;
+  color: pink;
+  text-align: center;
+}
+main{
+  float:left;
+  width: 600px;
+}
+#sub{
+  float: right;
+  width: 300px;
+}
+textarea{
+   overflow: scroll;
+}
+/*ホームからログインへのボタンの設定*/
+#login{
+  float: right;
+  width: 300px
+}
+a {
+    text-decoration:none;
+  }
+  /*ログイン画面の設定*/
+#log{
+    margin: auto;
+    text-align: center;
+    width: 600px;
+    font-size: 20px;
+}
+/*ランキングの設定*/
+#left{
+  float: left;
+  width: 200px;
+}
+#right{
+  float:right;
+  width: 200px;
+  }
+  /*検索画面の設定*/
+#sea{
+  text-align: center;
+}
+#lef{
+  text-align: left;
+}
+#cont{
+  text-align: center;
+  float: left;
+}
+/*アカウントホームサイドの設定*/
+div#submenu {
+  width: 220px;
+	float:left;			/*サブメニューのカラムを左寄せにする*/
+  border-radius: 10px;
+}
+
+/*サブメニューのボディ部分（余白調整・背景画像・背景色）*/
+ul#submenu_body {
+	padding-bottom:6px;
+	background-color:pink;
+  border-radius: 10px
+}
+ul#submenu_body li {
+	font-size:30px;
+  list-style-type:none;		/*リストマーカー無しにする*/
+	display:inline;			/*リスト項目をインライン表示にする*/
+}
+ul#submenu_body li a {
+	display:block;			/*リンクをブロック表示にする*/
+	margin:0px 0px 0px 0px;		/*サブメニュー項目のマージン*/
+	text-decoration:none;		/*リンクの下線を無くす*/
+}
+ul#submenu_foot li{
+  display:block;			/*リンクをブロック表示にする*/
+  margin:0px 0px 800px 0px;		/*サブメニュー項目のマージン*/
+}
