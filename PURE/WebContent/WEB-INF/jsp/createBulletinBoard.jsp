@@ -53,15 +53,17 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
   </body>
   <script type="text/javascript">
     // ボタン初期設定(PUREボタン, 返信ボタン, お気に入りボタン)
-    let pureButtons = document.getElementsByClassName("pureButton");
-    let replyButtons = document.getElementsByClassName("replyButton");
-    let favoriteButton = document.getElementById("favoriteButton");
+    if( document.getElementsByClassName("comment") ) {
+    	let pureButtons = document.getElementsByClassName("pureButton");
+        let replyButtons = document.getElementsByClassName("replyButton");
+        let favoriteButton = document.getElementById("favoriteButton");
 
-    for(let button of pureButton) {
-      button.addEventListener("click", pureButtonEvent, false);
-    }
-    for(let button of replyButton) {
-      button.addEventListener("click", replyButtonEvent, false);
+        for(let button of pureButtons) {
+          button.addEventListener("click", pureButtonEvent, false);
+        }
+        for(let button of replyButtons) {
+          button.addEventListener("click", replyButtonEvent, false);
+        }
     }
     favoriteButton.addEventListener("click", function() {
       // 初期処理
@@ -95,9 +97,9 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
           }
         }
       }
-      req.open("POST", "/PURE/GetNewCommentServlet");
+      req.open("GET", "/PURE/GetNewCommentServlet");
       req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      req.send(lastCommentId);
+      req.send(null);
     }, 5000);
 
     // クリアボタン
@@ -123,6 +125,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
             if(req.status == 200) {
               // データ受信成功時の処理
               if(req.response) {
+            	console.log("受信成功！！")
                 commentDisplay( JSON.parse(req.response) );
               }
               text.value = ""; // 入力欄をクリア
@@ -136,11 +139,10 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     }, false);
 
     // コメントデータを受け取り画面に表示する処理
-    function commentDisplay(commentData) {
+    function commentDisplay(commentArray) {
       // 初期処理
       let commentField = document.getElementById("commentField");   // コメント欄のdiv要素取得
-      let comments = document.getElementsByClassName("comment");
-      let commentArray = commentData.commentArray;                  // コメントオブジェクトが入った配列
+      //let comments = document.getElementsByClassName("comment");
 
       // コメントを表示またはコメントをPURE(未実装)
       for(let cmtObj of commentArray) {
