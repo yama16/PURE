@@ -19,7 +19,7 @@ public class DeleteAccountLogic {
      */
     public boolean execute(Account account){
         AccountsDAO dao = new AccountsDAO();
-        return dao.delete(account);
+        return dao.delete(account.getId());
     }
 
 }

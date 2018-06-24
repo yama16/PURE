@@ -13,17 +13,17 @@ public class Comment implements Serializable{
 
 	private int id;
 	private int bulletinBoardId;
-	private String nickName;
+	private String nickname;
 	private String accountId;
 	private String comment;
 	private Timestamp createdAt;
 	private int pureQuantity;
 
 	public Comment(){}
-	public Comment(int id, int bulletinBoardId, String nickName, String accountId, String comment, Timestamp createdAt, int pureQuantity){
+	public Comment(int id, int bulletinBoardId, String nickname, String accountId, String comment, Timestamp createdAt, int pureQuantity){
 		this.id = id;
 		this.bulletinBoardId = bulletinBoardId;
-		this.nickName = nickName;
+		this.nickname = nickname;
 		this.accountId = accountId;
 		this.comment = comment;
 		this.createdAt = createdAt;
@@ -42,8 +42,8 @@ public class Comment implements Serializable{
 			.append(id)
 			.append(",\" bulletinBoardId\":")
 			.append(bulletinBoardId)
-			.append(", \"nickName\":\"")
-			.append(nickName)
+			.append(", \"nickname\":\"")
+			.append(nickname)
 			.append("\", \"accountId\":\"")
 			.append(accountId)
 			.append("\", \"comment\":\"")
@@ -60,8 +60,8 @@ public class Comment implements Serializable{
 	public void setId(int id){ this.id = id; }
 	public int getBulletinBoardId(){ return bulletinBoardId; }
 	public void setBulletinBoardId(int bulletinBoardId){ this.bulletinBoardId = bulletinBoardId; }
-	public String getNickName() { return nickName; }
-	public void setNickName(String nickName) { this.nickName = nickName; }
+	public String getNickname() { return nickname; }
+	public void setNickname(String nickname) { this.nickname = nickname; }
 	public String getAccountId(){ return accountId; }
 	public void setAccountId(String accountId){ this.accountId = accountId; }
 	public String getComment(){ return comment; }

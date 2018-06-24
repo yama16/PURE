@@ -28,7 +28,7 @@ public class BulletinBoardsDAO {
         try {
             Class.forName("org.h2.Driver");
         } catch (ClassNotFoundException e) {
-        	Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
+        	e.printStackTrace();
         }
     }
 
