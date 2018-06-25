@@ -282,6 +282,9 @@ Timestamp updateTime = account.getUpdatedAt();
 			}
 		}
 
+		//お気に入り画面の表示
+		favorite.addEventListener("click",favoriteBulletinBoard,false);
+
 		function elt(name, attributes) {
 			let node = document.createElement(name);
 

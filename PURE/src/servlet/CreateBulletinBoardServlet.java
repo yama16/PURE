@@ -29,6 +29,7 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 		String accountId = account.getId();
 		String title = request.getParameter("title");
 		long now = System.currentTimeMillis();
+
 		List<String> test = new ArrayList<String>();
 		for(int i = 1; i <= 6; i++) {
 			String tag = request.getParameter("tag"+i);

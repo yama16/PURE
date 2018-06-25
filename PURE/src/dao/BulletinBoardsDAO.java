@@ -44,7 +44,7 @@ public class BulletinBoardsDAO {
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
     		conn.setAutoCommit(false);
 
-    		String sql = "INSERT INTO bulletin_boards(title,account_id,created_at) VALUES(?,?,COALESCE(?, DEFAULT));";
+    		String sql = "INSERT INTO bulletin_boards(title,account_id,created_at) VALUES(?,?,?);";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, bulletinBoard.getTitle());
@@ -69,11 +69,11 @@ public class BulletinBoardsDAO {
 
     		conn.commit();
     	} catch (SQLException e1) {
-    		Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e1);
+    		e1.printStackTrace();
             try {
 				conn.rollback();
 			} catch (SQLException e2) {
-				Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e2);
+				e2.printStackTrace();
 			}
             return false;
         } finally {
@@ -81,7 +81,7 @@ public class BulletinBoardsDAO {
                 try {
                     conn.close();
                 } catch (SQLException e) {
-                	Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
+                	e.printStackTrace();
                 }
             }
         }
