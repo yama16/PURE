@@ -14,7 +14,7 @@ Timestamp updateTime = account.getUpdatedAt();
 <head>
 <meta charset=UTF-8">
 <title>個人設定</title>
-<link rel="stylesheet" href="dzz.css">
+<link rel="stylesheet" href="accountHome.css">
 </head>
 <body>
 	<div id="page">
