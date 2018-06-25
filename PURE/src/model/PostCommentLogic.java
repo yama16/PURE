@@ -1,5 +1,7 @@
 package model;
 
+import java.sql.Timestamp;
+
 import dao.CommentsDAO;
 
 /**
@@ -14,9 +16,9 @@ public class PostCommentLogic {
 	 * @param comment 追加するコメント
 	 * @return 追加できればtrueを返す。できなければfalseを返す。
 	 */
-	public boolean execute(Comment comment){
+	public boolean execute(int bulletinBoardId, String accountId, String comment, Timestamp createdAt){
 		CommentsDAO dao = new CommentsDAO();
-		return dao.create(comment);
+		return dao.create(bulletinBoardId, accountId, comment, createdAt);
 	}
 
 }
