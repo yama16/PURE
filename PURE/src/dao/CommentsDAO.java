@@ -81,7 +81,7 @@ public class CommentsDAO {
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a WHERE c.bulletin_board_id = ? AND c.comment_id > ?";
+    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a WHERE c.bulletin_board_id = ? AND c.id > ?";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoardId);
