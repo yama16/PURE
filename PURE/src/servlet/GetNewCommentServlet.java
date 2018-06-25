@@ -29,9 +29,8 @@ public class GetNewCommentServlet extends HttpServlet {
 		// セッションスコープから掲示板オブジェクトを取得
 		HttpSession session = request.getSession();
 		BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
-
 		int bulletin_board_id = bulletinBoard.getId();
-		int comment_id = bulletinBoard.getCommentList().size()-1;
+		int comment_id = bulletinBoard.getCommentList().size() - 1;
 
 		GetNewCommentLogic logic = new GetNewCommentLogic();
 		List<Comment> newCommentList = logic.execute(bulletin_board_id, comment_id);
@@ -50,6 +49,7 @@ public class GetNewCommentServlet extends HttpServlet {
 		json.append("]");
 		json.append("}");
 
+		// レスポンス処理
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
