@@ -28,8 +28,8 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       <% for(Comment cmt: commentList) { %>
       	<div class="comment" id="<%= cmt.getId() %>">
       		<dl>
-      			<dt><span>No<%= cmt.getId() %></span></dt>
-      			<dt><span><%= cmt.getNickName() %></span></dt>
+      			<dt><span>No.<%= cmt.getId() %></span></dt>
+      			<dt><span><%= cmt.getNickname() %></span></dt>
       			<dt><span><%= cmt.getAccountId() %></span></dt>
       			<dt><span><%= cmt.getCreatedAt() %></span></dt>
       			<dd><span><%= cmt.getComment() %></span></dd>
@@ -92,7 +92,8 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
           if(req.status == 200) {
             // データ受信成功時の処理
             if(req.response) {
-              commentDisplay( JSON.parse(req.response) );
+           	  console.log(req.response);
+           	  //commentDisplay( JSON.parse(req.response) );
             }
           }
         }

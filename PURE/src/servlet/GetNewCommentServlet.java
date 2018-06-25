@@ -36,9 +36,23 @@ public class GetNewCommentServlet extends HttpServlet {
 		GetNewCommentLogic logic = new GetNewCommentLogic();
 		List<Comment> newCommentList = logic.execute(bulletin_board_id, comment_id);
 
+		// JSON形式に組み合わせる処理
+		StringBuffer json = new StringBuffer();
+		json.append("{");
+		json.append("commentArray:");
+		json.append("[");
+		for(int i = 0; i < newCommentList.size(); i++) {
+			json.append(newCommentList.get(i).toString());
+			if(i != newCommentList.size() - 1) {
+				json.append(",");
+			}
+		}
+		json.append("]");
+		json.append("}");
+
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter pw = response.getWriter();
-		pw.print("true");
+		pw.print(json);
 		pw.close();
 	}
 
