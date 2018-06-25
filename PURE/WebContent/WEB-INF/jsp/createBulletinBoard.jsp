@@ -83,25 +83,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     }, false)
 
     // 5秒ごとに更新情報を取得
-    setInterval(function() {
-      // 初期処理
-      let req = new XMLHttpRequest();
-      // リクエスト処理
-      req.onreadystatechange = function() {
-        if(req.readyState == 4) {
-          if(req.status == 200) {
-            // データ受信成功時の処理
-            if(req.response) {
-           	  console.log(req.response);
-           	  //commentDisplay( JSON.parse(req.response) );
-            }
-          }
-        }
-      }
-      req.open("GET", "/PURE/GetNewCommentServlet");
-      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      req.send(null);
-    }, 5000);
+    setInterval(getNewComment, 5000);
 
     // クリアボタン
     document.getElementById("clearButton").addEventListener("click", function() {
@@ -126,8 +108,8 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
             if(req.status == 200) {
               // データ受信成功時の処理
               if(req.response) {
-            	console.log("受信成功！！")
-                commentDisplay( JSON.parse(req.response) );
+                console.log("受信成功！！");
+                getNewComment();
               }
               text.value = ""; // 入力欄をクリア
             }
@@ -206,6 +188,26 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       commentFrame.appendChild(replyButton);
 
       return commentFrame;
+    }
+
+    function getNewComment() {
+      // 初期処理
+      let req = new XMLHttpRequest();
+      // リクエスト処理
+      req.onreadystatechange = function() {
+        if(req.readyState == 4) {
+          if(req.status == 200) {
+            // データ受信成功時の処理
+            if(req.response) {
+           	  console.log(req.response);
+           	  commentDisplay( JSON.parse(req.response) );
+            }
+          }
+        }
+      }
+      req.open("GET", "/PURE/GetNewCommentServlet");
+      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      req.send(null);
     }
 
     function pureButtonEvent(e) {

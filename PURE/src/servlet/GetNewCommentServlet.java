@@ -27,6 +27,7 @@ public class GetNewCommentServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// セッションスコープから掲示板オブジェクトを取得
+		System.out.println("GetNewCommentServletが動きました");
 		HttpSession session = request.getSession();
 		BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
 		int bulletin_board_id = bulletinBoard.getId();
