@@ -50,7 +50,7 @@ public class AccountsDAO {
                 return true;
             }
         } catch (SQLException e) {
-        	Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, e);
+        	e.printStackTrace();
             return true;
         }
         return false;
@@ -65,7 +65,7 @@ public class AccountsDAO {
      */
     public boolean create(Account account){
         try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-            String sql = "INSERT INTO accounts (id, nickname, password, created_at, updated_at) VALUES (?,?,?,?,?)";
+            String sql = "INSERT INTO accounts (id, nickname, password, created_at, updated_at) VALUES (?, ?, ?, COALESCE(?, DEFAULT), COALESCE(?, DEFAULT))";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, account.getId());
             pStmt.setString(2, account.getNickname());
@@ -92,11 +92,15 @@ public class AccountsDAO {
      */
     public Account findByLogin(Login login){
         Account account = null;
+
         try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+
             String sql = "SELECT id, nickname, password, created_at, updated_at, is_deleted FROM accounts WHERE id = ? AND password = ?";
+
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, login.getId());
             pStmt.setString(2, login.getPassword());
+
             ResultSet resultSet = pStmt.executeQuery();
             if(resultSet.next() && !resultSet.getBoolean("is_deleted")){
                 String id = resultSet.getString("id");
@@ -106,33 +110,41 @@ public class AccountsDAO {
                 Timestamp updated_at = resultSet.getTimestamp("updated_at");
                 account = new Account(id, nickname, password, created_at, updated_at);
             }
+
         } catch (SQLException e) {
-        	Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, e);
+        	e.printStackTrace();
             return null;
         }
+
         return account;
     }
 
     /**
      * Accountsテーブルからアカウントを削除するメソッド。
-     * 削除したいアカウントのAccountインスタンスを引数で渡す。
+     * 削除したいアカウントのAccountのIDを引数で渡す。
      * 削除できればtrueを返す。できなければfalseを返す。
-     * @param account 削除するアカウント
+     * @param accountId 削除するアカウントのID
      * @return 削除できればtrue。できなければfalse。
      */
-    public boolean delete(Account account){
+    public boolean delete(String accountId){
+
         try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+
             String sql = "UPDATE Accounts SET is_deleted = TRUE WHERE id = ?;";
+
             PreparedStatement pStmt = conn.prepareStatement(sql);
-            pStmt.setString(1, account.getId());
+            pStmt.setString(1, accountId);
+
             int result = pStmt.executeUpdate();
             if(result != 1){
                 return false;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
             return false;
         }
+
         return true;
     }
 
@@ -145,22 +157,27 @@ public class AccountsDAO {
      * @return 更新できればtrue。できなければfalse。
      */
     public boolean update(String id, Account account){
+
         try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-            String sql = "UPDATE accounts SET id = ?, nickname = ?, password = ?, updated_at = ? WHERE id = ?;";
+
+            String sql = "UPDATE accounts SET nickname = ?, password = ?, updated_at = ? WHERE id = ?;";
+
             PreparedStatement pStmt = conn.prepareStatement(sql);
-            pStmt.setString(1, account.getId());
-            pStmt.setString(2, account.getNickname());
-            pStmt.setString(3, account.getPassword());
-            pStmt.setTimestamp(4, account.getUpdatedAt());
-            pStmt.setString(5, id);
+            pStmt.setString(1, account.getNickname());
+            pStmt.setString(2, account.getPassword());
+            pStmt.setTimestamp(3, account.getUpdatedAt());
+            pStmt.setString(4, id);
+
             int result = pStmt.executeUpdate();
             if(result != 1){
                 return false;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
             return false;
         }
+
         return true;
     }
 

@@ -1,0 +1,51 @@
+html, body {
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  padding: inherit;
+}
+
+h1{
+  color: pink;
+  font-size: 60px;
+  margin: 0px;
+  padding: 20px;
+  text-align: center;
+}
+
+#inputComment {
+  width: 500px;
+  margin: 0 auto;
+  text-align: center;
+  border: solid 7px pink;
+}
+
+#inputField {
+  resize: none;
+}
+
+#commentField {
+  margin: 0 auto;
+  width: 500px;
+  height: 600px;;
+  border: solid 7px pink;
+}
+
+#title {
+  text-align: center;
+}
+
+.comment {
+  width: auto;
+  height: auto;
+  padding: 10px 10px 10px 10px;
+  margin: 10px 40px;
+  border-radius: 10px;
+  background-color: rgba(192,192,192,0.3);
+  box-shadow: inset 1px 1px 0 #fff, 1px 1px 3px rgba(0,0,0,0.5);
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+footer {
+}

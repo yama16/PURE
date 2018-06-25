@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import model.BulletinBoard;
 import model.Comment;
@@ -43,7 +41,7 @@ public class CommentsDAO {
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT * FROM comments WHERE bulletin_board_id = ?";
+    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a ON c.account_id = a.id WHERE c.bulletin_board_id = ?";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoardId);
@@ -57,11 +55,11 @@ public class CommentsDAO {
     			comment.setComment(resultSet.getString("comment"));
     			comment.setCreatedAt(resultSet.getTimestamp("created_at"));
     			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
+    			comment.setNickname(resultSet.getString("nickname"));
     			commentList.add(comment);
     		}
 
     	} catch (SQLException e) {
-    		Logger.getLogger(CommentsDAO.class.getName()).log(Level.SEVERE, null, e);
     		e.printStackTrace();
             return null;
         }
@@ -82,7 +80,7 @@ public class CommentsDAO {
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT * FROM comments WHERE bulletin_board_id = ? AND comment_id > ?";
+    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a WHERE c.bulletin_board_id = ? AND c.comment_id > ?";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoardId);
@@ -97,11 +95,12 @@ public class CommentsDAO {
     			comment.setComment(resultSet.getString("comment"));
     			comment.setCreatedAt(resultSet.getTimestamp("created_at"));
     			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
+    			comment.setNickname(resultSet.getString("nickname"));
     			newCommentList.add(comment);
     		}
 
     	} catch (SQLException e) {
-    		Logger.getLogger(CommentsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
     		return null;
         }
 
@@ -114,9 +113,10 @@ public class CommentsDAO {
      * @return 追加できたときtrueを返す。追加できなかったときfalseを返す。
      */
     public boolean create(Comment comment){
+
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "INSERT INTO comments VALUES((SELECT COALESCE(MAX(id),0)+1 FROM comments WHERE bulletin_board_id=?),?,?,?,?,?);";
+    		String sql = "INSERT INTO comments(id, bulletin_board_id, account_id, comment, created_at) VALUES((SELECT COALESCE(MAX(id),0)+1 FROM comments WHERE bulletin_board_id = ?), ?, ?, ?, COALESCE(?, DEFAULT));";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, comment.getBulletinBoardId());
@@ -124,7 +124,6 @@ public class CommentsDAO {
     		pStmt.setString(3, comment.getAccountId());
     		pStmt.setString(4, comment.getComment());
     		pStmt.setTimestamp(5, comment.getCreatedAt());
-    		pStmt.setInt(6, comment.getPureQuantity());
 
     		int result = pStmt.executeUpdate();
     		if(result != 1){
@@ -132,7 +131,7 @@ public class CommentsDAO {
     		}
 
     	} catch (SQLException e) {
-    		Logger.getLogger(CommentsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
             return false;
         }
 
@@ -181,7 +180,7 @@ public class CommentsDAO {
     		}
 
     	} catch (SQLException e) {
-    		Logger.getLogger(CommentsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
     		return null;
 		}
 
