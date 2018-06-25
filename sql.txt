@@ -39,7 +39,7 @@ CREATE TABLE comments (
 
 /* PUREしたコメント */
 CREATE TABLE pures(
-    account_id          INTEGER     REFERENCES accounts (id),
+    account_id          VARCHAR(12) REFERENCES accounts (id),
     comment_id          INTEGER     REFERENCES comments (id),
     bulletin_board_id   INTEGER     REFERENCES bulletin_boards (id),
     PRIMARY KEY (account_id, comment_id, bulletin_board_id)
@@ -47,7 +47,7 @@ CREATE TABLE pures(
 
 /* お気に入りテーブル */
 CREATE TABLE favorites (
-    account_id            INTEGER    REFERENCES accounts (id),
-    bulletin_board_id     INTEGER    REFERENCES bulletin_boards (id),
+    account_id            VARCHAR(12) REFERENCES accounts (id),
+    bulletin_board_id     INTEGER     REFERENCES bulletin_boards (id),
     PRIMARY KEY (account_id, bulletin_board_id)
 );
