@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,18 +113,18 @@ public class CommentsDAO {
      * @param comment 追加するコメント。
      * @return 追加できたときtrueを返す。追加できなかったときfalseを返す。
      */
-    public boolean create(Comment comment){
+    public boolean create(int bulletinBoardId, String accountId, String comment, Timestamp createdAt){
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
     		String sql = "INSERT INTO comments(id, bulletin_board_id, account_id, comment, created_at) VALUES((SELECT COALESCE(MAX(id),0)+1 FROM comments WHERE bulletin_board_id = ?), ?, ?, ?, COALESCE(?, CURRENT_TIMESTAMP()));";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, comment.getBulletinBoardId());
-    		pStmt.setInt(2, comment.getBulletinBoardId());
-    		pStmt.setString(3, comment.getAccountId());
-    		pStmt.setString(4, comment.getComment());
-    		pStmt.setTimestamp(5, comment.getCreatedAt());
+    		pStmt.setInt(1, bulletinBoardId);
+    		pStmt.setInt(2, bulletinBoardId);
+    		pStmt.setString(3, accountId);
+    		pStmt.setString(4, comment);
+    		pStmt.setTimestamp(5, createdAt);
 
     		int result = pStmt.executeUpdate();
     		if(result != 1){
