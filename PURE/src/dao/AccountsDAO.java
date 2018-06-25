@@ -65,7 +65,7 @@ public class AccountsDAO {
      */
     public boolean create(Account account){
         try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-            String sql = "INSERT INTO accounts (id, nickname, password, created_at, updated_at) VALUES (?, ?, ?, COALESCE(?, DEFAULT), COALESCE(?, DEFAULT))";
+            String sql = "INSERT INTO accounts (id, nickname, password, created_at, updated_at) VALUES (?, ?, ?, COALESCE(?, CURRENT_TIMESTAMP()), COALESCE(?, CURRENT_TIMESTAMP()));";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, account.getId());
             pStmt.setString(2, account.getNickname());
