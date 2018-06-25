@@ -31,9 +31,7 @@ Timestamp updateTime = account.getUpdatedAt();
 				</fieldset>
 			</form>
 		</main>
-		<div id="menu">
-
-		</div>
+		<div id="menu"></div>
 	</div>
 	<script>
 		let menu = document.getElementById("menu");
@@ -133,7 +131,7 @@ Timestamp updateTime = account.getUpdatedAt();
 			menu.textContent = null;
 
 			//パスワード入力フォーム
-			let inputPassForm = elt("form", {action: "/PURE/TestServlet", method: "post", id: "passForm"});
+			let inputPassForm = elt("form", {action: "/PURE/PassChangeServlet", method: "post", id: "passForm"});
 			menu.appendChild(inputPassForm);
 
 			//現在のパスワードを入力
@@ -174,25 +172,30 @@ Timestamp updateTime = account.getUpdatedAt();
 				let isAppropriate = true;
 				console.log(passUseble);
 				if(passUseble) {
+					console.log("1");
 					isAppropriate = false;
 				}
 
-				if(nowPass.length < 8 || nowPass.length > 16) {
+				if(nowPass.length <= 0) {
+					console.log("2");
 					isAppropriate = false;
 				}
 
 				if(newPass.length < 8 || newPass.length > 16) {
+					console.log("3");
 					isAppropriate = false;
 				}
 
 				if(newPassConfirm.length < 8 || newPassConfirm.length > 16) {
+					console.log("4");
 					isAppropriate = false;
 				}
 
 				if(newPass !== newPassConfirm) {
+					console.log("5");
 					isAppropriate = false;
 				}
-
+				console.log(isAppropriate);
 				return isAppropriate;
 			}
 
@@ -283,14 +286,29 @@ Timestamp updateTime = account.getUpdatedAt();
 		}
 
 		//お気に入り画面の表示
-		favorite.addEventListener("click",function(){
-
-		},false);
+		favorite.addEventListener("click",favoriteBulletinBoard,false);
 
 		//お気に入りの掲示板があるかのチェック
 		function favoriteBulletinBoard() {
+			let req = new XMLHttpRequest();
 
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status == 200) {
+					let tes = JSON.parse(req.response);
+					console.log(tes.ojoj);
+				}
+			};
+
+			//PassCheckServletに入力されたPassを送信
+			req.open("POST","/PURE/FavoriteCheckServlet");
+			req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+			req.send("id=" + "<%= id %>");
 		}
+
+		//コメントの履歴を表示
+		commentHistory.addEventListener("click",function(){
+
+		},false);
 
 		function elt(name, attributes) {
 			let node = document.createElement(name);
