@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import model.Account;
+import model.Login;
+import model.LoginLogic;
 import model.UpdateAccountLogic;
 
 @WebServlet("/PassChangeServlet")
@@ -19,7 +21,6 @@ public class PassChangeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("huhuhuh");
 		String pass = request.getParameter("pass");
 		HttpSession session = request.getSession();
 		Account account = (Account) session.getAttribute("account");
@@ -30,6 +31,10 @@ public class PassChangeServlet extends HttpServlet {
 
 		UpdateAccountLogic update = new UpdateAccountLogic();
 		update.execute(account.getId(), account);
+
+		Login login = new Login(account.getId(),account.getPassword());
+		LoginLogic logic = new LoginLogic();
+		account = logic.execute(login);
 
 		session.setAttribute("account",account);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/accountHome.jsp");
