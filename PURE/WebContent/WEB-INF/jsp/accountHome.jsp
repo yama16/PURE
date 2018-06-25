@@ -283,7 +283,14 @@ Timestamp updateTime = account.getUpdatedAt();
 		}
 
 		//お気に入り画面の表示
-		favorite.addEventListener("click",favoriteBulletinBoard,false);
+		favorite.addEventListener("click",function(){
+
+		},false);
+
+		//お気に入りの掲示板があるかのチェック
+		function favoriteBulletinBoard() {
+
+		}
 
 		function elt(name, attributes) {
 			let node = document.createElement(name);

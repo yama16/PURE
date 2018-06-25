@@ -44,7 +44,7 @@ public class BulletinBoardsDAO {
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
     		conn.setAutoCommit(false);
 
-    		String sql = "INSERT INTO bulletin_boards(title,account_id,created_at) VALUES(?,?,?);";
+    		String sql = "INSERT INTO bulletin_boards(title,account_id,created_at) VALUES(?,?,COALESCE(?,CURRENT_TIMESTAMP()));";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, bulletinBoard.getTitle());
