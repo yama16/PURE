@@ -41,11 +41,13 @@ Timestamp updateTime = account.getUpdatedAt();
 		let bulletinBoard = document.getElementById("bulletinBoard");
 		let favorite = document.getElementById("favorite");
 		let commentHistory = document.getElementById("commentHistory");
+		let passUseble = false;
+
+		///ページを読み込んだ時個人設定画面を表示
+		window.onload = personalSetting;
 
 		//個人設定画面を表示
 		personal.addEventListener("click",personalSetting,false);
-
-		window.onload = personalSetting;
 
 		//個人設定画面の作成
 		function personalSetting() {
@@ -129,7 +131,6 @@ Timestamp updateTime = account.getUpdatedAt();
 		function passChange() {
 			console.log("ohaa");
 			menu.textContent = null;
-			let passUsable = false;
 
 			//パスワード入力フォーム
 			let inputPassForm = elt("form", {action: "/PURE/TestServlet", method: "post", id: "passForm"});
@@ -162,16 +163,23 @@ Timestamp updateTime = account.getUpdatedAt();
 			let passSubmit = elt("input", {type: "submit", value: "送信", id: "passSubmit"});
 			inputPassForm.appendChild(passSubmit);
 
-			//送信設定
-			document.getElementById("passForm").onclick = function() {
-				console.log("hoge");
-			}
+			//パスワードが一致しているかのチェック
+			document.getElementById("nowPass").addEventListener("blur",passCheck,false);
+
 			document.getElementById("passForm").onsubmit = function() {
 				console.log("moge");
 				let nowPass = document.getElementById("nowPass").value;
 				let newPass = document.getElementById("newPass").value;
 				let newPassConfirm = document.getElementById("confirmPass").value;
 				let isAppropriate = true;
+				console.log(passUseble);
+				if(passUseble) {
+					isAppropriate = false;
+				}
+
+				if(nowPass.length < 8 || nowPass.length > 16) {
+					isAppropriate = false;
+				}
 
 				if(newPass.length < 8 || newPass.length > 16) {
 					isAppropriate = false;
@@ -181,16 +189,14 @@ Timestamp updateTime = account.getUpdatedAt();
 					isAppropriate = false;
 				}
 
+				if(newPass !== newPassConfirm) {
+					isAppropriate = false;
+				}
+
 				return isAppropriate;
 			}
 
 		}
-
-		/*function passCheck() {
-			if() {
-
-			}
-		}*/
 
 		function passCheck(){
 			let req = new XMLHttpRequest();
@@ -213,27 +219,6 @@ Timestamp updateTime = account.getUpdatedAt();
 			req.open("POST","/PURE/PassCheckServlet");
 			req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
 			req.send("pass=" + nowPass.value);
-		}
-
-		function elt(name, attributes) {
-			let node = document.createElement(name);
-
-			if(attributes) {
-				for(let attr in attributes) {
-					if(attributes.hasOwnProperty(attr)) {
-						node.setAttribute(attr, attributes[attr])
-					}
-				}
-			}
-
-			for(let i=2; i < arguments.length; i++) {
-				let child = arguments[i];
-				if(typeof child == "string") {
-					child = document.createTextNode(child);
-				}
-				node.appendChild(child);
-			}
-			return node;
 		}
 
 		//掲示板画面の表示
@@ -296,6 +281,28 @@ Timestamp updateTime = account.getUpdatedAt();
 				},false);
 			}
 		}
+
+		function elt(name, attributes) {
+			let node = document.createElement(name);
+
+			if(attributes) {
+				for(let attr in attributes) {
+					if(attributes.hasOwnProperty(attr)) {
+						node.setAttribute(attr, attributes[attr])
+					}
+				}
+			}
+
+			for(let i=2; i < arguments.length; i++) {
+				let child = arguments[i];
+				if(typeof child == "string") {
+					child = document.createTextNode(child);
+				}
+				node.appendChild(child);
+			}
+			return node;
+		}
+
 	</script>
 </body>
 </html>

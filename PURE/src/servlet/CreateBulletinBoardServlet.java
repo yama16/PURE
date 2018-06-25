@@ -51,10 +51,12 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 
 		bulletinBoard.setTagList(test);
 
+		System.out.println("lolo");
+
 		CreateBulletinBoardLogic createBoardLogic = new CreateBulletinBoardLogic();
 		createBoardLogic.execute(bulletinBoard);
 
-
+		System.out.println("koko");
 	}
 
 }
