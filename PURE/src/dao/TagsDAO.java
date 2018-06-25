@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -34,21 +32,22 @@ public class TagsDAO {
      * daoパッケージのクラスからしかアクセスできないタグを追加するメソッド。
      * 呼び出されるときConnectionを渡す
      * @param bulletinBoardId 追加するタグがついている掲示板のID
-     * @param tag 追加するタグ
+     * @param tagList 追加するタグのリスト
      * @param conn データベースとのコネクション
      * @return 追加できればtrue。できなければfalse。
      * @throws SQLException
      */
-    protected boolean create(int bulletinBoardId, String tag, Connection conn) throws SQLException{
+    protected boolean createAll(int bulletinBoardId, List<String> tagList, Connection conn) throws SQLException{
     	String sql = "INSERT INTO tags(bulletin_board_id, tag) VALUES(?, ?);";
 
     	PreparedStatement pStmt = conn.prepareStatement(sql);
     	pStmt.setInt(1, bulletinBoardId);
-    	pStmt.setString(2, tag);
-
-    	int result = pStmt.executeUpdate();
-    	if(result != 1){
-    		return false;
+    	for(String tag : tagList){
+	    	pStmt.setString(2, tag);
+	    	int result = pStmt.executeUpdate();
+	    	if(result != 1){
+	    		return false;
+	    	}
     	}
 
     	return true;
@@ -63,24 +62,12 @@ public class TagsDAO {
     public boolean createAll(int bulletinBoardId, List<String> list){
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "INSERT INTO tags(bulletin_board_id, tad) VALUES(?, ?);";
-
-    		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, bulletinBoardId);
-
-    		for(String tag : list){
-    			pStmt.setString(2, tag);
-    			int result = pStmt.executeUpdate();
-    			if(result != 1){
-    				System.out.println("追加できてないよ");
-    			}
-    		}
+    		return createAll(bulletinBoardId, list, conn);
 
     	} catch (SQLException e) {
-    		Logger.getLogger(TagsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
     		return false;
 		}
-    	return true;
     }
 
     /**
@@ -97,10 +84,9 @@ public class TagsDAO {
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoardId);
 
-    		int result = pStmt.executeUpdate();
+    		pStmt.executeUpdate();
 
     	} catch (SQLException e) {
-    		Logger.getLogger(TagsDAO.class.getName()).log(Level.SEVERE, null, e);
     		e.printStackTrace();
     		return false;
 		}
@@ -109,14 +95,14 @@ public class TagsDAO {
     }
 
     /**
-     *
+     * 引数で指定した掲示板のIDのタグをリストで返す。
      * @param bulletinBoardId
      * @param conn
      * @return
      * @throws SQLException
      */
     protected List<String> findByBulletinBoardId(int bulletinBoardId, Connection conn) throws SQLException{
-    	List<String> list = new ArrayList<>();
+    	List<String> tagList = new ArrayList<>();
 
     	String sql = "SELECT tag FROM tags WHERE bulletin_board_id=?;";
 
@@ -125,10 +111,10 @@ public class TagsDAO {
 
     	ResultSet resultSet = pStmt.executeQuery();
     	while(resultSet.next()){
-    		list.add(resultSet.getString("tag"));
+    		tagList.add(resultSet.getString("tag"));
     	}
 
-    	return list;
+    	return tagList;
     }
 
     /**
@@ -137,25 +123,14 @@ public class TagsDAO {
      * @return 検索したタグのリストを返す。SQLExceptionをcatchするとnullを返す。
      */
     public List<String> findByBulletinBoardId(int bulletinBoardId){
-    	List<String> tagList = new ArrayList<>();
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT tag FROM tags WHERE bulletin_board_id=?;";
-
-    		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, bulletinBoardId);
-
-    		ResultSet resultSet = pStmt.executeQuery();
-    		while(resultSet.next()){
-    			tagList.add(resultSet.getString("tag"));
-    		}
+    		return findByBulletinBoardId(bulletinBoardId, conn);
 
     	} catch (SQLException e) {
-    		Logger.getLogger(TagsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
 			return null;
 		}
-
-    	return tagList;
     }
 
 }

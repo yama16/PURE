@@ -1,7 +1,5 @@
 package model;
 
-import java.util.List;
-
 import dao.CommentsDAO;
 
 /**
@@ -18,7 +16,7 @@ public class GetNewCommentLogic {
      * @param comment_id ブラウザに表示している中で最新のコメントのID
      * @return 引数のcomment_idよりも最新のコメントのリストを返す。
      */
-	public List<Comment> execute(int bulletinBoardId, int commentId){
+	public CommentList execute(int bulletinBoardId, int commentId){
 		CommentsDAO dao = new CommentsDAO();
 		return dao.findNewComment(bulletinBoardId, commentId);
 	}
