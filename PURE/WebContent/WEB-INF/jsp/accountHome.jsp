@@ -171,6 +171,7 @@ Timestamp updateTime = account.getUpdatedAt();
 				let newPassConfirm = document.getElementById("confirmPass").value;
 				let isAppropriate = true;
 				console.log(passUseble);
+
 				if(passUseble) {
 					console.log("1");
 					isAppropriate = false;
@@ -309,6 +310,9 @@ Timestamp updateTime = account.getUpdatedAt();
 		commentHistory.addEventListener("click",function(){
 
 		},false);
+
+		//コメント履歴の取得
+
 
 		function elt(name, attributes) {
 			let node = document.createElement(name);

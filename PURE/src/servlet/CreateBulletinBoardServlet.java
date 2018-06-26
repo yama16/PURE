@@ -2,8 +2,6 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import bo.CreateBulletinBoardLogic;
 import model.Account;
 import model.BulletinBoard;
+import model.TagList;
 
 /**
  * Servlet implementation class CreateBulletinBoardServlet
@@ -30,7 +29,7 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 		String title = request.getParameter("title");
 		long now = System.currentTimeMillis();
 
-		List<String> test = new ArrayList<String>();
+		TagList test = new TagList();
 		for(int i = 1; i <= 6; i++) {
 			String tag = request.getParameter("tag"+i);
 			if(!(tag.equals(null))) {
@@ -38,9 +37,6 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 			}
 		}
 
-		for(String s : test) {
-			System.out.println(s);
-		}
 		System.out.println(account.getId());
 		System.out.println("testBoardCreate");
 
