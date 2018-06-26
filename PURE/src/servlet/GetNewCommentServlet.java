@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bo.GetNewCommentLogic;
 import model.BulletinBoard;
 import model.CommentList;
-import model.GetNewCommentLogic;
 
 /**
  * Servlet implementation class GetNewCommentServlet

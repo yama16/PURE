@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bo.GetBulletinBoardLogic;
 import model.BulletinBoard;
-import model.GetBulletinBoardLogic;
 
 /**
  * Servlet implementation class BulletinBoardServlet

@@ -1,6 +1,7 @@
-package model;
+package bo;
 
 import dao.TagsDAO;
+import model.TagList;
 
 /**
  * 掲示板のタグを編集するロジック。

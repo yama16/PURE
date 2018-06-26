@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bo.Login;
+import bo.LoginLogic;
 import model.Account;
-import model.Login;
-import model.LoginLogic;
 
 
 @WebServlet("/LoginServlet")

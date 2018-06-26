@@ -1,8 +1,9 @@
-package model;
+package bo;
 
 import java.util.List;
 
 import dao.BulletinBoardsDAO;
+import model.BulletinBoard;
 
 /**
  * タグで掲示板を検索するロジック。
