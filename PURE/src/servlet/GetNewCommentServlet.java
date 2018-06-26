@@ -30,10 +30,10 @@ public class GetNewCommentServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
 		int bulletin_board_id = bulletinBoard.getId();
-		int comment_id = bulletinBoard.getCommentList().get;
+		int last_comment_id = bulletinBoard.getCommentList().size() - 1;
 
 		GetNewCommentLogic logic = new GetNewCommentLogic();
-		CommentList newCommentList = logic.execute(bulletin_board_id, comment_id);
+		CommentList newCommentList = logic.execute(bulletin_board_id, last_comment_id);
 
 		// JSON形式に組み合わせる処理
 		StringBuffer json = new StringBuffer();

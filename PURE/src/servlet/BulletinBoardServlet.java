@@ -24,11 +24,9 @@ public class BulletinBoardServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// リクエストスコープに保存を取得
 		int id = Integer.parseInt(request.getParameter("id"));
-		System.out.println(id);
+		System.out.println("掲示板ID:" + id + " がリクエストされました"); // テスト
 
-
-
-		// GetBulletinBoardLogicから掲示板オブジェクトを取得
+		// GetBulletinBoardLogicにIDを渡し、掲示板オブジェクトを取得
 		GetBulletinBoardLogic getBulletinBoard = new GetBulletinBoardLogic();
 		BulletinBoard bulletinBoard = getBulletinBoard.execute(id);
 
