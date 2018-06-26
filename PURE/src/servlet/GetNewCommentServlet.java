@@ -35,14 +35,10 @@ public class GetNewCommentServlet extends HttpServlet {
 		GetNewCommentLogic logic = new GetNewCommentLogic();
 		CommentList newCommentList = logic.execute(bulletin_board_id, last_comment_id);
 
-		// JSON形式に組み合わせる処理
-		StringBuffer json = new StringBuffer();
-		for(int i = 0; i < newCommentList.size(); i++) {
-			json.append(newCommentList.get(i).toString());
-			if(i != newCommentList.size() - 1) {
-				json.append(",");
-			}
-		}
+		// JSON形式に変換
+		String json = newCommentList.toString();
+		// セッションスコープに保存した掲示板を更新
+
 
 		// レスポンス処理
 		response.setContentType("application/json;charset=UTF-8");
