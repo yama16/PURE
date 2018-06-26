@@ -7,14 +7,14 @@ public class BulletinBoardList extends AbstractList<BulletinBoard> implements Se
 	@Override
 	public String toString(){
 		StringBuffer json = new StringBuffer();
-		json.append("{");
+		json.append("[");
 		for(int i = 0; i < super.size(); i++){
 			if(i != 0){
 				json.append(",");
 			}
 			json.append(super.get(i).toString());
 		}
-		json.append("}");
+		json.append("]");
 		return json.toString();
 	}
 

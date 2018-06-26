@@ -173,7 +173,7 @@ Timestamp updateTime = account.getUpdatedAt();
 				console.log(passUseble);
 
 				if(passUseble) {
-					console.log("1");
+					inputPassForm.appendChild(elt("p", null, "⚠パスワードの入力が正しくありません"));
 					isAppropriate = false;
 				}
 
@@ -295,6 +295,28 @@ Timestamp updateTime = account.getUpdatedAt();
 
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
+					console.log(req.response);
+					//console.log(tes);
+				}
+			};
+
+			//PassCheckServletに入力されたPassを送信
+			req.open("POST","/PURE/GetFavoriteServlet");
+			req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+			req.send("id=" + "<%= id %>");
+		}
+
+		//コメントの履歴を表示
+		commentHistory.addEventListener("click",function(){
+
+		},false);
+
+		//コメント履歴の取得
+		function getCommentHistory() {
+			let req = new XMLHttpRequest();
+
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status == 200) {
 					let tes = JSON.parse(req.response);
 					console.log(tes.ojoj);
 				}
@@ -306,14 +328,7 @@ Timestamp updateTime = account.getUpdatedAt();
 			req.send("id=" + "<%= id %>");
 		}
 
-		//コメントの履歴を表示
-		commentHistory.addEventListener("click",function(){
-
-		},false);
-
-		//コメント履歴の取得
-
-
+		//要素の作成
 		function elt(name, attributes) {
 			let node = document.createElement(name);
 
