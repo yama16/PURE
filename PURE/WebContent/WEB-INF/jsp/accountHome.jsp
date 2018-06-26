@@ -12,7 +12,7 @@ Timestamp updateTime = account.getUpdatedAt();
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset=UTF-8">
+<meta charset="UTF-8">
 <title>個人設定</title>
 <link rel="stylesheet" href="accountHome.css">
 </head>
@@ -24,10 +24,10 @@ Timestamp updateTime = account.getUpdatedAt();
 		<main>
 			<form id="confirm">
 				<fieldset>
-					<input type="button" value="個人設定" id="personal"><br>
-					<input type="button" value="掲示板" id="bulletinBoard"><br>
-					<input type="button" value="お気に入り" id="favorite"><br>
-					<input type="button" value="コメント履歴" id="commentHistory">
+					<input type="button" value="個人設定" id="personal" style="width:200px; height:30px;"><br>
+					<input type="button" value="掲示板" id="bulletinBoard" style="width:200px; height:30px;"><br>
+					<input type="button" value="お気に入り" id="favorite" style="width:200px; height:30px;"><br>
+					<input type="button" value="コメント履歴" id="commentHistory" style="width:200px; height:30px;">
 				</fieldset>
 			</form>
 		</main>
