@@ -108,7 +108,7 @@ Timestamp updateTime = account.getUpdatedAt();
 			inputNicknameForm.appendChild(changeSubmit);
 
 			//ニックネームが未入力または入力制限を超えていた場合送信を中止
-			document.getElementById("nicknameForm").onsubmit = function() {
+			document.getElementById("nicknameForm").addEventListener("submit",function() {
 				let newNickname = document.getElementById("newNickname");
 				let inputNicknameCheck = true;
 				if(newNickname.value.length <= 0) {
@@ -116,8 +116,10 @@ Timestamp updateTime = account.getUpdatedAt();
 				}else if(newNickname.value.length > 10) {
 					inputNicknameCheck = false;
 				}
-				return inputNicknameCheck;
-			}
+				if(!(inputNicknameCheck)) {
+					e.preventDefault();
+				}
+			},false);
 
 			//戻るボタン設定
 			let back = elt("input", {id: "back", type: "button", value: "戻る"});
@@ -296,14 +298,13 @@ Timestamp updateTime = account.getUpdatedAt();
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
 					console.log(req.response);
-					//console.log(tes);
+					console.log(tes);
 				}
 			};
 
 			//PassCheckServletに入力されたPassを送信
-			req.open("POST","/PURE/GetFavoriteServlet");
-			req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
-			req.send("id=" + "<%= id %>");
+			req.open("GET","/PURE/FavoriteServlet");
+			req.send(null);
 		}
 
 		//コメントの履歴を表示
@@ -318,12 +319,12 @@ Timestamp updateTime = account.getUpdatedAt();
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
 					let tes = JSON.parse(req.response);
-					console.log(tes.ojoj);
+
 				}
 			};
 
 			//PassCheckServletに入力されたPassを送信
-			req.open("POST","/PURE/FavoriteCheckServlet");
+			req.open("POST","/PURE/GetMyCommentServlet");
 			req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
 			req.send("id=" + "<%= id %>");
 		}
