@@ -39,6 +39,7 @@ Timestamp updateTime = account.getUpdatedAt();
 		let bulletinBoard = document.getElementById("bulletinBoard");
 		let favorite = document.getElementById("favorite");
 		let commentHistory = document.getElementById("commentHistory");
+		let favoriteBulletinBoard;
 		let passUseble = false;
 
 		///ページを読み込んだ時個人設定画面を表示
@@ -289,23 +290,27 @@ Timestamp updateTime = account.getUpdatedAt();
 		}
 
 		//お気に入り画面の表示
-		favorite.addEventListener("click",favoriteBulletinBoard,false);
+		favorite.addEventListener("click",function(){
+			menu.textContent = null;
 
-		//お気に入りの掲示板があるかのチェック
-		function favoriteBulletinBoard() {
+			//お気に入りの掲示板があるかのチェック
 			let req = new XMLHttpRequest();
 
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
-					console.log(req.response);
-					console.log(tes);
+					favoriteBulletinBoard = JSON.parse(req.response);
+
+					for(let favoriteBoard of favoriteBulletinBoard) {
+						menu.appendChild(elt("p", null, favoriteBoard.title));
+					}
 				}
 			};
 
 			//PassCheckServletに入力されたPassを送信
 			req.open("GET","/PURE/FavoriteServlet");
 			req.send(null);
-		}
+		},false);
+
 
 		//コメントの履歴を表示
 		commentHistory.addEventListener("click",function(){
