@@ -5,12 +5,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import model.BulletinBoard;
+import model.BulletinBoardList;
 
 /**
  * bulletin_boards（掲示板）テーブルを操作するDAO。
@@ -123,8 +122,8 @@ public class BulletinBoardsDAO {
      * @param accountId 検索するアカウントのID
      * @return 検索した掲示板のリスト。取得に失敗したらnullを返す。
      */
-    public List<BulletinBoard> findByAccountId(String accountId){
-    	List<BulletinBoard> list = new ArrayList<>();
+    public BulletinBoardList findByAccountId(String accountId){
+    	BulletinBoardList list = new BulletinBoardList();
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
     		String sql = "SELECT * FROM bulletin_boards WHERE account_id=?;";
@@ -155,7 +154,7 @@ public class BulletinBoardsDAO {
     	return list;
     }
 
-    public List<BulletinBoard> ranking(int order){
+    public BulletinBoardList ranking(int order){
     	String orderStr = "";
     	if(order == 1){
     		orderStr = "favorite_quantity";
@@ -164,7 +163,7 @@ public class BulletinBoardsDAO {
     	}else{
     		return null;
     	}
-    	List<BulletinBoard> list = new ArrayList<>();
+    	BulletinBoardList list = new BulletinBoardList();
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
@@ -200,8 +199,8 @@ public class BulletinBoardsDAO {
      * @param keyword 検索する部分文字列
      * @return 検索結果の掲示板のリスト
      */
-    public List<BulletinBoard> findByKeyword(String keyword){
-    	List<BulletinBoard> list = new ArrayList<>();
+    public BulletinBoardList findByKeyword(String keyword){
+    	BulletinBoardList list = new BulletinBoardList();
     	keyword = "%" + keyword + "%";
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
@@ -241,11 +240,11 @@ public class BulletinBoardsDAO {
      * @param partial 部分一致検索ならtrue、完全一致検索ならfalseを指定。
      * @return 検索した掲示板のリスト
      */
-    public List<BulletinBoard> findByTag(String tag, boolean partial){
+    public BulletinBoardList findByTag(String tag, boolean partial){
     	if(partial){
     		tag = "%" + tag + "%";
     	}
-    	List<BulletinBoard> list = new ArrayList<>();
+    	BulletinBoardList list = new BulletinBoardList();
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
@@ -282,8 +281,8 @@ public class BulletinBoardsDAO {
      * @param accountId 検索するアカウントのID。
      * @return 検索が成功すればお気に入りのリストを返す。失敗すればnullを返す。
      */
-    public List<BulletinBoard> findFavorite(String accountId){
-    	List<BulletinBoard> favoriteList = new ArrayList<>();
+    public BulletinBoardList findFavorite(String accountId){
+    	BulletinBoardList favoriteList = new BulletinBoardList();
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
     		String sql ="SELECT f.bulletin_board_id, b.title, f.account_id, b.created_at, b.view_quantity FROM favorites AS f LEFT OUTER JOIN bulletin_boards AS b ON f.bulletin_board_id = b.id WHERE f.account_id=?;";
