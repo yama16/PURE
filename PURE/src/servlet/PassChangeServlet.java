@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bo.Login;
+import bo.LoginLogic;
+import bo.UpdateAccountLogic;
 import model.Account;
-import model.Login;
-import model.LoginLogic;
-import model.UpdateAccountLogic;
 
 @WebServlet("/PassChangeServlet")
 public class PassChangeServlet extends HttpServlet {

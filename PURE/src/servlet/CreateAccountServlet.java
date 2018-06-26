@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bo.CreateAccountLogic;
 import model.Account;
-import model.CreateAccountLogic;
 
 /**
  * Servlet implementation class AccountCreateServlet

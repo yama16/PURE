@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bo.GetFavoriteBulletinBoardLogic;
 import model.BulletinBoard;
-import model.GetFavoriteBulletinBoardLogic;
 
 /**
  * Servlet implementation class FavoriteCheckServlet
