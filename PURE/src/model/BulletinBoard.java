@@ -20,7 +20,10 @@ public class BulletinBoard implements Serializable {
 	private CommentList commentList;
 	private TagList tagList;
 
-	public BulletinBoard(){}
+	public BulletinBoard(){
+		this.commentList = new CommentList();
+		this.tagList = new TagList();
+	}
 	public BulletinBoard(int id, String title, String accountId, Timestamp createdAt, int viewQuantity, int favoriteQuantity){
 		this.id = id;
 		this.title = title;
