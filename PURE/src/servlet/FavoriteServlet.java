@@ -27,7 +27,7 @@ public class FavoriteServlet extends HttpServlet {
 		GetFavoriteBulletinBoardLogic getBoard = new GetFavoriteBulletinBoardLogic();
 		favoriteList = getBoard.execute(account.getId());
 
-		System.out.println(favoriteList.toString());
+		System.out.println("mimi");
 
 		PrintWriter pw = response.getWriter();
 		pw.print(favoriteList.toString());
