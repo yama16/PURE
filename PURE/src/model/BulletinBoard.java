@@ -18,8 +18,8 @@ public class BulletinBoard implements Serializable {
 	private Timestamp createdAt;
 	private int viewQuantity;
 	private int favoriteQuantity;
-	private List<Comment> commentList;
-	private List<String> tagList;
+	private CommentList commentList;
+	private TagList tagList;
 
 	public BulletinBoard(){}
 	public BulletinBoard(int id, String title, String accountId, Timestamp createdAt, int viewQuantity, int favoriteQuantity){
@@ -47,16 +47,9 @@ public class BulletinBoard implements Serializable {
 			.append(viewQuantity)
 			.append(", \"favoriteQuantity\":")
 			.append(favoriteQuantity)
-			.append(", \"commentList\":[");
-		if(commentList != null){
-			for(int i = 0; i < commentList.size(); i++){
-				if(i != 0){
-					json.append(", ");
-				}
-				json.append(commentList.get(i).toString());
-			}
-		}
-		json.append("], \"tagList\":[");
+			.append(", \"commentList\":")
+			.append(commentList.toString())
+			.append(", \"tagList\":[");
 		if(tagList != null){
 			for(int i = 0; i < tagList.size(); i++){
 				if(i != 0){

@@ -11,6 +11,7 @@ import java.util.List;
 
 import model.BulletinBoard;
 import model.Comment;
+import model.CommentList;
 
 /**
  * Comments（コメント）テーブルを操作するDAO。
@@ -36,9 +37,9 @@ public class CommentsDAO {
      * @param bulletin_board_id 検索する掲示板のID
      * @return 検索した掲示板のコメントのリストを返す。
      */
-    public List<Comment> findByBulletinBoardId(int bulletinBoardId){
+    public CommentList findByBulletinBoardId(int bulletinBoardId){
 
-    	List<Comment> commentList = new ArrayList<>();
+    	CommentList commentList = new CommentList();
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
@@ -75,9 +76,9 @@ public class CommentsDAO {
      * @param comment_id 最新のコメントのID
      * @return 引数のcomment_idよりも最新のコメントのリストを返す。
      */
-    public List<Comment> findNewComment(int bulletinBoardId, int commentId){
+    public CommentList findNewComment(int bulletinBoardId, int commentId){
 
-    	List<Comment> newCommentList = new ArrayList<>();
+    	CommentList newCommentList = new CommentList();
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
