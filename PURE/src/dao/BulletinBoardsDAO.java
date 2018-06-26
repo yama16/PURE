@@ -285,7 +285,7 @@ public class BulletinBoardsDAO {
     	BulletinBoardList favoriteList = new BulletinBoardList();
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql ="SELECT f.bulletin_board_id, b.title, f.account_id, b.created_at, b.view_quantity b.favorite_quantity FROM favorites AS f LEFT OUTER JOIN bulletin_boards AS b ON f.bulletin_board_id = b.id WHERE f.account_id=?;";
+    		String sql ="SELECT f.bulletin_board_id, b.title, f.account_id, b.created_at, b.view_quantity, b.favorite_quantity FROM favorites AS f LEFT OUTER JOIN bulletin_boards AS b ON f.bulletin_board_id = b.id WHERE f.account_id=?;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, accountId);
