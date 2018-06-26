@@ -1,9 +1,7 @@
 package bo;
 
-import java.util.List;
-
 import dao.BulletinBoardsDAO;
-import model.BulletinBoard;
+import model.BulletinBoardList;
 
 /**
  * お気に入りの掲示板を取得するロジッククラス。
@@ -13,9 +11,9 @@ import model.BulletinBoard;
 public class GetFavoriteBulletinBoardLogic {
 
 
-	public List<BulletinBoard> execute(String accountId){
+	public BulletinBoardList execute(String accountId){
 		BulletinBoardsDAO dao = new BulletinBoardsDAO();
-		List<BulletinBoard> list = dao.findFavorite(accountId);
+		BulletinBoardList list = dao.findFavorite(accountId);
 		return list;
 	}
 
