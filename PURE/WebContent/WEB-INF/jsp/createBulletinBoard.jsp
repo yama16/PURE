@@ -2,10 +2,11 @@
     pageEncoding="UTF-8"%>
 <%@ page import="model.BulletinBoard" %>
 <%@ page import="model.Comment" %>
+<%@ page import="model.CommentList" %>
 <%@ page import="java.util.List" %>
 <%
 BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
-List<Comment> commentList = bulletinBoard.getCommentList();
+CommentList commentList = bulletinBoard.getCommentList();
 String bulletinBoardTitle = bulletinBoard.getTitle();
 String ceatedAt = bulletinBoard.getCreatedAt().toString();
 %>
@@ -25,14 +26,18 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       	<input id="favoriteButton" type="button" value="お気に入り">
       </div>
       <!-- 以下コメントが入る -->
-      <% for(Comment cmt: commentList) { %>
-      	<div class="comment" id="<%= cmt.getId() %>">
+      <%
+      	for(int i = 0; i < commentList.size(); i++) {
+    	  Comment comment = commentList.get(i);
+      %>
+
+      	<div class="comment" id="<%= comment.getId() %>">
       		<dl>
-      			<dt><span>No.<%= cmt.getId() %></span></dt>
-      			<dt><span><%= cmt.getNickname() %></span></dt>
-      			<dt><span><%= cmt.getAccountId() %></span></dt>
-      			<dt><span><%= cmt.getCreatedAt() %></span></dt>
-      			<dd><span><%= cmt.getComment() %></span></dd>
+      			<dt><span>No.<%= comment.getId() %></span></dt>
+      			<dt><span><%= comment.getNickname() %></span></dt>
+      			<dt><span><%= comment.getAccountId() %></span></dt>
+      			<dt><span><%= comment.getCreatedAt() %></span></dt>
+      			<dd><span><%= comment.getComment() %></span></dd>
       		</dl>
       		<input class="pureButton" type="button" value="PURE">
       		<input class="replyButton" type="button" value="返信">
