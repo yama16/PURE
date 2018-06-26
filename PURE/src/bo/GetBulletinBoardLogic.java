@@ -1,11 +1,7 @@
 package bo;
 
 import dao.BulletinBoardsDAO;
-import dao.CommentsDAO;
-import dao.TagsDAO;
 import model.BulletinBoard;
-import model.CommentList;
-import model.TagList;
 
 /**
  * 掲示板をデータベースから取得するクラス。
@@ -15,29 +11,12 @@ public class GetBulletinBoardLogic {
 
 	/**
 	 * 掲示板の情報を取得するロジック。
-	 * BulletinBoardsDAOのfindByIdメソッドで掲示板のコメント以外の情報を取得する。
-	 * 取得できたら、次にCommentsDAOのfindByBulletinBoardIdメソッドで掲示板のコメントのリストを取得する。
 	 * @param bulletinBoardId 取得したい掲示板のID
 	 * @return BulletinBoardのインスタンスを返す。掲示板が無ければnullを返す。
 	 */
 	public BulletinBoard execute(int bulletinBoardId){
 		BulletinBoardsDAO bulletinBoardsDAO = new BulletinBoardsDAO();
 		BulletinBoard bulletinBoard = bulletinBoardsDAO.findById(bulletinBoardId);
-		if(bulletinBoard == null){
-			return null;
-		}
-		CommentsDAO commentsDAO = new CommentsDAO();
-		CommentList commentList = commentsDAO.findByBulletinBoardId(bulletinBoardId);
-		if(commentList == null){
-			return null;
-		}
-		bulletinBoard.setCommentList(commentList);
-		TagsDAO tagsDAO = new TagsDAO();
-		TagList tagList = tagsDAO.findByBulletinBoardId(bulletinBoardId);
-		if(tagList == null){
-			return null;
-		}
-		bulletinBoard.setTagList(tagList);
 		return bulletinBoard;
 	}
 
