@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public abstract class AbstractList<T> {
@@ -30,6 +31,10 @@ public abstract class AbstractList<T> {
 			return false;
 		}
 		return list.add(t);
+	}
+
+	public boolean addAll(Collection<? extends T> c){
+		return list.addAll(c);
 	}
 
 }

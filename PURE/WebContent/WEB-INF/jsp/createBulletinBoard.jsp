@@ -2,10 +2,11 @@
     pageEncoding="UTF-8"%>
 <%@ page import="model.BulletinBoard" %>
 <%@ page import="model.Comment" %>
+<%@ page import="model.CommentList" %>
 <%@ page import="java.util.List" %>
 <%
 BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
-List<Comment> commentList = bulletinBoard.getCommentList();
+CommentList commentList = bulletinBoard.getCommentList();
 String bulletinBoardTitle = bulletinBoard.getTitle();
 String ceatedAt = bulletinBoard.getCreatedAt().toString();
 %>
@@ -25,14 +26,18 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       	<input id="favoriteButton" type="button" value="お気に入り">
       </div>
       <!-- 以下コメントが入る -->
-      <% for(Comment cmt: commentList) { %>
-      	<div class="comment" id="<%= cmt.getId() %>">
+      <%
+      	for(int i = 0; i < commentList.size(); i++) {
+    	  Comment comment = commentList.get(i);
+      %>
+
+      	<div class="comment" id="<%= comment.getId() %>">
       		<dl>
-      			<dt><span>No.<%= cmt.getId() %></span></dt>
-      			<dt><span><%= cmt.getNickname() %></span></dt>
-      			<dt><span><%= cmt.getAccountId() %></span></dt>
-      			<dt><span><%= cmt.getCreatedAt() %></span></dt>
-      			<dd><span><%= cmt.getComment() %></span></dd>
+      			<dt><span>No.<%= comment.getId() %></span></dt>
+      			<dt><span><%= comment.getNickname() %></span></dt>
+      			<dt><span><%= comment.getAccountId() %></span></dt>
+      			<dt><span><%= comment.getCreatedAt() %></span></dt>
+      			<dd><span><%= comment.getComment() %></span></dd>
       		</dl>
       		<input class="pureButton" type="button" value="PURE">
       		<input class="replyButton" type="button" value="返信">
@@ -125,11 +130,10 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     function commentDisplay(commentArray) {
       // 初期処理
       let commentField = document.getElementById("commentField");   // コメント欄のdiv要素取得
-      //let comments = document.getElementsByClassName("comment");
 
       // コメントを表示またはコメントをPURE(未実装)
       for(let cmtObj of commentArray) {
-        cmtField.appendChild( createCommentFrame(cmtObj) );         // コメント枠をコメント欄に追加
+    	commentField.appendChild( createCommentFrame(cmtObj) );         // コメント枠をコメント欄に追加
       }
     }
 
@@ -153,8 +157,8 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       commentFrame.setAttribute("id", commentObject.Id);  // コメント枠にId属性(commentId)を設定
 
       // span要素にcmtObjのフィールドを追加
-      spanElementCommentId.appendChild( document.createTextNode("No" + commentObject.Id) );
-      spanElementNickName.appendChild( document.createTextNode(commentObject.nickName) );
+      spanElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );
+      spanElementNickName.appendChild( document.createTextNode(commentObject.nickname) );
       spanElementAccountId.appendChild( document.createTextNode(commentObject.accountId) );
       spanElementCreatedAt.appendChild( document.createTextNode(commentObject.createdAt) );
       // dt要素にspan要素を追加

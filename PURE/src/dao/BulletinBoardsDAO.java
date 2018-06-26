@@ -294,8 +294,11 @@ public class BulletinBoardsDAO {
     		while(resultSet.next()){
     			BulletinBoard bulletinBoard = new BulletinBoard();
     			bulletinBoard.setId(resultSet.getInt("bulletin_board_id"));
-    			bulletinBoard.setAccountId(resultSet.getString("account_id"));
     			bulletinBoard.setTitle(resultSet.getString("title"));
+    			bulletinBoard.setAccountId(resultSet.getString("account_id"));
+    			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+    			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+    			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
     			favoriteList.add(bulletinBoard);
     		}
 

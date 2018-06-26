@@ -189,4 +189,21 @@ public class CommentsDAO {
     	return list;
     }
 
+    protected int updatePure(int commentId, int bulletinBoardId, int update, Connection conn) throws SQLException{
+    	String sql = "UPDATE comments SET pure_quantity=(SELECT pure_quantity FROM comments WHERE id=? AND bulletin_board_id=?) + ? WHERE id=? AND bulletin_board_id=?;";
+
+    	PreparedStatement pStmt = conn.prepareStatement(sql);
+    	pStmt.setInt(1, commentId);
+    	pStmt.setInt(2, bulletinBoardId);
+    	pStmt.setInt(3, update);
+    	pStmt.setInt(4, commentId);
+    	pStmt.setInt(5, bulletinBoardId);
+
+    	int result = pStmt.executeUpdate();
+    	if(result != 1){
+    		return 0;
+    	}
+    	return update;
+    }
+
 }
