@@ -59,8 +59,8 @@ public class BulletinBoardsDAO {
 
     		if(bulletinBoard.getTagList() != null){
 				TagsDAO dao = new TagsDAO();
-	    		for(String tag : bulletinBoard.getTagList()){
-	    			if(!dao.create(bulletinBoard.getId(), tag, conn)){
+	    		for(int i = 0; i < bulletinBoard.getTagList().size(); i++){
+	    			if(!dao.createAll(bulletinBoard.getId(), bulletinBoard.getTagList(), conn)){
 	    				conn.rollback();
 	    				return false;
 	    			}
@@ -227,7 +227,7 @@ public class BulletinBoardsDAO {
     		}
 
     	} catch (SQLException e) {
-    		Logger.getLogger(BulletinBoardsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
     		return null;
 		}
 

@@ -5,8 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+
+import model.TagList;
 
 /**
  *
@@ -37,13 +37,13 @@ public class TagsDAO {
      * @return 追加できればtrue。できなければfalse。
      * @throws SQLException
      */
-    protected boolean createAll(int bulletinBoardId, List<String> tagList, Connection conn) throws SQLException{
+    protected boolean createAll(int bulletinBoardId, TagList tagList, Connection conn) throws SQLException{
     	String sql = "INSERT INTO tags(bulletin_board_id, tag) VALUES(?, ?);";
 
     	PreparedStatement pStmt = conn.prepareStatement(sql);
     	pStmt.setInt(1, bulletinBoardId);
-    	for(String tag : tagList){
-	    	pStmt.setString(2, tag);
+    	for(int i = 0; i < tagList.size(); i++){
+	    	pStmt.setString(2, tagList.get(i));
 	    	int result = pStmt.executeUpdate();
 	    	if(result != 1){
 	    		return false;
@@ -59,7 +59,7 @@ public class TagsDAO {
      * @param list 追加するタグのリスト
      * @return 成功すればtrue、失敗すればfalse。
      */
-    public boolean createAll(int bulletinBoardId, List<String> list){
+    public boolean createAll(int bulletinBoardId, TagList list){
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
     		return createAll(bulletinBoardId, list, conn);
@@ -101,8 +101,8 @@ public class TagsDAO {
      * @return
      * @throws SQLException
      */
-    protected List<String> findByBulletinBoardId(int bulletinBoardId, Connection conn) throws SQLException{
-    	List<String> tagList = new ArrayList<>();
+    protected TagList findByBulletinBoardId(int bulletinBoardId, Connection conn) throws SQLException{
+    	TagList tagList = new TagList();
 
     	String sql = "SELECT tag FROM tags WHERE bulletin_board_id=?;";
 
@@ -122,7 +122,7 @@ public class TagsDAO {
      * @param bulletinBoardId 検索する掲示板のID
      * @return 検索したタグのリストを返す。SQLExceptionをcatchするとnullを返す。
      */
-    public List<String> findByBulletinBoardId(int bulletinBoardId){
+    public TagList findByBulletinBoardId(int bulletinBoardId){
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
     		return findByBulletinBoardId(bulletinBoardId, conn);

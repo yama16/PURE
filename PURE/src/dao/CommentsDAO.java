@@ -167,7 +167,7 @@ public class CommentsDAO {
     				bulletinBoard.setCreatedAt(resultSet.getTimestamp("bulletin_board_created_at"));
     				bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
     				bulletinBoard.setId(resultSet.getInt("favorite_quantity"));
-    				List<Comment> commentList = new ArrayList<>();
+    				CommentList commentList = new CommentList();
     				bulletinBoard.setCommentList(commentList);
     				list.add(bulletinBoard);
     			}

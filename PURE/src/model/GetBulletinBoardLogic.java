@@ -1,7 +1,5 @@
 package model;
 
-import java.util.List;
-
 import dao.BulletinBoardsDAO;
 import dao.CommentsDAO;
 import dao.TagsDAO;
@@ -26,13 +24,13 @@ public class GetBulletinBoardLogic {
 			return null;
 		}
 		CommentsDAO commentsDAO = new CommentsDAO();
-		List<Comment> commentList = commentsDAO.findByBulletinBoardId(bulletinBoardId);
+		CommentList commentList = commentsDAO.findByBulletinBoardId(bulletinBoardId);
 		if(commentList == null){
 			return null;
 		}
 		bulletinBoard.setCommentList(commentList);
 		TagsDAO tagsDAO = new TagsDAO();
-		List<String> tagList = tagsDAO.findByBulletinBoardId(bulletinBoardId);
+		TagList tagList = tagsDAO.findByBulletinBoardId(bulletinBoardId);
 		if(tagList == null){
 			return null;
 		}
