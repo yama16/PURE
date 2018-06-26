@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import bo.GetMyBulletinBoardLogic;
 import model.Account;
-import model.BulletinBoard;
+import model.BulletinBoardList;
 
 /**
  * Servlet implementation class GetMyBulletinBoardServlet
@@ -24,7 +23,7 @@ public class GetMyBulletinBoardServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		Account account = (Account) session.getAttribute("account");
-		List<BulletinBoard> bulletinBoardList;
+		BulletinBoardList bulletinBoardList;
 		GetMyBulletinBoardLogic bulletinBoardLogic = new GetMyBulletinBoardLogic();
 		bulletinBoardList = bulletinBoardLogic.execute(account.getId());
 
