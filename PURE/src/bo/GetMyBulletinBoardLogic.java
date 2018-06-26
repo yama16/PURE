@@ -1,9 +1,7 @@
 package bo;
 
-import java.util.List;
-
 import dao.BulletinBoardsDAO;
-import model.BulletinBoard;
+import model.BulletinBoardList;
 
 /**
  *
@@ -16,9 +14,9 @@ public class GetMyBulletinBoardLogic {
 	 * @param accountId
 	 * @return
 	 */
-	public List<BulletinBoard> execute(String accountId){
+	public BulletinBoardList execute(String accountId){
 		BulletinBoardsDAO dao = new BulletinBoardsDAO();
-		List<BulletinBoard> list = dao.findByAccountId(accountId);
+		BulletinBoardList list = dao.findByAccountId(accountId);
 		return list;
 	}
 
