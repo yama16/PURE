@@ -7,10 +7,19 @@
 main {
 	float: left;
 	width: 250px;
+	text-align: center;
+  	padding: 20px;
 }
 
 #menu {
 	float: right;
 	width: 650px;
 	background: pink;
+}
+#confirm{
+
+}
+input[type="button"] {
+  	 background: white;
+     border-color: black;
 }
