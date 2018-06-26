@@ -23,17 +23,14 @@ public class CommentList {
 	public String toString() {
 		// JSON形式に組み合わせる処理
 		StringBuffer json = new StringBuffer();
-		json.append("{");
-		json.append("commentArray:");
 		json.append("[");
 		for(int i = 0; i < commentList.size(); i++) {
-			json.append(commentList.get(i).toString());
-			if(i != commentList.size() - 1) {
+			if(i != 0){
 				json.append(",");
 			}
+			json.append(commentList.get(i).toString());
 		}
 		json.append("]");
-		json.append("}");
 
 		return json.toString();
 	}
