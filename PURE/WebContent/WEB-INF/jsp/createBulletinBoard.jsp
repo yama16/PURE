@@ -130,11 +130,10 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     function commentDisplay(commentArray) {
       // 初期処理
       let commentField = document.getElementById("commentField");   // コメント欄のdiv要素取得
-      //let comments = document.getElementsByClassName("comment");
 
       // コメントを表示またはコメントをPURE(未実装)
       for(let cmtObj of commentArray) {
-        cmtField.appendChild( createCommentFrame(cmtObj) );         // コメント枠をコメント欄に追加
+    	commentField.appendChild( createCommentFrame(cmtObj) );         // コメント枠をコメント欄に追加
       }
     }
 
@@ -158,8 +157,8 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       commentFrame.setAttribute("id", commentObject.Id);  // コメント枠にId属性(commentId)を設定
 
       // span要素にcmtObjのフィールドを追加
-      spanElementCommentId.appendChild( document.createTextNode("No" + commentObject.Id) );
-      spanElementNickName.appendChild( document.createTextNode(commentObject.nickName) );
+      spanElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );
+      spanElementNickName.appendChild( document.createTextNode(commentObject.nickname) );
       spanElementAccountId.appendChild( document.createTextNode(commentObject.accountId) );
       spanElementCreatedAt.appendChild( document.createTextNode(commentObject.createdAt) );
       // dt要素にspan要素を追加
