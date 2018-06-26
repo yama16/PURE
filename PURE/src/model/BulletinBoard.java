@@ -3,7 +3,6 @@ package model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 /**
  *
@@ -49,18 +48,9 @@ public class BulletinBoard implements Serializable {
 			.append(favoriteQuantity)
 			.append(", \"commentList\":")
 			.append(commentList.toString())
-			.append(", \"tagList\":[");
-		if(tagList != null){
-			for(int i = 0; i < tagList.size(); i++){
-				if(i != 0){
-					json.append(", ");
-				}
-				json.append("\"");
-				json.append(tagList.get(i));
-				json.append("\"");
-			}
-		}
-		json.append("]}");
+			.append(", \"tagList\":")
+			.append(tagList.toString())
+			.append("}");
 		return json.toString();
 	}
 
@@ -76,8 +66,8 @@ public class BulletinBoard implements Serializable {
 	public void setViewQuantity(int viewQuantity){ this.viewQuantity = viewQuantity; }
 	public int getFavoriteQuantity(){ return favoriteQuantity; }
 	public void setFavoriteQuantity(int favoriteQuantity){ this.favoriteQuantity = favoriteQuantity; }
-	public List<Comment> getCommentList(){ return commentList; }
-	public void setCommentList(List<Comment> commentList){ this.commentList = commentList; }
-	public List<String> getTagList(){ return tagList; }
-	public void setTagList(List<String> tagList){ this.tagList = tagList; }
+	public CommentList getCommentList(){ return commentList; }
+	public void setCommentList(CommentList commentList){ this.commentList = commentList; }
+	public TagList getTagList(){ return tagList; }
+	public void setTagList(TagList tagList){ this.tagList = tagList; }
 }
