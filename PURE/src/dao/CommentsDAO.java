@@ -5,13 +5,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import model.BulletinBoard;
 import model.Comment;
+import model.CommentList;
 
 /**
  * Comments（コメント）テーブルを操作するDAO。
@@ -37,13 +37,13 @@ public class CommentsDAO {
      * @param bulletin_board_id 検索する掲示板のID
      * @return 検索した掲示板のコメントのリストを返す。
      */
-    public List<Comment> findByBulletinBoardId(int bulletinBoardId){
+    public CommentList findByBulletinBoardId(int bulletinBoardId){
 
-    	List<Comment> commentList = new ArrayList<>();
+    	CommentList commentList = new CommentList();
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT * FROM comments WHERE bulletin_board_id = ?";
+    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a ON c.account_id = a.id WHERE c.bulletin_board_id = ?";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoardId);
@@ -57,11 +57,11 @@ public class CommentsDAO {
     			comment.setComment(resultSet.getString("comment"));
     			comment.setCreatedAt(resultSet.getTimestamp("created_at"));
     			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
+    			comment.setNickname(resultSet.getString("nickname"));
     			commentList.add(comment);
     		}
 
     	} catch (SQLException e) {
-    		Logger.getLogger(CommentsDAO.class.getName()).log(Level.SEVERE, null, e);
     		e.printStackTrace();
             return null;
         }
@@ -76,13 +76,13 @@ public class CommentsDAO {
      * @param comment_id 最新のコメントのID
      * @return 引数のcomment_idよりも最新のコメントのリストを返す。
      */
-    public List<Comment> findNewComment(int bulletinBoardId, int commentId){
+    public CommentList findNewComment(int bulletinBoardId, int commentId){
 
-    	List<Comment> newCommentList = new ArrayList<>();
+    	CommentList newCommentList = new CommentList();
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT * FROM comments WHERE bulletin_board_id = ? AND comment_id > ?";
+    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a WHERE c.bulletin_board_id = ? AND c.id > ?";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoardId);
@@ -97,11 +97,12 @@ public class CommentsDAO {
     			comment.setComment(resultSet.getString("comment"));
     			comment.setCreatedAt(resultSet.getTimestamp("created_at"));
     			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
+    			comment.setNickname(resultSet.getString("nickname"));
     			newCommentList.add(comment);
     		}
 
     	} catch (SQLException e) {
-    		Logger.getLogger(CommentsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
     		return null;
         }
 
@@ -113,18 +114,18 @@ public class CommentsDAO {
      * @param comment 追加するコメント。
      * @return 追加できたときtrueを返す。追加できなかったときfalseを返す。
      */
-    public boolean create(Comment comment){
+    public boolean create(int bulletinBoardId, String accountId, String comment, Timestamp createdAt){
+
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "INSERT INTO comments VALUES((SELECT COALESCE(MAX(id),0)+1 FROM comments WHERE bulletin_board_id=?),?,?,?,?,?);";
+    		String sql = "INSERT INTO comments(id, bulletin_board_id, account_id, comment, created_at) VALUES((SELECT COALESCE(MAX(id),0)+1 FROM comments WHERE bulletin_board_id = ?), ?, ?, ?, COALESCE(?, CURRENT_TIMESTAMP()));";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, comment.getBulletinBoardId());
-    		pStmt.setInt(2, comment.getBulletinBoardId());
-    		pStmt.setString(3, comment.getAccountId());
-    		pStmt.setString(4, comment.getComment());
-    		pStmt.setTimestamp(5, comment.getCreatedAt());
-    		pStmt.setInt(6, comment.getPureQuantity());
+    		pStmt.setInt(1, bulletinBoardId);
+    		pStmt.setInt(2, bulletinBoardId);
+    		pStmt.setString(3, accountId);
+    		pStmt.setString(4, comment);
+    		pStmt.setTimestamp(5, createdAt);
 
     		int result = pStmt.executeUpdate();
     		if(result != 1){
@@ -132,7 +133,7 @@ public class CommentsDAO {
     		}
 
     	} catch (SQLException e) {
-    		Logger.getLogger(CommentsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
             return false;
         }
 
@@ -166,7 +167,7 @@ public class CommentsDAO {
     				bulletinBoard.setCreatedAt(resultSet.getTimestamp("bulletin_board_created_at"));
     				bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
     				bulletinBoard.setId(resultSet.getInt("favorite_quantity"));
-    				List<Comment> commentList = new ArrayList<>();
+    				CommentList commentList = new CommentList();
     				bulletinBoard.setCommentList(commentList);
     				list.add(bulletinBoard);
     			}
@@ -181,11 +182,28 @@ public class CommentsDAO {
     		}
 
     	} catch (SQLException e) {
-    		Logger.getLogger(CommentsDAO.class.getName()).log(Level.SEVERE, null, e);
+    		e.printStackTrace();
     		return null;
 		}
 
     	return list;
+    }
+
+    protected int updatePure(int commentId, int bulletinBoardId, int update, Connection conn) throws SQLException{
+    	String sql = "UPDATE comments SET pure_quantity=(SELECT pure_quantity FROM comments WHERE id=? AND bulletin_board_id=?) + ? WHERE id=? AND bulletin_board_id=?;";
+
+    	PreparedStatement pStmt = conn.prepareStatement(sql);
+    	pStmt.setInt(1, commentId);
+    	pStmt.setInt(2, bulletinBoardId);
+    	pStmt.setInt(3, update);
+    	pStmt.setInt(4, commentId);
+    	pStmt.setInt(5, bulletinBoardId);
+
+    	int result = pStmt.executeUpdate();
+    	if(result != 1){
+    		return 0;
+    	}
+    	return update;
     }
 
 }

@@ -5,7 +5,7 @@
   <head>
       <meta charset="utf-8">
       <title>PURE</title>
-      <link rel="stylesheet" href="test.css">
+      <link rel="stylesheet" href="account.css">
   </head>
   <body>
     <header>

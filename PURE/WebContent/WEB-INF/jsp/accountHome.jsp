@@ -14,7 +14,7 @@ Timestamp updateTime = account.getUpdatedAt();
 <head>
 <meta charset="UTF-8">
 <title>個人設定</title>
-<link rel="stylesheet" href="dzz.css">
+<link rel="stylesheet" href="accountHome.css">
 </head>
 <body>
 	<div id="page">
@@ -31,9 +31,7 @@ Timestamp updateTime = account.getUpdatedAt();
 				</fieldset>
 			</form>
 		</main>
-		<div id="menu">
-
-		</div>
+		<div id="menu"></div>
 	</div>
 	<script>
 		let menu = document.getElementById("menu");
@@ -41,11 +39,13 @@ Timestamp updateTime = account.getUpdatedAt();
 		let bulletinBoard = document.getElementById("bulletinBoard");
 		let favorite = document.getElementById("favorite");
 		let commentHistory = document.getElementById("commentHistory");
+		let passUseble = false;
+
+		///ページを読み込んだ時個人設定画面を表示
+		window.onload = personalSetting;
 
 		//個人設定画面を表示
 		personal.addEventListener("click",personalSetting,false);
-
-		window.onload = personalSetting;
 
 		//個人設定画面の作成
 		function personalSetting() {
@@ -108,7 +108,7 @@ Timestamp updateTime = account.getUpdatedAt();
 			inputNicknameForm.appendChild(changeSubmit);
 
 			//ニックネームが未入力または入力制限を超えていた場合送信を中止
-			document.getElementById("nicknameForm").onsubmit = function() {
+			document.getElementById("nicknameForm").addEventListener("submit",function() {
 				let newNickname = document.getElementById("newNickname");
 				let inputNicknameCheck = true;
 				if(newNickname.value.length <= 0) {
@@ -116,8 +116,10 @@ Timestamp updateTime = account.getUpdatedAt();
 				}else if(newNickname.value.length > 10) {
 					inputNicknameCheck = false;
 				}
-				return inputNicknameCheck;
-			}
+				if(!(inputNicknameCheck)) {
+					e.preventDefault();
+				}
+			},false);
 
 			//戻るボタン設定
 			let back = elt("input", {id: "back", type: "button", value: "戻る"});
@@ -129,10 +131,9 @@ Timestamp updateTime = account.getUpdatedAt();
 		function passChange() {
 			console.log("ohaa");
 			menu.textContent = null;
-			let passUsable = false;
 
 			//パスワード入力フォーム
-			let inputPassForm = elt("form", {action: "/PURE/TestServlet", method: "post", id: "passForm"});
+			let inputPassForm = elt("form", {action: "/PURE/PassChangeServlet", method: "post", id: "passForm"});
 			menu.appendChild(inputPassForm);
 
 			//現在のパスワードを入力
@@ -162,35 +163,46 @@ Timestamp updateTime = account.getUpdatedAt();
 			let passSubmit = elt("input", {type: "submit", value: "送信", id: "passSubmit"});
 			inputPassForm.appendChild(passSubmit);
 
-			//送信設定
-			document.getElementById("passForm").onclick = function() {
-				console.log("hoge");
-			}
+			//パスワードが一致しているかのチェック
+			document.getElementById("nowPass").addEventListener("blur",passCheck,false);
+
 			document.getElementById("passForm").onsubmit = function() {
 				console.log("moge");
 				let nowPass = document.getElementById("nowPass").value;
 				let newPass = document.getElementById("newPass").value;
 				let newPassConfirm = document.getElementById("confirmPass").value;
 				let isAppropriate = true;
+				console.log(passUseble);
+
+				if(passUseble) {
+					inputPassForm.appendChild(elt("p", null, "⚠パスワードの入力が正しくありません"));
+					isAppropriate = false;
+				}
+
+				if(nowPass.length <= 0) {
+					console.log("2");
+					isAppropriate = false;
+				}
 
 				if(newPass.length < 8 || newPass.length > 16) {
+					console.log("3");
 					isAppropriate = false;
 				}
 
 				if(newPassConfirm.length < 8 || newPassConfirm.length > 16) {
+					console.log("4");
 					isAppropriate = false;
 				}
 
+				if(newPass !== newPassConfirm) {
+					console.log("5");
+					isAppropriate = false;
+				}
+				console.log(isAppropriate);
 				return isAppropriate;
 			}
 
 		}
-
-		/*function passCheck() {
-			if() {
-
-			}
-		}*/
 
 		function passCheck(){
 			let req = new XMLHttpRequest();
@@ -213,27 +225,6 @@ Timestamp updateTime = account.getUpdatedAt();
 			req.open("POST","/PURE/PassCheckServlet");
 			req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
 			req.send("pass=" + nowPass.value);
-		}
-
-		function elt(name, attributes) {
-			let node = document.createElement(name);
-
-			if(attributes) {
-				for(let attr in attributes) {
-					if(attributes.hasOwnProperty(attr)) {
-						node.setAttribute(attr, attributes[attr])
-					}
-				}
-			}
-
-			for(let i=2; i < arguments.length; i++) {
-				let child = arguments[i];
-				if(typeof child == "string") {
-					child = document.createTextNode(child);
-				}
-				node.appendChild(child);
-			}
-			return node;
 		}
 
 		//掲示板画面の表示
@@ -261,31 +252,18 @@ Timestamp updateTime = account.getUpdatedAt();
 				createBoardForm.appendChild(elt("br"));
 
 				//タグ入力設定
-				let inputTagDisplay = elt("label", null, "タグを入力:");
-				let inputTag = elt("input",{type: "text", id: "tag", name: "tag"});
-				createBoardForm.appendChild(inputTagDisplay);
-				inputTagDisplay.appendChild(inputTag);
-				createBoardForm.appendChild(elt("br"));
+				let inputTagDisplay = new Array();
+				let inputTag = new Array();
 
-				//タグ
-				let inputTags = elt("select",{id: "tags", name: "tags"});
-				createBoardForm.appendChild(inputTags);
-				createBoardForm.appendChild(elt("br"));
+				for(let i = 1; i <= 6; i++) {
+					inputTagDisplay.push(elt("label", null, "タグ"+i+":"));
+					inputTag.push(elt("input",{type: "text", name: "tag"+i}));
 
-				//タグ追加ボタン
-				let addTag = elt("input",{type: "button", id: "addTag", value: "タグ追加"});
-				createBoardForm.appendChild(addTag);
-				createBoardForm.appendChild(elt("br"));
-				document.getElementById("addTag").addEventListener("click",function(e) {
-					let tag = document.getElementById("tag").value;
-					let tags = document.getElementById("tags").length;
+					createBoardForm.appendChild(inputTagDisplay[i-1]);
+					inputTagDisplay[i-1].appendChild(inputTag[i-1]);
 
-					if(!(tag.length <= 0) && !(tag.length > 10) && tags < 6) {
-						let option = elt("option", {name: "option",id: "option"}, tag);
-						inputTags.appendChild(option);
-						console.log(document.getElementById("tags").value);
-					}
-				},false);
+					createBoardForm.appendChild(elt("br"));
+				}
 
 				//戻るボタン設定
 				let back = elt("input", {type: "button",id: "back", value: "戻る"});
@@ -306,11 +284,73 @@ Timestamp updateTime = account.getUpdatedAt();
 						e.preventDefault();
 					}
 
-					let options = document.getElementById(inputTags).options;
-
 				},false);
 			}
 		}
+
+		//お気に入り画面の表示
+		favorite.addEventListener("click",favoriteBulletinBoard,false);
+
+		//お気に入りの掲示板があるかのチェック
+		function favoriteBulletinBoard() {
+			let req = new XMLHttpRequest();
+
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status == 200) {
+					console.log(req.response);
+					console.log(tes);
+				}
+			};
+
+			//PassCheckServletに入力されたPassを送信
+			req.open("GET","/PURE/FavoriteServlet");
+			req.send(null);
+		}
+
+		//コメントの履歴を表示
+		commentHistory.addEventListener("click",function(){
+
+		},false);
+
+		//コメント履歴の取得
+		function getCommentHistory() {
+			let req = new XMLHttpRequest();
+
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status == 200) {
+					let tes = JSON.parse(req.response);
+
+				}
+			};
+
+			//PassCheckServletに入力されたPassを送信
+			req.open("POST","/PURE/GetMyCommentServlet");
+			req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+			req.send("id=" + "<%= id %>");
+		}
+
+		//要素の作成
+		function elt(name, attributes) {
+			let node = document.createElement(name);
+
+			if(attributes) {
+				for(let attr in attributes) {
+					if(attributes.hasOwnProperty(attr)) {
+						node.setAttribute(attr, attributes[attr])
+					}
+				}
+			}
+
+			for(let i=2; i < arguments.length; i++) {
+				let child = arguments[i];
+				if(typeof child == "string") {
+					child = document.createTextNode(child);
+				}
+				node.appendChild(child);
+			}
+			return node;
+		}
+
 	</script>
 </body>
 </html>

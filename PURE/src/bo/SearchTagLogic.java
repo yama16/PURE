@@ -1,8 +1,7 @@
-package model;
-
-import java.util.List;
+package bo;
 
 import dao.BulletinBoardsDAO;
+import model.BulletinBoardList;
 
 /**
  * タグで掲示板を検索するロジック。
@@ -18,9 +17,9 @@ public class SearchTagLogic {
      * @param partial 部分一致検索ならtrue、完全一致検索ならfalseを指定。
      * @return 検索した掲示板のリスト
      */
-	public List<BulletinBoard> execute(String tag, boolean partial){
+	public BulletinBoardList execute(String tag, boolean partial){
 		BulletinBoardsDAO dao = new BulletinBoardsDAO();
-		List<BulletinBoard> list = dao.findByTag(tag, partial);
+		BulletinBoardList list = dao.findByTag(tag, partial);
 		return list;
 	}
 

@@ -1,8 +1,7 @@
-package model;
-
-import java.util.List;
+package bo;
 
 import dao.TagsDAO;
+import model.TagList;
 
 /**
  * 掲示板のタグを編集するロジック。
@@ -17,7 +16,7 @@ public class EditTagLogic {
 	 * @param tagList
 	 * @return
 	 */
-	public boolean execute(int bulletinBoardId, List<String> tagList){
+	public boolean execute(int bulletinBoardId, TagList tagList){
 		TagsDAO dao = new TagsDAO();
 		boolean result = dao.deleteByBulletinBoardId(bulletinBoardId);
 		if(result == false){

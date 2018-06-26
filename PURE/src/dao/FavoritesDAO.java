@@ -5,10 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import model.BulletinBoard;
 
 /**
  *
@@ -31,90 +27,92 @@ public class FavoritesDAO {
     }
 
     /**
-     * お気に入りを追加するメソッド。
+     * お気に入りを追加するprivateメソッド。
      * @param accountId お気に入りをしたアカウントのID
      * @param bulletinBoardId お気に入りした掲示板のID
-     * @return お気に入りに追加できればtrue。できなければfalse。
+     * @param conn コネクション
+     * @return お気に入りに追加できれば1。できなければ0。
+     * @throws SQLException
      */
-    public boolean create(String accountId, int bulletinBoardId){
-    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+    private int create(String accountId, int bulletinBoardId, Connection conn) throws SQLException{
+   		String sql = "INSERT INTO favorites(account_id, bulletin_board_id) VALUES(?, ?);";
 
-    		String sql = "INSERT INTO favorites(account_id, bulletin_board_id) VALUES(?, ?);";
+   		PreparedStatement pStmt = conn.prepareStatement(sql);
+   		pStmt.setString(1, accountId);
+   		pStmt.setInt(2, bulletinBoardId);
 
-    		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setString(1, accountId);
-    		pStmt.setInt(2, bulletinBoardId);
-
-    		int result = pStmt.executeUpdate();
-    		if(result != 1){
-    			return false;
-    		}
-
-    	} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-    	return true;
+   		int result = pStmt.executeUpdate();
+   		if(result != 1){
+   			return 0;
+   		}
+   		return 1;
     }
 
     /**
-     * お気に入りを削除するメソッド。
+     * お気に入りを削除するprivateメソッド。
      * @param accountId お気に入りを削除するアカウントのID
      * @param bulletinBoardId 削除するお気に入りの掲示板のID
-     * @return 削除できればtrue。できなければfalse。
+     * @param conn コネクション
+     * @return お気に入りから削除できれば-1。できなければ0。
+     * @throws SQLException
      */
-    public boolean delete(String accountId, int bulletinBoardId){
-    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+    private int delete(String accountId, int bulletinBoardId, Connection conn) throws SQLException{
+    	String sql = "DELETE FROM favorites WHERE account_id=? AND bulletin_board_id=?;";
 
-    		String sql = "DELETE FROM favorites WHERE account_id=? AND bulletin_board_id=?;";
+    	PreparedStatement pStmt = conn.prepareStatement(sql);
+    	pStmt.setString(1, accountId);
+    	pStmt.setInt(2, bulletinBoardId);
 
-    		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setString(1, accountId);
-    		pStmt.setInt(2, bulletinBoardId);
-
-    		int result = pStmt.executeUpdate();
-    		if(result != 1){
-    			return false;
-    		}
-
-    	} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-    	return true;
+    	int result = pStmt.executeUpdate();
+    	if(result != 1){
+    		return 0;
+    	}
+    	return -1;
     }
 
     /**
-     * アカウントIDからお気に入りの掲示板IDを検索するメソッド。
-     * @param accountId 検索するアカウントのID。
-     * @return 検索が成功すればお気に入りのリストを返す。失敗すればnullを返す。
+     * 引数のアカウントIDと掲示板IDからお気に入りを探すメソッド。
+     * @param accountId 探すお気に入りのアカウントID
+     * @param bulletinBoardId 探すお気に入りの掲示板ID
+     * @param conn コネクション
+     * @return 見つかればtrue、見つからなければfalseを返す。
+     * @throws SQLException
      */
-    public List<BulletinBoard> findByAccountId(String accountId){
-    	List<BulletinBoard> favoriteList = new ArrayList<>();
+    private boolean find(String accountId, int bulletinBoardId, Connection conn) throws SQLException{
+    	String sql = "SELECT * FROM favorites WHERE account_id=? AND bulletin_board_id=?;";
+
+    	PreparedStatement pStmt = conn.prepareStatement(sql);
+    	pStmt.setString(1, accountId);
+    	pStmt.setInt(2, bulletinBoardId);
+
+    	ResultSet resultSet = pStmt.executeQuery();
+
+    	return resultSet.next();
+    }
+
+    /**
+     * findメソッドで引数のお気に入りがあるか調べ、あればdeleteメソッドで削除し、なければcreateメソッドで追加する。
+     * @param accountId 調べるお気に入りのアカウントID
+     * @param bulletinBoardId 調べるお気に入りの掲示板ID
+     * @return 追加したら1、削除したら-1、エラー等で処理を失敗したら0を返す。
+     */
+    public int toggle(String accountId, int bulletinBoardId){
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql ="SELECT bulletin_board_id, title, account_id, created_at, updated_at, view_quantity FROM favorites LEFT OUTER JOIN bulletin_boards ON favorites.bulletin_board_id = bulletin_boards.id WHERE account_id=?;";
+    		if(find(accountId, bulletinBoardId, conn)){
 
-    		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setString(1, accountId);
+    			return delete(accountId, bulletinBoardId, conn);
 
-    		ResultSet resultSet = pStmt.executeQuery();
-    		while(resultSet.next()){
-    			BulletinBoard bulletinBoard = new BulletinBoard();
-    			bulletinBoard.setId(resultSet.getInt("bulletin_board_id"));
-    			bulletinBoard.setAccountId(resultSet.getString("account_id"));
-    			bulletinBoard.setTitle(resultSet.getString("title"));
-    			favoriteList.add(bulletinBoard);
+    		}else{
+
+    			return create(accountId, bulletinBoardId, conn);
+
     		}
 
     	} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			return 0;
 		}
-
-    	return favoriteList;
     }
 
 }

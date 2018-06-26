@@ -1,8 +1,7 @@
-package model;
-
-import java.util.List;
+package bo;
 
 import dao.BulletinBoardsDAO;
+import model.BulletinBoardList;
 
 /**
  * 掲示板をタイトルで検索するロジック。
@@ -16,9 +15,9 @@ public class SearchTitleLogic {
 	 * @param keyword 検索する文字列
 	 * @return 検索結果の掲示板のリスト
 	 */
-	public List<BulletinBoard> execute(String keyword){
+	public BulletinBoardList execute(String keyword){
 		BulletinBoardsDAO dao = new BulletinBoardsDAO();
-		List<BulletinBoard> list = dao.findByKeyword(keyword);
+		BulletinBoardList list = dao.findByKeyword(keyword);
 		return list;
 	}
 

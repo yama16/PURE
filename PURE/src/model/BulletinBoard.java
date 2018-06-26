@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -17,10 +17,13 @@ public class BulletinBoard implements Serializable {
 	private Timestamp createdAt;
 	private int viewQuantity;
 	private int favoriteQuantity;
-	private List<Comment> commentList;
-	private List<String> tagList;
+	private CommentList commentList;
+	private TagList tagList;
 
-	public BulletinBoard(){}
+	public BulletinBoard(){
+		this.commentList = new CommentList();
+		this.tagList = new TagList();
+	}
 	public BulletinBoard(int id, String title, String accountId, Timestamp createdAt, int viewQuantity, int favoriteQuantity){
 		this.id = id;
 		this.title = title;
@@ -28,6 +31,30 @@ public class BulletinBoard implements Serializable {
 		this.createdAt = createdAt;
 		this.viewQuantity = viewQuantity;
 		this.favoriteQuantity = favoriteQuantity;
+	}
+
+	@Override
+	public String toString(){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/H:m:s");
+		StringBuffer json = new StringBuffer();
+		json.append("{\"id\":")
+			.append(id)
+			.append(", \"title\":\"")
+			.append(title)
+			.append("\", \"accountId\":\"")
+			.append(accountId)
+			.append("\", \"createdAt\":\"")
+			.append(sdf.format(createdAt.getTime()))
+			.append("\", \"viewQuantity\":")
+			.append(viewQuantity)
+			.append(", \"favoriteQuantity\":")
+			.append(favoriteQuantity)
+			.append(", \"commentList\":")
+			.append(commentList.toString())
+			.append(", \"tagList\":")
+			.append(tagList.toString())
+			.append("}");
+		return json.toString();
 	}
 
 	public int getId(){ return id; }
@@ -42,8 +69,8 @@ public class BulletinBoard implements Serializable {
 	public void setViewQuantity(int viewQuantity){ this.viewQuantity = viewQuantity; }
 	public int getFavoriteQuantity(){ return favoriteQuantity; }
 	public void setFavoriteQuantity(int favoriteQuantity){ this.favoriteQuantity = favoriteQuantity; }
-	public List<Comment> getCommentList(){ return commentList; }
-	public void setCommentList(List<Comment> commentList){ this.commentList = commentList; }
-	public List<String> getTagList(){ return tagList; }
-	public void setTagList(List<String> tagList){ this.tagList = tagList; }
+	public CommentList getCommentList(){ return commentList; }
+	public void setCommentList(CommentList commentList){ this.commentList = commentList; }
+	public TagList getTagList(){ return tagList; }
+	public void setTagList(TagList tagList){ this.tagList = tagList; }
 }

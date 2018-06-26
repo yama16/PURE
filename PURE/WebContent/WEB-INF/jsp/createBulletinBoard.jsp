@@ -2,10 +2,11 @@
     pageEncoding="UTF-8"%>
 <%@ page import="model.BulletinBoard" %>
 <%@ page import="model.Comment" %>
+<%@ page import="model.CommentList" %>
 <%@ page import="java.util.List" %>
 <%
 BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
-List<Comment> commentList = bulletinBoard.getCommentList();
+CommentList commentList = bulletinBoard.getCommentList();
 String bulletinBoardTitle = bulletinBoard.getTitle();
 String ceatedAt = bulletinBoard.getCreatedAt().toString();
 %>
@@ -25,14 +26,18 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       	<input id="favoriteButton" type="button" value="お気に入り">
       </div>
       <!-- 以下コメントが入る -->
-      <% for(Comment cmt: commentList) { %>
-      	<div class="comment" id="<%= cmt.getId() %>">
+      <%
+      	for(int i = 0; i < commentList.size(); i++) {
+    	  Comment comment = commentList.get(i);
+      %>
+
+      	<div class="comment" id="<%= comment.getId() %>">
       		<dl>
-      			<dt><span>No<%= cmt.getId() %></span></dt>
-      			<dt><span><%= cmt.getNickName() %></span></dt>
-      			<dt><span><%= cmt.getAccountId() %></span></dt>
-      			<dt><span><%= cmt.getCreatedAt() %></span></dt>
-      			<dd><span><%= cmt.getComment() %></span></dd>
+      			<dt><span>No.<%= comment.getId() %></span></dt>
+      			<dt><span><%= comment.getNickname() %></span></dt>
+      			<dt><span><%= comment.getAccountId() %></span></dt>
+      			<dt><span><%= comment.getCreatedAt() %></span></dt>
+      			<dd><span><%= comment.getComment() %></span></dd>
       		</dl>
       		<input class="pureButton" type="button" value="PURE">
       		<input class="replyButton" type="button" value="返信">
@@ -53,15 +58,17 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
   </body>
   <script type="text/javascript">
     // ボタン初期設定(PUREボタン, 返信ボタン, お気に入りボタン)
-    let pureButtons = document.getElementsByClassName("pureButton");
-    let replyButtons = document.getElementsByClassName("replyButton");
-    let favoriteButton = document.getElementById("favoriteButton");
+    if( document.getElementsByClassName("comment") ) {
+    	let pureButtons = document.getElementsByClassName("pureButton");
+        let replyButtons = document.getElementsByClassName("replyButton");
+        let favoriteButton = document.getElementById("favoriteButton");
 
-    for(let button of pureButton) {
-      button.addEventListener("click", pureButtonEvent, false);
-    }
-    for(let button of replyButton) {
-      button.addEventListener("click", replyButtonEvent, false);
+        for(let button of pureButtons) {
+          button.addEventListener("click", pureButtonEvent, false);
+        }
+        for(let button of replyButtons) {
+          button.addEventListener("click", replyButtonEvent, false);
+        }
     }
     favoriteButton.addEventListener("click", function() {
       // 初期処理
@@ -81,24 +88,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     }, false)
 
     // 5秒ごとに更新情報を取得
-    setInterval(function() {
-      // 初期処理
-      let req = new XMLHttpRequest();
-      // リクエスト処理
-      req.onreadystatechange = function() {
-        if(req.readyState == 4) {
-          if(req.status == 200) {
-            // データ受信成功時の処理
-            if(req.response) {
-              commentDisplay( JSON.parse(req.response) );
-            }
-          }
-        }
-      }
-      req.open("POST", "/PURE/GetNewCommentServlet");
-      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      req.send(lastCommentId);
-    }, 5000);
+    setInterval(getNewComment, 5000);
 
     // クリアボタン
     document.getElementById("clearButton").addEventListener("click", function() {
@@ -123,7 +113,8 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
             if(req.status == 200) {
               // データ受信成功時の処理
               if(req.response) {
-                commentDisplay( JSON.parse(req.response) );
+                console.log("受信成功！！");
+                getNewComment();
               }
               text.value = ""; // 入力欄をクリア
             }
@@ -136,15 +127,13 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     }, false);
 
     // コメントデータを受け取り画面に表示する処理
-    function commentDisplay(commentData) {
+    function commentDisplay(commentArray) {
       // 初期処理
       let commentField = document.getElementById("commentField");   // コメント欄のdiv要素取得
-      let comments = document.getElementsByClassName("comment");
-      let commentArray = commentData.commentArray;                  // コメントオブジェクトが入った配列
 
       // コメントを表示またはコメントをPURE(未実装)
       for(let cmtObj of commentArray) {
-        cmtField.appendChild( createCommentFrame(cmtObj) );         // コメント枠をコメント欄に追加
+    	commentField.appendChild( createCommentFrame(cmtObj) );         // コメント枠をコメント欄に追加
       }
     }
 
@@ -165,11 +154,11 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       replyButton.setAttribute("type", "button");
       replyButton.setAttribute("value", "返信");
       commentFrame.setAttribute("class", "comment");             // コメント枠にclass属性を設定
-      commentFrame.setAttribute("id", commentObject.commentId);  // コメント枠にId属性(commentId)を設定
+      commentFrame.setAttribute("id", commentObject.Id);  // コメント枠にId属性(commentId)を設定
 
       // span要素にcmtObjのフィールドを追加
-      spanElementCommentId.appendChild( document.createTextNode("No" + commentObject.commentId) );
-      spanElementNickName.appendChild( document.createTextNode(commentObject.nickName) );
+      spanElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );
+      spanElementNickName.appendChild( document.createTextNode(commentObject.nickname) );
       spanElementAccountId.appendChild( document.createTextNode(commentObject.accountId) );
       spanElementCreatedAt.appendChild( document.createTextNode(commentObject.createdAt) );
       // dt要素にspan要素を追加
@@ -203,6 +192,28 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       commentFrame.appendChild(replyButton);
 
       return commentFrame;
+    }
+
+    function getNewComment() {
+      // 初期処理
+      let req = new XMLHttpRequest();
+      // リクエスト処理
+      req.onreadystatechange = function() {
+        if(req.readyState == 4) {
+          if(req.status == 200) {
+            // データ受信成功時の処理
+            if(req.response) {
+           	  console.log(req.response);
+           	  let obj = JSON.parse(req.response);
+           	  console.log(obj);
+           	  commentDisplay( obj );
+            }
+          }
+        }
+      }
+      req.open("GET", "/PURE/GetNewCommentServlet");
+      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      req.send(null);
     }
 
     function pureButtonEvent(e) {

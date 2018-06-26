@@ -1,4 +1,4 @@
-package model;
+package bo;
 
 import dao.PuresDAO;
 
@@ -14,15 +14,11 @@ public class TogglePureLogic {
 	 * @param accountId アカウントのID
 	 * @param commentId コメントのID
 	 * @param bulletinBoardId 掲示板のID
-	 * @return 成功すればtrueを返す。失敗すればfalseを返す。
+	 * @return 追加すれば1を返す。削除すれば-1を返す。失敗すれば0を返す。
 	 */
-	public boolean execute(String accountId, int commentId, int bulletinBoardId){
+	public int execute(String accountId, int commentId, int bulletinBoardId){
 		PuresDAO dao = new PuresDAO();
-		if(dao.find(accountId, commentId, bulletinBoardId)){
-			return dao.delete(accountId, commentId, bulletinBoardId);
-		}else{
-			return dao.create(accountId, commentId, bulletinBoardId);
-		}
+		return dao.toggle(accountId, commentId, bulletinBoardId);
 	}
 
 }

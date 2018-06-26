@@ -1,8 +1,9 @@
-package model;
+package bo;
 
 import java.util.List;
 
 import dao.CommentsDAO;
+import model.BulletinBoard;
 
 /**
  * アカウントのコメントの履歴を取得するロジック。

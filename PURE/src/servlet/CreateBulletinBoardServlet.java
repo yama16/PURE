@@ -2,8 +2,6 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,9 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bo.CreateBulletinBoardLogic;
 import model.Account;
 import model.BulletinBoard;
-import model.CreateBulletinBoardLogic;
+import model.TagList;
 
 /**
  * Servlet implementation class CreateBulletinBoardServlet
@@ -29,9 +28,14 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 		String accountId = account.getId();
 		String title = request.getParameter("title");
 		long now = System.currentTimeMillis();
-		List<String> test = new ArrayList<String>();
-		test.add("test1");
-		test.add("test2");
+
+		TagList test = new TagList();
+		for(int i = 1; i <= 6; i++) {
+			String tag = request.getParameter("tag"+i);
+			if(!(tag.equals(null))) {
+				test.add(tag);
+			}
+		}
 
 		System.out.println(account.getId());
 		System.out.println("testBoardCreate");
@@ -44,10 +48,12 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 
 		bulletinBoard.setTagList(test);
 
+		System.out.println("lolo");
+
 		CreateBulletinBoardLogic createBoardLogic = new CreateBulletinBoardLogic();
 		createBoardLogic.execute(bulletinBoard);
 
-
+		System.out.println("koko");
 	}
 
 }
