@@ -200,7 +200,8 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
             // データ受信成功時の処理
             if(req.response) {
            	  console.log(req.response);
-           	  commentDisplay( JSON.parse(req.response) );
+           	  let obj = JSON.parse(req.response);
+           	  commentDisplay( obj );
             }
           }
         }

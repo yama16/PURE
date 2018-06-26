@@ -38,8 +38,6 @@ public class GetNewCommentServlet extends HttpServlet {
 
 		// JSON形式に組み合わせる処理
 		StringBuffer json = new StringBuffer();
-		json.append("{");
-		json.append("commentArray:");
 		json.append("[");
 		for(int i = 0; i < newCommentList.size(); i++) {
 			json.append(newCommentList.get(i).toString());
@@ -48,7 +46,6 @@ public class GetNewCommentServlet extends HttpServlet {
 			}
 		}
 		json.append("]");
-		json.append("}");
 
 		// レスポンス処理
 		response.setContentType("application/json;charset=UTF-8");
