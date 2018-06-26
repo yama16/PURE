@@ -150,10 +150,10 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       replyButton.setAttribute("type", "button");
       replyButton.setAttribute("value", "返信");
       commentFrame.setAttribute("class", "comment");             // コメント枠にclass属性を設定
-      commentFrame.setAttribute("id", commentObject.commentId);  // コメント枠にId属性(commentId)を設定
+      commentFrame.setAttribute("id", commentObject.Id);  // コメント枠にId属性(commentId)を設定
 
       // span要素にcmtObjのフィールドを追加
-      spanElementCommentId.appendChild( document.createTextNode("No" + commentObject.commentId) );
+      spanElementCommentId.appendChild( document.createTextNode("No" + commentObject.Id) );
       spanElementNickName.appendChild( document.createTextNode(commentObject.nickName) );
       spanElementAccountId.appendChild( document.createTextNode(commentObject.accountId) );
       spanElementCreatedAt.appendChild( document.createTextNode(commentObject.createdAt) );
@@ -201,6 +201,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
             if(req.response) {
            	  console.log(req.response);
            	  let obj = JSON.parse(req.response);
+           	  console.log(obj);
            	  commentDisplay( obj );
             }
           }

@@ -40,7 +40,7 @@ public class Comment implements Serializable{
 		StringBuffer json = new StringBuffer();
 		json.append("{\"id\":")
 			.append(id)
-			.append(",\" bulletinBoardId\":")
+			.append(",\"bulletinBoardId\":")
 			.append(bulletinBoardId)
 			.append(", \"nickname\":\"")
 			.append(nickname)
