@@ -277,4 +277,35 @@ public class BulletinBoardsDAO {
     	return list;
     }
 
+    /**
+     * アカウントIDからお気に入りの掲示板IDを検索し、お気に入りの掲示板のリストを返すメソッド。
+     * @param accountId 検索するアカウントのID。
+     * @return 検索が成功すればお気に入りのリストを返す。失敗すればnullを返す。
+     */
+    public List<BulletinBoard> findFavorite(String accountId){
+    	List<BulletinBoard> favoriteList = new ArrayList<>();
+    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+
+    		String sql ="SELECT f.bulletin_board_id, b.title, f.account_id, b.created_at, b.view_quantity FROM favorites AS f LEFT OUTER JOIN bulletin_boards AS b ON f.bulletin_board_id = b.id WHERE f.account_id=?;";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setString(1, accountId);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		while(resultSet.next()){
+    			BulletinBoard bulletinBoard = new BulletinBoard();
+    			bulletinBoard.setId(resultSet.getInt("bulletin_board_id"));
+    			bulletinBoard.setAccountId(resultSet.getString("account_id"));
+    			bulletinBoard.setTitle(resultSet.getString("title"));
+    			favoriteList.add(bulletinBoard);
+    		}
+
+    	} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+    	return favoriteList;
+    }
+
 }
