@@ -41,6 +41,7 @@ Timestamp updateTime = account.getUpdatedAt();
 		let commentHistory = document.getElementById("commentHistory");
 		let favoriteBulletinBoard;
 		let passUseble = false;
+		let titleUseble = false;
 
 		///ページを読み込んだ時個人設定画面を表示
 		window.onload = personalSetting;
@@ -276,16 +277,22 @@ Timestamp updateTime = account.getUpdatedAt();
 						let createConfirm = elt("input", {type: "submit", value: "確定"});
 						createBoardForm.appendChild(createConfirm);
 
+						//掲示板のタイトルが他のと重複していないかのチェック
+						document.getElementById("title").addEventListener("blur",titleCheck,false);
+
 						//掲示板作成時の入力値チェック
 						let boardForm = document.getElementById("boardForm");
 						boardForm.addEventListener("submit",function(e) {
 							let title = document.getElementById("title").value;
-							let isAppropriate = true;
+							console.log(titleUseble);
+
+							if(titleUseble) {
+								e.preventDefault();
+							}
 
 							if(title.length <= 0) {
 								e.preventDefault();
 							}
-
 						},false);
 					},false);
 				}
@@ -293,6 +300,28 @@ Timestamp updateTime = account.getUpdatedAt();
 
 			//PassCheckServletに入力されたPassを送信
 			req.open("GET","/PURE/GetMyBulletinBoardServlet");
+			req.send(null);
+		}
+
+		//掲示板のタイトル検索
+		function titleCheck(){
+			let req = new XMLHttpRequest();
+			let getTitle = document.getElementById("title").value;
+
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status == 200) {
+					if (!(JSON.parse(req.response))) {
+						console.log("fafa");
+						titleUseble = true;
+					} else {
+						console.log("afaf");
+						titleUseble = false;
+					}
+				}
+			};
+
+			//PassCheckServletに入力されたPassを送信
+			req.open("GET","/PURE/TitleCheckServlet?title=" + getTitle);
 			req.send(null);
 		}
 
