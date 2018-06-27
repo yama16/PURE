@@ -363,4 +363,41 @@ public class BulletinBoardsDAO {
     	return favoriteList;
     }
 
+    /**
+     *
+     * @param title
+     * @return
+     */
+    public boolean titleIsUsable(String title){
+    	Connection conn = null;
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+
+    		String sql = "SELECT * FROM bulletin_boards WHERE title = ?;";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setString(1, title);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		if(resultSet.next()){
+    			return false;
+    		}
+
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    		return false;
+    	}finally{
+    		if(conn != null){
+    			try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return false;
+				}
+    		}
+    	}
+
+    	return true;
+    }
+
 }
