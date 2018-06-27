@@ -33,7 +33,6 @@ public class PostCommentServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// セッションスコープから掲示板オブジェクトとアカウントオブジェクトを取得
-		System.out.println("POST!!");
 		HttpSession session = request.getSession();
 		BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
 		Account account = (Account) session.getAttribute("account");

@@ -33,10 +33,12 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
 
       	<div class="comment" id="<%= comment.getId() %>">
       		<dl>
-      			<dt><span>No.<%= comment.getId() %></span></dt>
-      			<dt><span><%= comment.getNickname() %></span></dt>
-      			<dt><span><%= comment.getAccountId() %></span></dt>
-      			<dt><span><%= comment.getCreatedAt() %></span></dt>
+      			<dt>
+      			  <span>No.<%= comment.getId() %></span>
+      			  <span><%= comment.getNickname() %></span>
+      			  <span><%= comment.getAccountId() %></span>
+      			  <span><%= comment.getCreatedAt() %></span>
+      			</dt>
       			<dd><span><%= comment.getComment() %></span></dd>
       		</dl>
       		<input class="pureButton" type="button" value="PURE">
@@ -154,7 +156,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       replyButton.setAttribute("type", "button");
       replyButton.setAttribute("value", "返信");
       commentFrame.setAttribute("class", "comment");             // コメント枠にclass属性を設定
-      commentFrame.setAttribute("id", commentObject.Id);  // コメント枠にId属性(commentId)を設定
+      commentFrame.setAttribute("id", commentObject.id);  // コメント枠にId属性(commentId)を設定
 
       // span要素にcmtObjのフィールドを追加
       spanElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );
