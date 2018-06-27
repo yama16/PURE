@@ -32,14 +32,4 @@ public abstract class AbstractList<T> {
 		return list.add(t);
 	}
 
-	public boolean addAll(AbstractList<T> addList){
-		boolean add = true;
-		for(int i = 0; i < addList.size(); i++){
-			if(!list.add(addList.get(i))){
-				add = false;
-			}
-		}
-		return add;
-	}
-
 }
