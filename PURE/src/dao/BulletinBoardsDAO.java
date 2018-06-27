@@ -143,7 +143,7 @@ public class BulletinBoardsDAO {
     				list.add(bulletinBoard);
         			bulletinBoard.setId(bulletinBoardId);
         			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
         			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
         			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
         			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
@@ -199,7 +199,7 @@ public class BulletinBoardsDAO {
     				list.add(bulletinBoard);
         			bulletinBoard.setId(bulletinBoardId);
         			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
         			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
         			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
         			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
@@ -247,7 +247,7 @@ public class BulletinBoardsDAO {
     				list.add(bulletinBoard);
         			bulletinBoard.setId(bulletinBoardId);
         			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
         			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
         			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
         			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
@@ -298,7 +298,7 @@ public class BulletinBoardsDAO {
     				list.add(bulletinBoard);
         			bulletinBoard.setId(bulletinBoardId);
         			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
         			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
         			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
         			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
@@ -327,7 +327,7 @@ public class BulletinBoardsDAO {
     	BulletinBoardList favoriteList = new BulletinBoardList();
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql ="SELECT f.bulletin_board_id, b.title, f.account_id, b.created_at, b.view_quantity, b.favorite_quantity FROM favorites AS f LEFT OUTER JOIN bulletin_boards AS b ON f.bulletin_board_id = b.id LEFT OUTER JOIN tags AS t ON b.id = t.bulletin_board_id WHERE f.account_id = ? ORDER BY f.bulletin_board_id;";
+    		String sql ="SELECT f.bulletin_board_id, b.title, f.account_id, b.created_at, b.view_quantity, b.favorite_quantity, t.tag FROM favorites AS f LEFT OUTER JOIN bulletin_boards AS b ON f.bulletin_board_id = b.id LEFT OUTER JOIN tags AS t ON b.id = t.bulletin_board_id WHERE f.account_id = ? ORDER BY f.bulletin_board_id;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, accountId);
@@ -336,14 +336,14 @@ public class BulletinBoardsDAO {
     		BulletinBoard bulletinBoard = null;
 			TagList tagList = null;
     		while(resultSet.next()){
-    			int bulletinBoardId = resultSet.getInt("id");
+    			int bulletinBoardId = resultSet.getInt("bulletin_board_id");
     			if(bulletinBoard == null || bulletinBoard.getId() != bulletinBoardId){
     				bulletinBoard = new BulletinBoard();
     				tagList = new TagList();
     				favoriteList.add(bulletinBoard);
         			bulletinBoard.setId(bulletinBoardId);
         			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("accont_id"));
+        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
         			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
         			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
         			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
