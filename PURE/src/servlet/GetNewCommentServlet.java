@@ -30,7 +30,8 @@ public class GetNewCommentServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
 		int bulletin_board_id = bulletinBoard.getId();
-		int last_comment_id = bulletinBoard.getCommentList().size() - 1;
+		int last_comment_id = bulletinBoard.getCommentList().size();
+		System.out.println("last_comment_id:" + last_comment_id);
 
 		GetNewCommentLogic logic = new GetNewCommentLogic();
 		CommentList newCommentList = logic.execute(bulletin_board_id, last_comment_id);
