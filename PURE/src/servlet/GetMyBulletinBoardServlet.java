@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,11 +24,15 @@ public class GetMyBulletinBoardServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		Account account = (Account) session.getAttribute("account");
+
 		BulletinBoardList bulletinBoardList;
 		GetMyBulletinBoardLogic bulletinBoardLogic = new GetMyBulletinBoardLogic();
 		bulletinBoardList = bulletinBoardLogic.execute(account.getId());
 
-
+		response.setContentType("application/json;charset=UTF-8");
+		PrintWriter pw = response.getWriter();
+		pw.print(bulletinBoardList.toString());
+		pw.close();
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

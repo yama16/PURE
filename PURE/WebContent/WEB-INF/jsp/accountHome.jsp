@@ -87,7 +87,6 @@ Timestamp updateTime = account.getUpdatedAt();
 
 		//ニックネーム変更ボタンが押されたら入力画面を表示
 		function nicknameChange() {
-			console.log("ohu")
 			menu.textContent = null;
 
 			//ニックネーム入力フォームj
@@ -109,7 +108,8 @@ Timestamp updateTime = account.getUpdatedAt();
 			inputNicknameForm.appendChild(changeSubmit);
 
 			//ニックネームが未入力または入力制限を超えていた場合送信を中止
-			document.getElementById("nicknameForm").addEventListener("submit",function() {
+			let nicknameForm = document.getElementById("nicknameForm");
+			nicknameForm.addEventListener("submit",function(e) {
 				let newNickname = document.getElementById("newNickname");
 				let inputNicknameCheck = true;
 				if(newNickname.value.length <= 0) {
@@ -118,6 +118,7 @@ Timestamp updateTime = account.getUpdatedAt();
 					inputNicknameCheck = false;
 				}
 				if(!(inputNicknameCheck)) {
+					inputNicknameForm.appendChild(elt("p", null, "※ニックネームの入力が正しくありません"));
 					e.preventDefault();
 				}
 			},false);
@@ -167,6 +168,7 @@ Timestamp updateTime = account.getUpdatedAt();
 			//パスワードが一致しているかのチェック
 			document.getElementById("nowPass").addEventListener("blur",passCheck,false);
 
+			//パスワード変更のために入力した値のチェック
 			document.getElementById("passForm").onsubmit = function() {
 				console.log("moge");
 				let nowPass = document.getElementById("nowPass").value;
@@ -186,6 +188,7 @@ Timestamp updateTime = account.getUpdatedAt();
 				}
 
 				if(newPass.length < 8 || newPass.length > 16) {
+					inputPassForm.appendChild(elt("p", null, "パスワードの文字数が足りません"));
 					console.log("3");
 					isAppropriate = false;
 				}
@@ -199,22 +202,20 @@ Timestamp updateTime = account.getUpdatedAt();
 					console.log("5");
 					isAppropriate = false;
 				}
-				console.log(isAppropriate);
+
 				return isAppropriate;
 			}
 
 		}
 
+		//入力されたパスワードが自分のパスワードと一致しているかのチェック
 		function passCheck(){
 			let req = new XMLHttpRequest();
 			let nowPass = document.getElementById("nowPass");
+
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
-					//Passwordがあっていなかったら注意メッセージを表示
-					console.log(req.response);
 					if (!(JSON.parse(req.response))) {
-						console.log("ojoj");
-						let errorMsg = elt("p", null, "パスワードの入力が正しくありません");
 						passUseble = true;
 					} else {
 						passUseble = false;
@@ -232,61 +233,67 @@ Timestamp updateTime = account.getUpdatedAt();
 		bulletinBoard.addEventListener("click",bulletinBoardCreate,false);
 		function bulletinBoardCreate() {
 			menu.textContent = null;
+			let req = new XMLHttpRequest();
 
-			//作成画面への遷移ボタンの設定
-			let createBoardButton = elt("input",{type: "button", id: "createBoard", value: "作成"});
-			menu.appendChild(createBoardButton);
-
-			//掲示板作成画面
-			document.getElementById("createBoard").onclick = function() {
-				menu.textContent = null;
-
-				//掲示板作成フォーム設定
-				let createBoardForm = elt("form",{action: "/PURE/CreateBulletinBoardServlet", method: "post", id: "boardForm"});
-				menu.appendChild(createBoardForm);
-
-				//タイトル入力設定
-				let inputTitleDisplay = elt("label", null, "タイトル入力:");
-				let inputTitle = elt("input",{type: "text", id: "title", name: "title"});
-				createBoardForm.appendChild(inputTitleDisplay);
-				inputTitleDisplay.appendChild(inputTitle);
-				createBoardForm.appendChild(elt("br"));
-
-				//タグ入力設定
-				let inputTagDisplay = new Array();
-				let inputTag = new Array();
-
-				for(let i = 1; i <= 6; i++) {
-					inputTagDisplay.push(elt("label", null, "タグ"+i+":"));
-					inputTag.push(elt("input",{type: "text", name: "tag"+i}));
-
-					createBoardForm.appendChild(inputTagDisplay[i-1]);
-					inputTagDisplay[i-1].appendChild(inputTag[i-1]);
-
-					createBoardForm.appendChild(elt("br"));
-				}
-
-				//戻るボタン設定
-				let back = elt("input", {type: "button",id: "back", value: "戻る"});
-				createBoardForm.appendChild(back);
-				document.getElementById("back").onclick = bulletinBoardCreate;
-
-				//掲示板作成の確定ボタン設定
-				let createConfirm = elt("input", {type: "submit", value: "確定"});
-				createBoardForm.appendChild(createConfirm);
-
-				//掲示板作成時の入力値チェック
-				let boardForm = document.getElementById("boardForm");
-				boardForm.addEventListener("submit",function(e) {
-					let title = document.getElementById("title").value;
-					let isAppropriate = true;
-
-					if(title.length <= 0) {
-						e.preventDefault();
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status == 200) {
+					let myBulletinBoard = JSON.parse(req.response);
+					for(let boards of myBulletinBoard) {
+						menu.appendChild(elt("p", null, boards.title));
 					}
 
-				},false);
-			}
+					//作成画面への遷移ボタンの設定
+					let createBoardButton = elt("input",{type: "button", id: "createBoard", value: "作成"});
+					menu.appendChild(createBoardButton);
+
+					//掲示板作成画面の表示
+					document.getElementById("createBoard").addEventListener("click",function() {
+						menu.textContent = null;
+
+						//掲示板作成フォーム設定
+						let createBoardForm = elt("form",{action: "/PURE/CreateBulletinBoardServlet", method: "post", id: "boardForm"});
+						menu.appendChild(createBoardForm);
+
+						//タイトル入力設定
+						let inputTitleDisplay = elt("label", null, "タイトル入力:");
+						let inputTitle = elt("input",{type: "text", id: "title", name: "title"});
+						createBoardForm.appendChild(inputTitleDisplay);
+						inputTitleDisplay.appendChild(inputTitle);
+						createBoardForm.appendChild(elt("br"));
+
+						//タグ入力設定
+						let inputTagDisplay = elt("p", null, "タグを入力してください");
+						let inputTag = elt("input", {type: "text", id: "tag", name: "tag"});
+						menu.appendChild(inputTagDisplay);
+						menu.appendChild(inputTag);
+
+						//戻るボタン設定
+						let back = elt("input", {type: "button",id: "back", value: "戻る"});
+						createBoardForm.appendChild(back);
+						document.getElementById("back").onclick = bulletinBoardCreate;
+
+						//掲示板作成の確定ボタン設定
+						let createConfirm = elt("input", {type: "submit", value: "確定"});
+						createBoardForm.appendChild(createConfirm);
+
+						//掲示板作成時の入力値チェック
+						let boardForm = document.getElementById("boardForm");
+						boardForm.addEventListener("submit",function(e) {
+							let title = document.getElementById("title").value;
+							let isAppropriate = true;
+
+							if(title.length <= 0) {
+								e.preventDefault();
+							}
+
+						},false);
+					},false);
+				}
+			};
+
+			//PassCheckServletに入力されたPassを送信
+			req.open("GET","/PURE/GetMyBulletinBoardServlet");
+			req.send(null);
 		}
 
 		//お気に入り画面の表示
@@ -306,33 +313,32 @@ Timestamp updateTime = account.getUpdatedAt();
 				}
 			};
 
-			//PassCheckServletに入力されたPassを送信
 			req.open("GET","/PURE/FavoriteServlet");
 			req.send(null);
 		},false);
 
-
 		//コメントの履歴を表示
 		commentHistory.addEventListener("click",function(){
-
-		},false);
-
-		//コメント履歴の取得
-		function getCommentHistory() {
+			menu.textContent = null;
 			let req = new XMLHttpRequest();
 
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
-					let tes = JSON.parse(req.response);
+					let myComments = JSON.parse(req.response);
 
+					for(let comments of myComments) {
+
+						for(let comment of comments.commentList) {
+							menu.appendChild(elt("p", null, comment.comment));
+						}
+					}
 				}
 			};
 
 			//PassCheckServletに入力されたPassを送信
-			req.open("POST","/PURE/GetMyCommentServlet");
-			req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
-			req.send("id=" + "<%= id %>");
-		}
+			req.open("GET","/PURE/GetMyCommentServlet");
+			req.send(null);
+		},false);
 
 		//要素の作成
 		function elt(name, attributes) {
