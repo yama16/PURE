@@ -6,10 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import model.BulletinBoard;
+import model.BulletinBoardList;
 import model.Comment;
 import model.CommentList;
 
@@ -36,35 +35,29 @@ public class CommentsDAO {
      * 掲示板IDからその掲示板のコメントのリストを返すメソッド。
      * @param bulletin_board_id 検索する掲示板のID
      * @return 検索した掲示板のコメントのリストを返す。
+     * @throws SQLException
      */
-    public CommentList findByBulletinBoardId(int bulletinBoardId){
+    protected CommentList findByBulletinBoardId(int bulletinBoardId, Connection conn) throws SQLException{
 
     	CommentList commentList = new CommentList();
 
-    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+    	String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a ON c.account_id = a.id WHERE c.bulletin_board_id = ?";
 
-    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a ON c.account_id = a.id WHERE c.bulletin_board_id = ?";
+    	PreparedStatement pStmt = conn.prepareStatement(sql);
+    	pStmt.setInt(1, bulletinBoardId);
 
-    		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, bulletinBoardId);
-
-    		ResultSet resultSet = pStmt.executeQuery();
-    		while(resultSet.next()){
-    			Comment comment = new Comment();
-    			comment.setId(resultSet.getInt("id"));
-    			comment.setBulletinBoardId(resultSet.getInt("bulletin_board_id"));
-    			comment.setAccountId(resultSet.getString("account_id"));
-    			comment.setComment(resultSet.getString("comment"));
-    			comment.setCreatedAt(resultSet.getTimestamp("created_at"));
-    			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
-    			comment.setNickname(resultSet.getString("nickname"));
-    			commentList.add(comment);
-    		}
-
-    	} catch (SQLException e) {
-    		e.printStackTrace();
-            return null;
-        }
+    	ResultSet resultSet = pStmt.executeQuery();
+    	while(resultSet.next()){
+    		Comment comment = new Comment();
+    		comment.setId(resultSet.getInt("id"));
+    		comment.setBulletinBoardId(resultSet.getInt("bulletin_board_id"));
+    		comment.setAccountId(resultSet.getString("account_id"));
+    		comment.setComment(resultSet.getString("comment"));
+    		comment.setCreatedAt(resultSet.getTimestamp("created_at"));
+    		comment.setPureQuantity(resultSet.getInt("pure_quantity"));
+    		comment.setNickname(resultSet.getString("nickname"));
+    		commentList.add(comment);
+    	}
 
     	return commentList;
     }
@@ -147,8 +140,8 @@ public class CommentsDAO {
      * @param accountId 履歴を取得するアカウントのID
      * @return アカウントのコメントの履歴の入った掲示板のリスト。
      */
-    public List<BulletinBoard> history(String accountId){
-    	List<BulletinBoard> list = new ArrayList<>();
+    public BulletinBoardList history(String accountId){
+    	BulletinBoardList list = new BulletinBoardList();
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
     		String sql = "SELECT c.id, c.bulletin_board_id, c.comment, c.created_at, c.pure_quantity, b.title, b.account_id, b.created_at AS bulletin_board_created_at, b.view_quantity, b.favorite_quantity FROM comments AS c LEFT OUTER JOIN bulletin_boards AS b ON c.bulletin_board_id = b.id WHERE c.account_id=? ORDER BY c.bulletin_board_id, c.id;";
@@ -189,6 +182,15 @@ public class CommentsDAO {
     	return list;
     }
 
+    /**
+     * 引数で指定したコメントのPURE数をupdateの数だけ変更する。
+     * @param commentId PURE数を変更するコメントのID
+     * @param bulletinBoardId PURE数を変更するコメントのある掲示板のID
+     * @param update 増やすなら1、減らすなら-1。
+     * @param conn コネクション
+     * @return 増やせれば1、減らせれば-1、できなければ0を返す。
+     * @throws SQLException
+     */
     protected int updatePure(int commentId, int bulletinBoardId, int update, Connection conn) throws SQLException{
     	String sql = "UPDATE comments SET pure_quantity=(SELECT pure_quantity FROM comments WHERE id=? AND bulletin_board_id=?) + ? WHERE id=? AND bulletin_board_id=?;";
 

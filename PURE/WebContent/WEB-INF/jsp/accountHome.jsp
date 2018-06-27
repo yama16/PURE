@@ -12,7 +12,7 @@ Timestamp updateTime = account.getUpdatedAt();
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset=UTF-8">
+<meta charset="UTF-8">
 <title>個人設定</title>
 <link rel="stylesheet" href="accountHome.css">
 </head>
@@ -24,10 +24,10 @@ Timestamp updateTime = account.getUpdatedAt();
 		<main>
 			<form id="confirm">
 				<fieldset>
-					<input type="button" value="個人設定" id="personal"><br>
-					<input type="button" value="掲示板" id="bulletinBoard"><br>
-					<input type="button" value="お気に入り" id="favorite"><br>
-					<input type="button" value="コメント履歴" id="commentHistory">
+					<input type="button" value="個人設定" id="personal" style="width:200px; height:30px;"><br>
+					<input type="button" value="掲示板" id="bulletinBoard" style="width:200px; height:30px;"><br>
+					<input type="button" value="お気に入り" id="favorite" style="width:200px; height:30px;"><br>
+					<input type="button" value="コメント履歴" id="commentHistory" style="width:200px; height:30px;">
 				</fieldset>
 			</form>
 		</main>
@@ -39,6 +39,7 @@ Timestamp updateTime = account.getUpdatedAt();
 		let bulletinBoard = document.getElementById("bulletinBoard");
 		let favorite = document.getElementById("favorite");
 		let commentHistory = document.getElementById("commentHistory");
+		let favoriteBulletinBoard;
 		let passUseble = false;
 
 		///ページを読み込んだ時個人設定画面を表示
@@ -289,23 +290,27 @@ Timestamp updateTime = account.getUpdatedAt();
 		}
 
 		//お気に入り画面の表示
-		favorite.addEventListener("click",favoriteBulletinBoard,false);
+		favorite.addEventListener("click",function(){
+			menu.textContent = null;
 
-		//お気に入りの掲示板があるかのチェック
-		function favoriteBulletinBoard() {
+			//お気に入りの掲示板があるかのチェック
 			let req = new XMLHttpRequest();
 
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
-					console.log(req.response);
-					console.log(tes);
+					favoriteBulletinBoard = JSON.parse(req.response);
+
+					for(let favoriteBoard of favoriteBulletinBoard) {
+						menu.appendChild(elt("p", null, favoriteBoard.title));
+					}
 				}
 			};
 
 			//PassCheckServletに入力されたPassを送信
 			req.open("GET","/PURE/FavoriteServlet");
 			req.send(null);
-		}
+		},false);
+
 
 		//コメントの履歴を表示
 		commentHistory.addEventListener("click",function(){
