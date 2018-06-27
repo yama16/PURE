@@ -32,14 +32,17 @@ public class GetNewCommentServlet extends HttpServlet {
 		int bulletin_board_id = bulletinBoard.getId();
 		int last_comment_id = bulletinBoard.getCommentList().size();
 		System.out.println("last_comment_id:" + last_comment_id);
-
+		// 最新コメントが入ったリストをを取得
 		GetNewCommentLogic logic = new GetNewCommentLogic();
 		CommentList newCommentList = logic.execute(bulletin_board_id, last_comment_id);
 
-		// JSON形式に変換
-		String json = newCommentList.toString();
-		// セッションスコープに保存した掲示板を更新
-		bulletinBoard.getCommentList().setAll(newCommentList);
+		// セッションスコープに保存した掲示板の更新に成功したらJSON形式に変換
+		String json;
+		if( bulletinBoard.getCommentList().setAll(newCommentList) ) {
+			json = newCommentList.toString(); // JSON形式に変換
+		} else {
+			json = null;
+		}
 
 		// レスポンス処理
 		response.setContentType("application/json;charset=UTF-8");
