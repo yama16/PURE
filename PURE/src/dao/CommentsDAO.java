@@ -6,10 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import model.BulletinBoard;
+import model.BulletinBoardList;
 import model.Comment;
 import model.CommentList;
 
@@ -141,8 +140,8 @@ public class CommentsDAO {
      * @param accountId 履歴を取得するアカウントのID
      * @return アカウントのコメントの履歴の入った掲示板のリスト。
      */
-    public List<BulletinBoard> history(String accountId){
-    	List<BulletinBoard> list = new ArrayList<>();
+    public BulletinBoardList history(String accountId){
+    	BulletinBoardList list = new BulletinBoardList();
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
     		String sql = "SELECT c.id, c.bulletin_board_id, c.comment, c.created_at, c.pure_quantity, b.title, b.account_id, b.created_at AS bulletin_board_created_at, b.view_quantity, b.favorite_quantity FROM comments AS c LEFT OUTER JOIN bulletin_boards AS b ON c.bulletin_board_id = b.id WHERE c.account_id=? ORDER BY c.bulletin_board_id, c.id;";

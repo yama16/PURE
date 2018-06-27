@@ -1,9 +1,7 @@
 package bo;
 
-import java.util.List;
-
 import dao.CommentsDAO;
-import model.BulletinBoard;
+import model.BulletinBoardList;
 
 /**
  * アカウントのコメントの履歴を取得するロジック。
@@ -17,9 +15,9 @@ public class GetCommentHistoryLogic {
 	 * @param accountId
 	 * @return
 	 */
-	public List<BulletinBoard> execute(String accountId){
+	public BulletinBoardList execute(String accountId){
 		CommentsDAO dao = new CommentsDAO();
-		List<BulletinBoard> list = dao.history(accountId);
+		BulletinBoardList list = dao.history(accountId);
 		return list;
 	}
 
