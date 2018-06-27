@@ -38,7 +38,7 @@ public class GetNewCommentServlet extends HttpServlet {
 		// JSON形式に変換
 		String json = newCommentList.toString();
 		// セッションスコープに保存した掲示板を更新
-
+		bulletinBoard.getCommentList().addAll(newCommentList);
 
 		// レスポンス処理
 		response.setContentType("application/json;charset=UTF-8");
