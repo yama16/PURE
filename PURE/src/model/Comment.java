@@ -56,6 +56,18 @@ public class Comment implements Serializable{
 		return json.toString();
 	}
 
+	@Override
+	public boolean equals(Object o){
+		if(o == this) return true;
+		if(o == null) return false;
+		if(!(o instanceof Comment)) return false;
+		Comment c = (Comment)o;
+		if(!(this.id == c.id && this.bulletinBoardId == c.bulletinBoardId)){
+			return false;
+		}
+		return true;
+	}
+
 	public int getId(){ return id; }
 	public void setId(int id){ this.id = id; }
 	public int getBulletinBoardId(){ return bulletinBoardId; }
