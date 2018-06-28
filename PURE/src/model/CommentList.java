@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 public class CommentList extends AbstractList<Comment> implements Serializable {
 
-	public boolean setAll(AbstractList<Comment> setList){
+	public boolean setAll(CommentList setList){
 		boolean set = true;
 
 		for(int i = 0; i < setList.size(); i++){

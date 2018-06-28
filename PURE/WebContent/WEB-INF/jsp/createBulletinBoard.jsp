@@ -39,7 +39,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       			  <span><%= comment.getAccountId() %></span>
       			  <span><%= comment.getCreatedAt() %></span>
       			</dt>
-      			<dd><span><%= comment.getComment() %></span></dd>
+      			<dd><%= comment.getComment() %></dd>
       		</dl>
       		<input class="pureButton" type="button" value="PURE">
       		<input class="replyButton" type="button" value="返信">
@@ -48,7 +48,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     </div>
 
     <form id="inputComment">
-      <label>ここに入力：</label><br>
+      <label>コメント入力：</label><br>
       <textarea id="inputField" rows="5" cols="40" maxlength="200"></textarea><br>
       <input id="sendButton" type="button" value="送信">
       <input id="clearButton" type="button" value="クリア">
