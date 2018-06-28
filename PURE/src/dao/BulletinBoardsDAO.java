@@ -231,7 +231,7 @@ public class BulletinBoardsDAO {
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards LEFT OUTER JOIN tags ON id = bulletin_board_id WHERE title LIKE ? ORDER BY id;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity, tag FROM bulletin_boards LEFT OUTER JOIN tags ON id = bulletin_board_id WHERE title LIKE ? ORDER BY id;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, keyword);
@@ -364,9 +364,9 @@ public class BulletinBoardsDAO {
     }
 
     /**
-     *
-     * @param title
-     * @return
+     * 引数で指定した掲示板のタイトルが既に使われているか調べるメソッド。
+     * @param title 調べる掲示板のタイトル
+     * @return 使われていればfalse、使われていなければtrueを返す。
      */
     public boolean titleIsUsable(String title){
     	Connection conn = null;
@@ -398,6 +398,74 @@ public class BulletinBoardsDAO {
     	}
 
     	return true;
+    }
+
+    /**
+     * 新着の掲示板をリストで取得するメソッド。
+     * @return 新着の掲示板のリスト
+     */
+    public BulletinBoardList getNewBulletinBoard(){
+    	BulletinBoardList list = new BulletinBoardList();
+    	Connection conn = null;
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity, tag FROM bulletin_boards LEFT OUTER JOIN tags ON id = bulletin_board_id ORDER BY id DESC LIMIT 10;";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		BulletinBoard bulletinBoard = null;
+			TagList tagList = null;
+    		while(resultSet.next()){
+    			int bulletinBoardId = resultSet.getInt("bulletin_board_id");
+    			if(bulletinBoard == null || bulletinBoard.getId() != bulletinBoardId){
+    				bulletinBoard = new BulletinBoard();
+    				tagList = new TagList();
+    				list.add(bulletinBoard);
+        			bulletinBoard.setId(bulletinBoardId);
+        			bulletinBoard.setTitle(resultSet.getString("title"));
+        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
+        			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+        			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+        			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+        			bulletinBoard.setTagList(tagList);
+    			}
+    			String tag = resultSet.getString("tag");
+    			if(tag != null){
+    				tagList.add(tag);
+    			}
+    		}
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    		return null;
+    	}finally{
+    		if(conn != null){
+    			try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return null;
+				}
+    		}
+    	}
+    	return list;
+    }
+
+    protected int updateFavorite(int bulletinBoardId, int update, Connection conn) throws SQLException{
+
+    	String sql = "UPDATE bulletin_boards SET favorite_quantity = favorite_quantity + ? WHERE id = ?;";
+
+    	PreparedStatement pStmt = conn.prepareStatement(sql);
+    	pStmt.setInt(1, update);
+    	pStmt.setInt(2, bulletinBoardId);
+
+    	int result = pStmt.executeUpdate();
+
+    	if(result != 1){
+    		return 0;
+    	}
+    	return update;
     }
 
 }

@@ -59,6 +59,18 @@ public class BulletinBoard implements Serializable {
 		return json.toString();
 	}
 
+	@Override
+	public boolean equals(Object o){
+		if(o == this) return true;
+		if(o == null) return false;
+		if(!(o instanceof BulletinBoard)) return false;
+		BulletinBoard b = (BulletinBoard)o;
+		if(!(this.id == b.id)){
+			return false;
+		}
+		return true;
+	}
+
 	public int getId(){ return id; }
 	public void setId(int id){ this.id = id; }
 	public String getTitle(){ return title; }
