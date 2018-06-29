@@ -37,7 +37,7 @@ if(account != null){
 			パスワード再入力：<input id="passConfirm" type="password" name="passConfirm">
 			<output id="passConfirmErrMsg"></output>
 		</p><br>
-		キャプチャー<br>
+
 		<input type="submit" value="作成">
 	</form>
 

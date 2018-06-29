@@ -1,0 +1,26 @@
+@charset "UTF-8";
+#page {
+	margin: 0 auto;
+	width: 900px;
+}
+
+main {
+	float: left;
+	width: 250px;
+  text-align: center;
+
+}
+
+#menu {
+	float: right;
+	width: 650px;
+	background: pink;
+}
+
+input[type="button"] {
+  	 background: white;
+     border-color: black;
+}
+input{
+	
+}
