@@ -23,12 +23,10 @@ Timestamp updateTime = account.getUpdatedAt();
 		</header>
 		<main>
 			<form id="confirm">
-				<fieldset>
-					<input type="button" value="個人設定" id="personal" style="width:200px; height:30px;"><br>
-					<input type="button" value="掲示板" id="bulletinBoard" style="width:200px; height:30px;"><br>
-					<input type="button" value="お気に入り" id="favorite" style="width:200px; height:30px;"><br>
-					<input type="button" value="コメント履歴" id="commentHistory" style="width:200px; height:30px;">
-				</fieldset>
+				<input type="button" value="個人設定" id="personal" style="width:200px; height:30px;"><br>
+				<input type="button" value="掲示板" id="bulletinBoard" style="width:200px; height:30px;"><br>
+				<input type="button" value="お気に入り" id="favorite" style="width:200px; height:30px;"><br>
+				<input type="button" value="コメント履歴" id="commentHistory" style="width:200px; height:30px;">
 			</form>
 		</main>
 		<div id="menu"></div>
@@ -256,22 +254,49 @@ Timestamp updateTime = account.getUpdatedAt();
 						menu.appendChild(createBoardForm);
 
 						//タイトル入力設定
+						let counter = 0;
+						let inputTags = elt("div",{id: "tags"});
 						let inputTitleDisplay = elt("label", null, "タイトル入力:");
 						let inputTitle = elt("input",{type: "text", id: "title", name: "title"});
 						createBoardForm.appendChild(inputTitleDisplay);
 						inputTitleDisplay.appendChild(inputTitle);
 						createBoardForm.appendChild(elt("br"));
+						createBoardForm.appendChild(inputTags);
+						createBoardForm.appendChild(elt("br"));
 
-						//タグ入力設定
-						let inputTagDisplay = elt("p", null, "タグを入力してください");
-						let inputTag = elt("input", {type: "text", id: "tag", name: "tag"});
-						menu.appendChild(inputTagDisplay);
-						menu.appendChild(inputTag);
+						//タグ追加ボタンの設定
+						let addTag = elt("input", {type: "button", id: "addTag", value: "タグ追加"});
+						createBoardForm.appendChild(addTag);
+
+						document.getElementById("addTag").addEventListener("click", function(){
+
+							if(counter < 6) {
+								counter++;
+								let inputTagP = elt("p");
+								let inputTagDisplay = elt("label", null, "タグ" + counter);
+								let inputTag = elt("input", {type: "text", id: "tag"+counter, name: "tag"});
+								inputTags.appendChild(inputTagP);
+								inputTagP.appendChild(inputTagDisplay);
+								inputTagDisplay.appendChild(inputTag);
+							}
+						}, false);
+
+						//タグ削除ボタンの設定
+						let tags = document.getElementById("tags");
+						let removeTag = elt("input", {type: "button", id: "removeTag", value: "削除"});
+						createBoardForm.appendChild(removeTag);
+
+						document.getElementById("removeTag").addEventListener("click",function(){
+							if(counter >= 1) {
+								counter--;
+								tags.removeChild(tags.lastElementChild);
+							}
+						},false);
 
 						//戻るボタン設定
 						let back = elt("input", {type: "button",id: "back", value: "戻る"});
 						createBoardForm.appendChild(back);
-						document.getElementById("back").onclick = bulletinBoardCreate;
+						document.getElementById("back").addEventListener("click",bulletinBoardCreate,false);
 
 						//掲示板作成の確定ボタン設定
 						let createConfirm = elt("input", {type: "submit", value: "確定"});
@@ -285,6 +310,29 @@ Timestamp updateTime = account.getUpdatedAt();
 						boardForm.addEventListener("submit",function(e) {
 							let title = document.getElementById("title").value;
 							console.log(titleUseble);
+
+							if(counter === 1) {
+								let tag = document.getElementById("tag1").value;
+								if(tag.length <= 0) {
+									console.log("dodo");
+									e.preventDefault();
+								}
+							}else{
+								for(let i = 1; i < counter; i++) {
+									let tag = document.getElementById("tag"+ i).value;
+									let nextTag = document.getElementById("tag" + (i+1)).value;
+
+									if(tag === nextTag) {
+										console.log("bobo");
+										e.preventDefault();
+									}
+
+									if(tag.length <= 0 || nextTag.length <= 0) {
+										console.log("vovo");
+										e.preventDefault();
+									}
+								}
+							}
 
 							if(titleUseble) {
 								e.preventDefault();
@@ -311,10 +359,8 @@ Timestamp updateTime = account.getUpdatedAt();
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
 					if (!(JSON.parse(req.response))) {
-						console.log("fafa");
 						titleUseble = true;
 					} else {
-						console.log("afaf");
 						titleUseble = false;
 					}
 				}

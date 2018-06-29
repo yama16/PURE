@@ -418,7 +418,7 @@ public class BulletinBoardsDAO {
     		BulletinBoard bulletinBoard = null;
 			TagList tagList = null;
     		while(resultSet.next()){
-    			int bulletinBoardId = resultSet.getInt("bulletin_board_id");
+    			int bulletinBoardId = resultSet.getInt("id");
     			if(bulletinBoard == null || bulletinBoard.getId() != bulletinBoardId){
     				bulletinBoard = new BulletinBoard();
     				tagList = new TagList();
