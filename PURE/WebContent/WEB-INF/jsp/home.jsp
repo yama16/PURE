@@ -22,7 +22,7 @@ BulletinBoardList rankingList = (BulletinBoardList) request.getAttribute("rankin
 		<section>
 			<h2>リアルタイム</h2>
 			<div id="realtime">
-				
+
 			</div>
 		</section>
 		<section>
@@ -62,25 +62,23 @@ BulletinBoardList rankingList = (BulletinBoardList) request.getAttribute("rankin
 		<input type="submit" value="アカウント作成">
 	</form>
 	<script>
-	
-	window.add
-	
+
+	document.addEventListener('DOMContentLoaded', function(){
+		setInterval(getComment, 5000);
+	},false);
+
 	function getComment(){
 		let req = new XMLHttpRequest();
 		let nowPass = document.getElementById("nowPass");
 
 		req.onreadystatechange = function() {
 			if (req.readyState == 4 && req.status == 200) {
-				if (!(JSON.parse(req.response))) {
-					passUseble = true;
-				} else {
-					passUseble = false;
-				}
+				console.log("wqwq");
 			}
 		};
 
 		//PassCheckServletに入力されたPassを送信
-		req.open("GET","/PURE/PassCheckServlet");
+		req.open("GET","/PURE/GetRialcommentServlet");
 		req.send(null);
 	}
 	</script>
