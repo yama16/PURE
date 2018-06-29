@@ -97,6 +97,7 @@ public class PuresDAO {
 
     /**
      * PUREがあるかをprivateメソッドのfindで検索して、あればprivateメソッドのdeleteで削除、なければprivateメソッドのcreateで追加する。
+     * 追加または削除できればCommentsDAOのupdatePureでPURE数を更新する。
      * 追加できれば1を返し、削除できれば-1を返し、エラー等で何もできなければ0を返す。
      * @param accountId PUREボタンを押したアカウントのID
      * @param commentId PUREボタンを押されたコメントのID
@@ -104,22 +105,48 @@ public class PuresDAO {
      * @return 追加できれば1を返し、削除できれば-1を返し、エラー等で何もできなければ0を返す。
      */
     public int toggle(String accountId, int commentId, int bulletinBoardId){
-    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+    	Connection conn = null;
+    	int result;
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+    		conn.setAutoCommit(false);
 
     		if(find(accountId, commentId, bulletinBoardId, conn)){
-
-    			return delete(accountId, commentId, bulletinBoardId, conn);
-
+    			result = delete(accountId, commentId, bulletinBoardId, conn);
     		}else{
-
-    			return create(accountId, commentId, bulletinBoardId, conn);
-
+    			result = create(accountId, commentId, bulletinBoardId, conn);
     		}
+    		if(result == 0){
+    			conn.rollback();
+    			return 0;
+    		}else{
+    			CommentsDAO dao = new CommentsDAO();
+    			result = dao.updatePure(commentId, bulletinBoardId, result, conn);
+    		}
+    		if(result == 0){
+    			conn.rollback();
+    			return 0;
+    		}
+    		conn.commit();
 
     	} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			return 0;
+		} finally {
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+    	return result;
     }
 
 }

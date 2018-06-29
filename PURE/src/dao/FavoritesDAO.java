@@ -97,22 +97,49 @@ public class FavoritesDAO {
      * @return 追加したら1、削除したら-1、エラー等で処理を失敗したら0を返す。
      */
     public int toggle(String accountId, int bulletinBoardId){
-    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+    	Connection conn = null;
+    	int result;
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+    		conn.setAutoCommit(false);
 
     		if(find(accountId, bulletinBoardId, conn)){
-
-    			return delete(accountId, bulletinBoardId, conn);
-
+    			result = delete(accountId, bulletinBoardId, conn);
     		}else{
-
-    			return create(accountId, bulletinBoardId, conn);
-
+    			result = create(accountId, bulletinBoardId, conn);
     		}
+    		if(result == 0){
+    			conn.rollback();
+    			return 0;
+    		}else{
+    			BulletinBoardsDAO dao = new BulletinBoardsDAO();
+    			result = dao.updateFavorite(bulletinBoardId, result, conn);
+    		}
+    		if(result == 0){
+    			conn.rollback();
+    			return 0;
+    		}
+    		conn.commit();
 
     	} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			return 0;
+		}finally{
+			if(conn != null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return 0;
+				}
+			}
 		}
+    	return result;
     }
 
 }

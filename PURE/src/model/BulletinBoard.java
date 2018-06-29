@@ -24,13 +24,15 @@ public class BulletinBoard implements Serializable {
 		this.commentList = new CommentList();
 		this.tagList = new TagList();
 	}
-	public BulletinBoard(int id, String title, String accountId, Timestamp createdAt, int viewQuantity, int favoriteQuantity){
+	public BulletinBoard(int id, String title, String accountId, Timestamp createdAt, int viewQuantity, int favoriteQuantity, CommentList commentList, TagList tagList){
 		this.id = id;
 		this.title = title;
 		this.accountId = accountId;
 		this.createdAt = createdAt;
 		this.viewQuantity = viewQuantity;
 		this.favoriteQuantity = favoriteQuantity;
+		this.commentList = commentList;
+		this.tagList = tagList;
 	}
 
 	@Override
@@ -55,6 +57,18 @@ public class BulletinBoard implements Serializable {
 			.append(tagList.toString())
 			.append("}");
 		return json.toString();
+	}
+
+	@Override
+	public boolean equals(Object o){
+		if(o == this) return true;
+		if(o == null) return false;
+		if(!(o instanceof BulletinBoard)) return false;
+		BulletinBoard b = (BulletinBoard)o;
+		if(!(this.id == b.id)){
+			return false;
+		}
+		return true;
 	}
 
 	public int getId(){ return id; }

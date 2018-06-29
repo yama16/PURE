@@ -5,6 +5,14 @@ import java.io.Serializable;
 public class TagList extends AbstractList<String> implements Serializable {
 
 	@Override
+	public boolean add(String tag){
+		if(tag.equals("")){
+			return false;
+		}
+		return super.add(tag);
+	}
+
+	@Override
 	public String toString(){
 		StringBuffer json = new StringBuffer();
 		json.append("[");

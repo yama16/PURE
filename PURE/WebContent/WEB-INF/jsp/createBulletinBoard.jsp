@@ -33,11 +33,13 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
 
       	<div class="comment" id="<%= comment.getId() %>">
       		<dl>
-      			<dt><span>No.<%= comment.getId() %></span></dt>
-      			<dt><span><%= comment.getNickname() %></span></dt>
-      			<dt><span><%= comment.getAccountId() %></span></dt>
-      			<dt><span><%= comment.getCreatedAt() %></span></dt>
-      			<dd><span><%= comment.getComment() %></span></dd>
+      			<dt>
+      			  <span>No.<%= comment.getId() %></span>
+      			  <span><%= comment.getNickname() %></span>
+      			  <span><%= comment.getAccountId() %></span>
+      			  <span><%= comment.getCreatedAt() %></span>
+      			</dt>
+      			<dd><%= comment.getComment() %></dd>
       		</dl>
       		<input class="pureButton" type="button" value="PURE">
       		<input class="replyButton" type="button" value="返信">
@@ -46,7 +48,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     </div>
 
     <form id="inputComment">
-      <label>ここに入力：</label><br>
+      <label>コメント入力：</label><br>
       <textarea id="inputField" rows="5" cols="40" maxlength="200"></textarea><br>
       <input id="sendButton" type="button" value="送信">
       <input id="clearButton" type="button" value="クリア">
@@ -154,7 +156,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       replyButton.setAttribute("type", "button");
       replyButton.setAttribute("value", "返信");
       commentFrame.setAttribute("class", "comment");             // コメント枠にclass属性を設定
-      commentFrame.setAttribute("id", commentObject.Id);  // コメント枠にId属性(commentId)を設定
+      commentFrame.setAttribute("id", commentObject.id);  // コメント枠にId属性(commentId)を設定
 
       // span要素にcmtObjのフィールドを追加
       spanElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );

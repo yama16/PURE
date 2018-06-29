@@ -9,9 +9,8 @@ import java.sql.SQLException;
 import model.TagList;
 
 /**
- *
+ * tagsテーブルを操作するDAO
  * @author furukawa
- *
  */
 public class TagsDAO {
 
@@ -54,44 +53,18 @@ public class TagsDAO {
     }
 
     /**
-     * 引数で指定した掲示板IDで、引数で指定したリストの全てのタグを追加する。
-     * @param bulletinBoardId 追加する掲示板のID
-     * @param list 追加するタグのリスト
-     * @return 成功すればtrue、失敗すればfalse。
-     */
-    public boolean createAll(int bulletinBoardId, TagList list){
-    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-
-    		return createAll(bulletinBoardId, list, conn);
-
-    	} catch (SQLException e) {
-    		e.printStackTrace();
-    		return false;
-		}
-    }
-
-    /**
      * 引数で指定した掲示板IDの掲示板のタグを全て削除するメソッド。
      * @param bulletinBoardId 削除するタグの掲示板ID
      * @return 成功すればtrue、失敗すればfalseを返す。
+     * @throws SQLException
      */
-    public boolean deleteByBulletinBoardId(int bulletinBoardId){
+    protected void deleteByBulletinBoardId(int bulletinBoardId, Connection conn) throws SQLException{
+    	String sql = "DELETE FROM tags WHERE bulletin_board_id=?;";
 
-    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+    	PreparedStatement pStmt = conn.prepareStatement(sql);
+    	pStmt.setInt(1, bulletinBoardId);
 
-    		String sql = "DELETE FROM tags WHERE bulletin_board_id=?;";
-
-    		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, bulletinBoardId);
-
-    		pStmt.executeUpdate();
-
-    	} catch (SQLException e) {
-    		e.printStackTrace();
-    		return false;
-		}
-
-    	return true;
+    	pStmt.executeUpdate();
     }
 
     /**
@@ -118,19 +91,45 @@ public class TagsDAO {
     }
 
     /**
-     * 掲示板のIDからタグを検索するメソッド。
-     * @param bulletinBoardId 検索する掲示板のID
-     * @return 検索したタグのリストを返す。SQLExceptionをcatchするとnullを返す。
+     *
+     * @param bulletinBoardId
+     * @param tagList
+     * @return
      */
-    public TagList findByBulletinBoardId(int bulletinBoardId){
-    	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+    public boolean update(int bulletinBoardId, TagList tagList){
+    	Connection conn = null;
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+    		conn.setAutoCommit(false);
 
-    		return findByBulletinBoardId(bulletinBoardId, conn);
+    		deleteByBulletinBoardId(bulletinBoardId, conn);
 
-    	} catch (SQLException e) {
+    		if(!createAll(bulletinBoardId, tagList, conn)){
+    			conn.rollback();
+    			return false;
+    		}
+    		conn.commit();
+
+    	}catch(SQLException e){
     		e.printStackTrace();
-			return null;
-		}
+    		try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+    		return false;
+    	}finally{
+    		if(conn != null){
+    			try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return false;
+				}
+    		}
+    	}
+
+    	return true;
     }
 
 }

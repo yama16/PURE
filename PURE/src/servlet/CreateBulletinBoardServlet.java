@@ -27,6 +27,7 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 		Account account = (Account) session.getAttribute("account");
 		String accountId = account.getId();
 		String title = request.getParameter("title");
+		System.out.println(title);
 		long now = System.currentTimeMillis();
 
 		TagList test = new TagList();

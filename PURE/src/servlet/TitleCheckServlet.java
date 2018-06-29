@@ -8,33 +8,31 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import bo.GetMyBulletinBoardLogic;
-import model.Account;
-import model.BulletinBoardList;
+import bo.TitleIsUsableLogic;
 
 /**
- * Servlet implementation class GetMyBulletinBoardServlet
+ * Servlet implementation class TitleCheckServlet
  */
-@WebServlet("/GetMyBulletinBoardServlet")
-public class GetMyBulletinBoardServlet extends HttpServlet {
+@WebServlet("/TitleCheckServlet")
+public class TitleCheckServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		Account account = (Account) session.getAttribute("account");
+		String title = request.getParameter("title");
 
-		BulletinBoardList bulletinBoardList;
-		GetMyBulletinBoardLogic bulletinBoardLogic = new GetMyBulletinBoardLogic();
-		bulletinBoardList = bulletinBoardLogic.execute(account.getId());
+		TitleIsUsableLogic titleCheck = new TitleIsUsableLogic();
+		boolean check = titleCheck.execute(title);
 
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter pw = response.getWriter();
-		pw.print(bulletinBoardList.toString());
+		pw.print(check);
 		pw.close();
 	}
 
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
