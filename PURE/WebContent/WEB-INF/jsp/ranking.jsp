@@ -9,7 +9,7 @@ BulletinBoardList bulletinBoardList = (BulletinBoardList) request.getAttribute("
 <html>
 	<head>
 		<meta charset="utf-8">
-    	<link rel="stylesheet" href="">
+    	<link rel="stylesheet" href="ranking.css">
     	<title>ランキング</title>
 	</head>
 	<body>
