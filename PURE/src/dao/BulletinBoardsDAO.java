@@ -8,7 +8,6 @@ import java.sql.SQLException;
 
 import model.BulletinBoard;
 import model.BulletinBoardList;
-import model.TagList;
 
 /**
  * bulletin_boards（掲示板）テーブルを操作するDAO。
@@ -17,7 +16,6 @@ import model.TagList;
  */
 public class BulletinBoardsDAO {
 
-	private final String DRIVER_NAME = "org.h2.Driver";
     private final String JDBC_URL = "jdbc:h2:C:/data/pure";
     private final String DB_USER = "sa";
     private final String DB_PASS = "";
@@ -87,33 +85,25 @@ public class BulletinBoardsDAO {
 
     /**
      * 掲示板を探すメソッド。
-     * @param findId 検索する掲示板のID
+     * @param bulletinBoardId 検索する掲示板のID
      * @return 見つかったらその掲示板の情報を持ったインスタンスを返す。見つからなければnullを返す。
      */
     public BulletinBoard findById(int bulletinBoardId){
     	BulletinBoard bulletinBoard = null;
+
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-    		String sql = "SELECT * FROM bulletin_boards WHERE id=?";
-    		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setInt(1, bulletinBoardId);
-    		ResultSet resultSet = pStmt.executeQuery();
+
 			CommentsDAO commentsDAO = new CommentsDAO();
 			TagsDAO tagsDAO = new TagsDAO();
-    		if(resultSet.next()){
-    			bulletinBoard = new BulletinBoard();
-    			bulletinBoard.setId(resultSet.getInt("id"));
-    			bulletinBoard.setTitle(resultSet.getString("title"));
-    			bulletinBoard.setAccountId(resultSet.getString("account_id"));
-    			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
-    			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
-    			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
-    			bulletinBoard.setCommentList(commentsDAO.findByBulletinBoardId(bulletinBoardId, conn));
-    			bulletinBoard.setTagList(tagsDAO.findByBulletinBoardId(bulletinBoardId, conn));
-    		}
+    		bulletinBoard = findById(bulletinBoardId, conn);
+    		bulletinBoard.setCommentList(commentsDAO.findByBulletinBoardId(bulletinBoardId, conn));
+    		bulletinBoard.setTagList(tagsDAO.findByBulletinBoardId(bulletinBoardId, conn));
+
     	} catch(SQLException e) {
     		e.printStackTrace();
     		return null;
     	}
+
     	return bulletinBoard;
     }
 
@@ -127,32 +117,24 @@ public class BulletinBoardsDAO {
     	BulletinBoardList list = new BulletinBoardList();
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity, tag FROM bulletin_boards LEFT OUTER JOIN tags ON id = bulletin_board_id WHERE account_id = ? ORDER BY id;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE account_id = ? ORDER BY id;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, accountId);
 
     		ResultSet resultSet = pStmt.executeQuery();
-			BulletinBoard bulletinBoard = null;
-			TagList tagList = null;
+    		TagsDAO dao = new TagsDAO();
     		while(resultSet.next()){
+    			BulletinBoard bulletinBoard = new BulletinBoard();
     			int bulletinBoardId = resultSet.getInt("id");
-    			if(bulletinBoard == null || bulletinBoard.getId() != bulletinBoardId){
-    				bulletinBoard = new BulletinBoard();
-    				tagList = new TagList();
-    				list.add(bulletinBoard);
-        			bulletinBoard.setId(bulletinBoardId);
-        			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
-        			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
-        			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
-        			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
-        			bulletinBoard.setTagList(tagList);
-    			}
-    			String tag = resultSet.getString("tag");
-    			if(tag != null){
-    				tagList.add(tag);
-    			}
+        		bulletinBoard.setId(bulletinBoardId);
+        		bulletinBoard.setTitle(resultSet.getString("title"));
+        		bulletinBoard.setAccountId(resultSet.getString("account_id"));
+        		bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+        		bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+        		bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+        		bulletinBoard.setTagList(dao.findByBulletinBoardId(bulletinBoardId, conn));
+    			list.add(bulletinBoard);
     		}
 
     	} catch (SQLException e) {
@@ -169,11 +151,14 @@ public class BulletinBoardsDAO {
      * @return
      */
     public BulletinBoardList ranking(int order){
-    	String orderStr = "";
+    	String order1 = "";
+    	String order2 = "";
     	if(order == 1){
-    		orderStr = "favorite_quantity";
+    		order1 = "favorite_quantity";
+    		order2 = "view_quantity";
     	}else if(order == 2){
-    		orderStr = "view_quantity";
+    		order1 = "view_quantity";
+    		order2 = "favorite_quantity";
     	}else{
     		return null;
     	}
@@ -181,34 +166,23 @@ public class BulletinBoardsDAO {
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity, tag FROM bulletin_boards LEFT OUTER JOIN tags ON id = bulletin_board_id ORDER BY " + orderStr + " DESC, id LIMIT 600;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards ORDER BY " + order1 + " DESC, " + order2 + " DESC LIMIT 100;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
 
     		ResultSet resultSet = pStmt.executeQuery();
-    		BulletinBoard bulletinBoard = null;
-			TagList tagList = null;
+    		TagsDAO dao = new TagsDAO();
     		while(resultSet.next()){
+	    		BulletinBoard bulletinBoard = new BulletinBoard();
     			int bulletinBoardId = resultSet.getInt("id");
-    			if(bulletinBoard == null || bulletinBoard.getId() != bulletinBoardId){
-    				if(list.size() >= 100){
-    					break;
-    				}
-    				bulletinBoard = new BulletinBoard();
-    				tagList = new TagList();
-    				list.add(bulletinBoard);
-        			bulletinBoard.setId(bulletinBoardId);
-        			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
-        			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
-        			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
-        			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
-        			bulletinBoard.setTagList(tagList);
-    			}
-    			String tag = resultSet.getString("tag");
-    			if(tag != null){
-    				tagList.add(tag);
-    			}
+	        	bulletinBoard.setId(bulletinBoardId);
+	        	bulletinBoard.setTitle(resultSet.getString("title"));
+	        	bulletinBoard.setAccountId(resultSet.getString("account_id"));
+	        	bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+	        	bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+	        	bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+	        	bulletinBoard.setTagList(dao.findByBulletinBoardId(bulletinBoardId, conn));
+	    		list.add(bulletinBoard);
     		}
 
     	} catch (SQLException e) {
@@ -231,32 +205,24 @@ public class BulletinBoardsDAO {
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity, tag FROM bulletin_boards LEFT OUTER JOIN tags ON id = bulletin_board_id WHERE title LIKE ? ORDER BY id;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE title LIKE ? ORDER BY id;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, keyword);
 
     		ResultSet resultSet = pStmt.executeQuery();
-    		BulletinBoard bulletinBoard = null;
-			TagList tagList = null;
+			TagsDAO dao = new TagsDAO();
     		while(resultSet.next()){
+    			BulletinBoard bulletinBoard = new BulletinBoard();
     			int bulletinBoardId = resultSet.getInt("id");
-    			if(bulletinBoard == null || bulletinBoard.getId() != bulletinBoardId){
-    				bulletinBoard = new BulletinBoard();
-    				tagList = new TagList();
-    				list.add(bulletinBoard);
-        			bulletinBoard.setId(bulletinBoardId);
-        			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
-        			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
-        			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
-        			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
-        			bulletinBoard.setTagList(tagList);
-    			}
-    			String tag = resultSet.getString("tag");
-    			if(tag != null){
-    				tagList.add(tag);
-    			}
+        		bulletinBoard.setId(bulletinBoardId);
+        		bulletinBoard.setTitle(resultSet.getString("title"));
+        		bulletinBoard.setAccountId(resultSet.getString("account_id"));
+        		bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+        		bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+        		bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+        		bulletinBoard.setTagList(dao.findByBulletinBoardId(bulletinBoardId, conn));
+    			list.add(bulletinBoard);
     		}
 
     	} catch (SQLException e) {
@@ -282,32 +248,24 @@ public class BulletinBoardsDAO {
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards LEFT OUTER JOIN tags ON id = bulletin_board_id WHERE id IN (SELECT DISTINCT bulletin_board_id FROM tags WHERE tag LIKE ?) ORDER BY id;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE id IN (SELECT DISTINCT bulletin_board_id FROM tags WHERE tag LIKE ?) ORDER BY id;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, keyword);
 
     		ResultSet resultSet = pStmt.executeQuery();
-    		BulletinBoard bulletinBoard = null;
-			TagList tagList = null;
+    		TagsDAO dao = new TagsDAO();
     		while(resultSet.next()){
+    			BulletinBoard bulletinBoard = new BulletinBoard();
     			int bulletinBoardId = resultSet.getInt("id");
-    			if(bulletinBoard == null || bulletinBoard.getId() != bulletinBoardId){
-    				bulletinBoard = new BulletinBoard();
-    				tagList = new TagList();
-    				list.add(bulletinBoard);
-        			bulletinBoard.setId(bulletinBoardId);
-        			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
-        			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
-        			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
-        			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
-        			bulletinBoard.setTagList(tagList);
-    			}
-    			String tag = resultSet.getString("tag");
-    			if(tag != null){
-    				tagList.add(tag);
-    			}
+        		bulletinBoard.setId(bulletinBoardId);
+        		bulletinBoard.setTitle(resultSet.getString("title"));
+        		bulletinBoard.setAccountId(resultSet.getString("account_id"));
+        		bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+        		bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+        		bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+        		bulletinBoard.setTagList(dao.findByBulletinBoardId(bulletinBoardId, conn));
+    			list.add(bulletinBoard);
     		}
 
     	} catch (SQLException e) {
@@ -327,32 +285,24 @@ public class BulletinBoardsDAO {
     	BulletinBoardList favoriteList = new BulletinBoardList();
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql ="SELECT f.bulletin_board_id, b.title, f.account_id, b.created_at, b.view_quantity, b.favorite_quantity, t.tag FROM favorites AS f LEFT OUTER JOIN bulletin_boards AS b ON f.bulletin_board_id = b.id LEFT OUTER JOIN tags AS t ON b.id = t.bulletin_board_id WHERE f.account_id = ? ORDER BY f.bulletin_board_id;";
+    		String sql ="SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE id IN (SELECT id FROM favorites WHERE account_id = ?) ORDER BY id;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, accountId);
 
     		ResultSet resultSet = pStmt.executeQuery();
-    		BulletinBoard bulletinBoard = null;
-			TagList tagList = null;
+    		TagsDAO dao = new TagsDAO();
     		while(resultSet.next()){
-    			int bulletinBoardId = resultSet.getInt("bulletin_board_id");
-    			if(bulletinBoard == null || bulletinBoard.getId() != bulletinBoardId){
-    				bulletinBoard = new BulletinBoard();
-    				tagList = new TagList();
-    				favoriteList.add(bulletinBoard);
-        			bulletinBoard.setId(bulletinBoardId);
-        			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
-        			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
-        			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
-        			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
-        			bulletinBoard.setTagList(tagList);
-    			}
-    			String tag = resultSet.getString("tag");
-    			if(tag != null){
-    				tagList.add(tag);
-    			}
+   				BulletinBoard bulletinBoard = new BulletinBoard();
+    			int bulletinBoardId = resultSet.getInt("id");
+       			bulletinBoard.setId(bulletinBoardId);
+       			bulletinBoard.setTitle(resultSet.getString("title"));
+       			bulletinBoard.setAccountId(resultSet.getString("account_id"));
+       			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+        		bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+        		bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+        		bulletinBoard.setTagList(dao.findByBulletinBoardId(bulletinBoardId, conn));
+   				favoriteList.add(bulletinBoard);
     		}
 
     	} catch (SQLException e) {
@@ -410,31 +360,23 @@ public class BulletinBoardsDAO {
     	try{
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity, tag FROM bulletin_boards LEFT OUTER JOIN tags ON id = bulletin_board_id ORDER BY id DESC LIMIT 10;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards ORDER BY id DESC LIMIT 10;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
 
     		ResultSet resultSet = pStmt.executeQuery();
-    		BulletinBoard bulletinBoard = null;
-			TagList tagList = null;
+    		TagsDAO dao = new TagsDAO();
     		while(resultSet.next()){
+   				BulletinBoard bulletinBoard = new BulletinBoard();
     			int bulletinBoardId = resultSet.getInt("id");
-    			if(bulletinBoard == null || bulletinBoard.getId() != bulletinBoardId){
-    				bulletinBoard = new BulletinBoard();
-    				tagList = new TagList();
-    				list.add(bulletinBoard);
-        			bulletinBoard.setId(bulletinBoardId);
-        			bulletinBoard.setTitle(resultSet.getString("title"));
-        			bulletinBoard.setAccountId(resultSet.getString("account_id"));
-        			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
-        			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
-        			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
-        			bulletinBoard.setTagList(tagList);
-    			}
-    			String tag = resultSet.getString("tag");
-    			if(tag != null){
-    				tagList.add(tag);
-    			}
+       			bulletinBoard.setId(bulletinBoardId);
+       			bulletinBoard.setTitle(resultSet.getString("title"));
+       			bulletinBoard.setAccountId(resultSet.getString("account_id"));
+       			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+        		bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+        		bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+        		bulletinBoard.setTagList(dao.findByBulletinBoardId(bulletinBoardId, conn));
+   				list.add(bulletinBoard);
     		}
     	}catch(SQLException e){
     		e.printStackTrace();
@@ -466,6 +408,35 @@ public class BulletinBoardsDAO {
     		return 0;
     	}
     	return update;
+    }
+
+    /**
+     *
+     * @param id
+     * @param conn
+     * @return
+     * @throws SQLException
+     */
+    protected BulletinBoard findById(int id, Connection conn) throws SQLException{
+    	BulletinBoard bulletinBoard = null;
+
+    	String sql = "SELECT * FROM bulletin_boards WHERE id = ?;";
+
+    	PreparedStatement pStmt = conn.prepareStatement(sql);
+    	pStmt.setInt(1, id);
+
+    	ResultSet resultSet = pStmt.executeQuery();
+    	if(resultSet.next()){
+    		bulletinBoard = new BulletinBoard();
+    		bulletinBoard.setId(resultSet.getInt("id"));
+    		bulletinBoard.setTitle(resultSet.getString("title"));
+    		bulletinBoard.setAccountId(resultSet.getString("account_id"));
+    		bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
+    		bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
+    		bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_quantity"));
+    	}
+
+    	return bulletinBoard;
     }
 
 }

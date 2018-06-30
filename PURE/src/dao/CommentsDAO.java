@@ -141,37 +141,32 @@ public class CommentsDAO {
      * @return アカウントのコメントの履歴の入った掲示板のリスト。
      */
     public BulletinBoardList history(String accountId){
-    	BulletinBoardList list = new BulletinBoardList();
+    	BulletinBoardList bulletinBoardList = new BulletinBoardList();
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT c.id, c.bulletin_board_id, c.comment, c.created_at, c.pure_quantity, b.title, b.account_id, b.created_at AS bulletin_board_created_at, b.view_quantity, b.favorite_quantity FROM comments AS c LEFT OUTER JOIN bulletin_boards AS b ON c.bulletin_board_id = b.id WHERE c.account_id=? ORDER BY c.bulletin_board_id, c.id;";
+    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a ON c.account_id = a.id WHERE c.account_id = ?;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, accountId);
 
     		ResultSet resultSet = pStmt.executeQuery();
+    		BulletinBoardsDAO bulletinBoardsDAO = new BulletinBoardsDAO();
+    		TagsDAO tagsDAO = new TagsDAO();
     		while(resultSet.next()){
     			int bulletinBoardId = resultSet.getInt("bulletin_board_id");
-    			if(list.size() == 0 || list.get(list.size() - 1).getId() != bulletinBoardId){
-    				BulletinBoard bulletinBoard = new BulletinBoard();
-    				bulletinBoard.setId(bulletinBoardId);
-    				bulletinBoard.setTitle(resultSet.getString("title"));
-    				bulletinBoard.setAccountId(resultSet.getString("account_id"));
-    				bulletinBoard.setCreatedAt(resultSet.getTimestamp("bulletin_board_created_at"));
-    				bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
-    				bulletinBoard.setId(resultSet.getInt("favorite_quantity"));
-    				CommentList commentList = new CommentList();
-    				bulletinBoard.setCommentList(commentList);
-    				list.add(bulletinBoard);
-    			}
     			Comment comment = new Comment();
     			comment.setId(resultSet.getInt("id"));
-    			comment.setAccountId(accountId);
     			comment.setBulletinBoardId(bulletinBoardId);
+    			comment.setAccountId(resultSet.getString("account_id"));
     			comment.setComment(resultSet.getString("comment"));
     			comment.setCreatedAt(resultSet.getTimestamp("created_at"));
     			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
-    			list.get(list.size() - 1).getCommentList().add(comment);
+    			comment.setNickname(resultSet.getString("nickname"));
+    			BulletinBoard bulletinBoard = bulletinBoardsDAO.findById(bulletinBoardId, conn);
+        		if(bulletinBoardList.add(bulletinBoard)){
+            		bulletinBoard.setTagList(tagsDAO.findByBulletinBoardId(bulletinBoardId, conn));
+        		}
+        		bulletinBoardList.addComment(comment);
     		}
 
     	} catch (SQLException e) {
@@ -179,7 +174,7 @@ public class CommentsDAO {
     		return null;
 		}
 
-    	return list;
+    	return bulletinBoardList;
     }
 
     /**
@@ -208,38 +203,40 @@ public class CommentsDAO {
     	return update;
     }
 
+    /**
+     *
+     * @param timestamp
+     * @return
+     */
     public BulletinBoardList getRealTimeComment(Timestamp timestamp){
     	BulletinBoardList bulletinBoardList = new BulletinBoardList();
     	Connection conn = null;
     	try{
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-    		String sql = "SELECT b.id, b.title, b.account_id, b.created_at, b.view_quantity, b.favorite_quantity, c.id AS comment_id, c.account_id AS comment_account_id, c.comment, c.created_at AS comment_created_at, c.pure_quantity, t.tag FROM comments AS c LEFT OUTER JOIN bulletin_boards AS b ON c.bulletin_board_id = b.id LEFT OUTER JOIN tags AS t ON b.id = t.bulletin_board_id WHERE c.created_at > ?;";
+    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a ON c.account_id = a.id WHERE c.created_at > ?";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setTimestamp(1, timestamp);
 
     		ResultSet resultSet = pStmt.executeQuery();
+    		BulletinBoardsDAO bulletinBoardsDAO = new BulletinBoardsDAO();
+    		TagsDAO tagsDAO = new TagsDAO();
     		while(resultSet.next()){
-    			int bulletinBoardId = resultSet.getInt("id");
-    			BulletinBoard bulletinBoard = new BulletinBoard();
-    			bulletinBoard.setId(bulletinBoardId);
-    			bulletinBoard.setTitle(resultSet.getString("title"));
-    			bulletinBoard.setAccountId(resultSet.getString("account_id"));
-    			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
-    			bulletinBoard.setViewQuantity(resultSet.getInt("view_quantity"));
-    			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_qunatity"));
+    			int bulletinBoardId = resultSet.getInt("bulletin_board_id");
     			Comment comment = new Comment();
-    			comment.setId(resultSet.getInt("comment_id"));
+    			comment.setId(resultSet.getInt("id"));
     			comment.setBulletinBoardId(bulletinBoardId);
-    			comment.setAccountId(resultSet.getString("comment_account_id"));
+    			comment.setAccountId(resultSet.getString("account_id"));
     			comment.setComment(resultSet.getString("comment"));
-    			comment.setCreatedAt(resultSet.getTimestamp("comment_created_at"));
+    			comment.setCreatedAt(resultSet.getTimestamp("created_at"));
     			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
     			comment.setNickname(resultSet.getString("nickname"));
-    			String tag = resultSet.getString("tag");
-    			bulletinBoardList.add(bulletinBoard);
-    			bulletinBoardList.addComment(comment);
-    			bulletinBoardList.addTag(tag, bulletinBoardId);
+    			BulletinBoard bulletinBoard = bulletinBoardsDAO.findById(bulletinBoardId, conn);
+        		if(bulletinBoardList.add(bulletinBoard)){
+            		bulletinBoard.setTagList(tagsDAO.findByBulletinBoardId(bulletinBoardId, conn));
+        		}
+        		bulletinBoardList.addComment(comment);
     		}
 
     	}catch(SQLException e){
