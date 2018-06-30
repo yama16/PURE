@@ -2,6 +2,7 @@ package bo;
 
 import dao.AccountsDAO;
 import model.Account;
+import model.Login;
 
 /**
  * ログイン処理をするクラス。
