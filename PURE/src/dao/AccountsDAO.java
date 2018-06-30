@@ -10,8 +10,8 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import bo.Login;
 import model.Account;
+import model.Login;
 
 /**
  * Accountsテーブルを操作するDAO。

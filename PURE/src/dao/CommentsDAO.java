@@ -208,8 +208,8 @@ public class CommentsDAO {
     	return update;
     }
 
-    public BulletinBoard getRealTimeComment(){
-    	BulletinBoard bulletinBoard = new BulletinBoard();
+    public BulletinBoardList getRealTimeComment(Timestamp timestamp){
+    	BulletinBoardList bulletinBoardList = new BulletinBoardList();
     	Connection conn = null;
     	try{
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
@@ -220,7 +220,7 @@ public class CommentsDAO {
 
     		ResultSet resultSet = pStmt.executeQuery();
     		if(resultSet.next()){
-    			bulletinBoard = new BulletinBoard();
+    			/*bulletinBoard = new BulletinBoard();
     			bulletinBoard.setId(resultSet.getInt("id"));
     			bulletinBoard.setTitle(resultSet.getString("title"));
     			bulletinBoard.setAccountId(resultSet.getString("account_id"));
@@ -234,7 +234,7 @@ public class CommentsDAO {
     			comment.setCreatedAt(resultSet.getTimestamp("comment_created_at"));
     			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
     			comment.setNickname(resultSet.getString("nickname"));
-    			bulletinBoard.getCommentList().add(comment);
+    			bulletinBoard.getCommentList().add(comment);*/
     		}else{
     			return null;
     		}
@@ -252,7 +252,7 @@ public class CommentsDAO {
     		}
     	}
 
-    	return bulletinBoard;
+    	return bulletinBoardList;
     }
 
 }
