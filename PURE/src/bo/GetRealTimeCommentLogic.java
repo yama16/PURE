@@ -9,7 +9,7 @@ public class GetRealTimeCommentLogic {
 
 	public BulletinBoardList execute(Timestamp timestamp){
 		CommentsDAO dao = new CommentsDAO();
-		BulletinBoardList realTimeComment = dao.getRealTimeComment();
+		BulletinBoardList realTimeComment = dao.getRealTimeComment(timestamp);
 		return realTimeComment;
 	}
 
