@@ -214,14 +214,15 @@ public class CommentsDAO {
     	try{
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-    		String sql = "SELECT b.id, b.title, b.account_id, b.created_at, b.view_quantity, b.favorite_quantity, c.id AS comment_id, c.account_id AS comment_account_id, c.comment, c.created_at AS comment_created_at, c.pure_quantity FROM comments AS c LEFT OUTER JOIN bulletin_boards AS b ON c.bulletin_board_id = b.id HAVING comment_created_at = MAX(comment_created_at);";
+    		String sql = "SELECT b.id, b.title, b.account_id, b.created_at, b.view_quantity, b.favorite_quantity, c.id AS comment_id, c.account_id AS comment_account_id, c.comment, c.created_at AS comment_created_at, c.pure_quantity, t.tag FROM comments AS c LEFT OUTER JOIN bulletin_boards AS b ON c.bulletin_board_id = b.id LEFT OUTER JOIN tags AS t ON b.id = t.bulletin_board_id WHERE c.created_at > ?;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
 
     		ResultSet resultSet = pStmt.executeQuery();
-    		if(resultSet.next()){
-    			/*bulletinBoard = new BulletinBoard();
-    			bulletinBoard.setId(resultSet.getInt("id"));
+    		while(resultSet.next()){
+    			int bulletinBoardId = resultSet.getInt("id");
+    			BulletinBoard bulletinBoard = new BulletinBoard();
+    			bulletinBoard.setId(bulletinBoardId);
     			bulletinBoard.setTitle(resultSet.getString("title"));
     			bulletinBoard.setAccountId(resultSet.getString("account_id"));
     			bulletinBoard.setCreatedAt(resultSet.getTimestamp("created_at"));
@@ -229,15 +230,18 @@ public class CommentsDAO {
     			bulletinBoard.setFavoriteQuantity(resultSet.getInt("favorite_qunatity"));
     			Comment comment = new Comment();
     			comment.setId(resultSet.getInt("comment_id"));
+    			comment.setBulletinBoardId(bulletinBoardId);
     			comment.setAccountId(resultSet.getString("comment_account_id"));
     			comment.setComment(resultSet.getString("comment"));
     			comment.setCreatedAt(resultSet.getTimestamp("comment_created_at"));
     			comment.setPureQuantity(resultSet.getInt("pure_quantity"));
     			comment.setNickname(resultSet.getString("nickname"));
-    			bulletinBoard.getCommentList().add(comment);*/
-    		}else{
-    			return null;
+    			String tag = resultSet.getString("tag");
+    			bulletinBoardList.add(bulletinBoard);
+    			bulletinBoardList.addComment(comment);
+    			bulletinBoardList.addTag(tag, bulletinBoardId);
     		}
+
     	}catch(SQLException e){
     		e.printStackTrace();
     		return null;
