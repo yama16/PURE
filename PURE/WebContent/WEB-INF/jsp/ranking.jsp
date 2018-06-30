@@ -3,7 +3,7 @@
 <%@ page import="model.BulletinBoardList" %>
 <%@ page import="model.BulletinBoard" %>
 <%
-BulletinBoardList bulletinBoardList = (BulletinBoardList) request.getAttribute("bulletinBoardList");
+BulletinBoardList bulletinBoardList = (BulletinBoardList) request.getAttribute("BulletinBoardList");
 %>
 <!DOCTYPE html>
 <html>
@@ -21,7 +21,7 @@ BulletinBoardList bulletinBoardList = (BulletinBoardList) request.getAttribute("
 				BulletinBoard bulletinBoard = bulletinBoardList.get(i);
 			%>
 				<dt>
-					<a href="/PURE/BulletinBoardServlet?<%= bulletinBoard.getId() %>">
+					<a href="/PURE/BulletinBoardServlet?id=<%= bulletinBoard.getId() %>">
 						<%= bulletinBoard.getTitle() %>
 					</a>
 				</dt>

@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bo.GetRankingLogic;
+import model.BulletinBoardList;
+
 /**
  * Servlet implementation class RankingServlet
  */
@@ -17,7 +20,13 @@ public class RankingServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/PURE/WEB-INF/jsp/ranking.jsp");
+		// ランキング用にソートされたリストを取得し、リクエストスコープに保存
+		GetRankingLogic getRankingLogic = new GetRankingLogic();
+		BulletinBoardList list = getRankingLogic.execute(1);
+		request.setAttribute("BulletinBoardList", list);
+
+		// フォワード
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/ranking.jsp");
 		dispatcher.forward(request, response);
 	}
 
