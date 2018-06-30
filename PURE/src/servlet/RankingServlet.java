@@ -17,7 +17,7 @@ public class RankingServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/PURE//WEB-INF/jsp/ranking.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/PURE/WEB-INF/jsp/ranking.jsp");
 		dispatcher.forward(request, response);
 	}
 
