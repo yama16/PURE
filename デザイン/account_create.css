@@ -1,0 +1,16 @@
+@charset "UTF-8";
+body{
+  margin: auto;
+  width: 900px;
+}
+h1{
+  font-size: 60px;
+  color: pink;
+  text-align: center;
+}
+#create{
+  text-align: center;
+  background-color: pink;
+  border-radius: 10px;
+  box-shadow:5px 5px 5px 3px rgba(255, 255, 255, 0.2) inset;
+}
