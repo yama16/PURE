@@ -16,8 +16,8 @@ import model.BulletinBoardList;
 /**
  * Servlet implementation class GetRialcommentServlet
  */
-@WebServlet("/GetRialcommentServlet")
-public class GetRialcommentServlet extends HttpServlet {
+@WebServlet("/GetRealTimeCommentServlet")
+public class GetRealTimeCommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
