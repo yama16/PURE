@@ -2,9 +2,11 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="model.BulletinBoard" %>
 <%@ page import="model.BulletinBoardList" %>
+<%@ page import="model.CommentList" %>
 <%
 BulletinBoardList newList = (BulletinBoardList) request.getAttribute("newList");
 BulletinBoardList rankingList = (BulletinBoardList) request.getAttribute("rankingList");
+CommentList commentList;
 %>
 <!DOCTYPE html>
 <html>
@@ -62,24 +64,62 @@ BulletinBoardList rankingList = (BulletinBoardList) request.getAttribute("rankin
 		<input type="submit" value="アカウント作成">
 	</form>
 	<script>
+	let rialtime = document.getElementById("realtime");
+	let commentList = new Array();
 
 	document.addEventListener('DOMContentLoaded', function(){
 		setInterval(getComment, 5000);
+		setInterval(function(){
+			for(let comment of commentList) {
+
+				rialtime.appendChild(elt("p", null, comment));
+
+				bulletinBoards.shiht();
+			}
+		},1000);
 	},false);
 
 	function getComment(){
+		let bulletinBoardList;
 		let req = new XMLHttpRequest();
-		let nowPass = document.getElementById("nowPass");
 
 		req.onreadystatechange = function() {
 			if (req.readyState == 4 && req.status == 200) {
-				console.log("wqwq");
+				bulletinBoardList = JSON.parse(req.response);
+
+				for(let bulletinBoard of bulletinBoardList) {
+					for(let comment of bulletinBoard.commentList) {
+						comment = {id: bulletinBoard.id, title: bulletinBoard.title, comment: comment};
+						commentList.push(comment);
+					}
+				}
 			}
 		};
 
-		//PassCheckServletに入力されたPassを送信
 		req.open("GET","/PURE/GetRialcommentServlet");
 		req.send(null);
+	}
+
+	//要素の作成
+	function elt(name, attributes) {
+		let node = document.createElement(name);
+
+		if(attributes) {
+			for(let attr in attributes) {
+				if(attributes.hasOwnProperty(attr)) {
+					node.setAttribute(attr, attributes[attr])
+				}
+			}
+		}
+
+		for(let i=2; i < arguments.length; i++) {
+			let child = arguments[i];
+			if(typeof child == "string") {
+				child = document.createTextNode(child);
+			}
+			node.appendChild(child);
+		}
+		return node;
 	}
 	</script>
 </body>

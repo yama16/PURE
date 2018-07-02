@@ -238,7 +238,9 @@ Timestamp updateTime = account.getUpdatedAt();
 				if (req.readyState == 4 && req.status == 200) {
 					let myBulletinBoard = JSON.parse(req.response);
 					for(let boards of myBulletinBoard) {
-						menu.appendChild(elt("p", null, boards.title));
+						let inputTagP = elt("p");
+						menu.appendChild(inputTagP);
+						inputTagP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id="+boards.id}, boards.title));
 					}
 
 					//作成画面への遷移ボタンの設定
@@ -274,7 +276,7 @@ Timestamp updateTime = account.getUpdatedAt();
 								counter++;
 								let inputTagP = elt("p");
 								let inputTagDisplay = elt("label", null, "タグ" + counter);
-								let inputTag = elt("input", {type: "text", id: "tag"+counter, name: "tag"});
+								let inputTag = elt("input", {type: "text", id: "tag"+counter, name: "tag"+counter});
 								inputTags.appendChild(inputTagP);
 								inputTagP.appendChild(inputTagDisplay);
 								inputTagDisplay.appendChild(inputTag);
@@ -333,20 +335,23 @@ Timestamp updateTime = account.getUpdatedAt();
 									}
 								}
 							}
+							console.log("1");
 
 							if(titleUseble) {
 								e.preventDefault();
 							}
+							console.log("2");
 
 							if(title.length <= 0) {
 								e.preventDefault();
 							}
+							console.log("3");
 						},false);
 					},false);
 				}
 			};
 
-			//PassCheckServletに入力されたPassを送信
+			//自身の作成した掲示板の情報を取得
 			req.open("GET","/PURE/GetMyBulletinBoardServlet");
 			req.send(null);
 		}
@@ -383,7 +388,9 @@ Timestamp updateTime = account.getUpdatedAt();
 					favoriteBulletinBoard = JSON.parse(req.response);
 
 					for(let favoriteBoard of favoriteBulletinBoard) {
-						menu.appendChild(elt("p", null, favoriteBoard.title));
+						let inputTagP = elt("p");
+						menu.appendChild(inputTagP);
+						inputTagP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id="+favoriteBoard.id}, favoriteBoard.title));
 					}
 				}
 			};
@@ -399,12 +406,13 @@ Timestamp updateTime = account.getUpdatedAt();
 
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
-					let myComments = JSON.parse(req.response);
+					let myCommentBulletinBoardList = JSON.parse(req.response);
 
-					for(let comments of myComments) {
-
-						for(let comment of comments.commentList) {
-							menu.appendChild(elt("p", null, comment.comment));
+					for(let myCommentBulletinBoard of myCommentBulletinBoardList) {
+						for(let comment of myCommentBulletinBoard.commentList) {
+								let inputTagP = elt("p");
+								menu.appendChild(inputTagP);
+								inputTagP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id="+comment.id}, comment.comment));
 						}
 					}
 				}
