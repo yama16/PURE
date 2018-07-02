@@ -19,7 +19,7 @@ Timestamp updateTime = account.getUpdatedAt();
 <body>
 	<div id="page">
 		<header>
-			<h1><%= nickname %></h1>
+			<h1><a href="/PURE/HomeServlet">PURE</a></h1>
 		</header>
 		<main>
 			<form id="confirm">

@@ -17,8 +17,7 @@ CommentList commentList;
 <body>
 	<div id="page">
 		<header>
-			<a href="#"><h1>PURE</h1></a>
-
+			<h1>PURE</h1>
 		</header>
 		<main>
 		<section>
@@ -42,8 +41,7 @@ CommentList commentList;
 				<a href="/PURE/LoginServlet">ログイン</a><br> <a href="#">新規の方はこちら！！！</a><br>
 			</fieldset>
 			<fieldset>
-				<input type="search" name="search" placeholder="タグ名を入力"> <input
-					type="submit" name="submit" value="検索">
+				<a href="/PURE/SearchBulletinBoardServlet">検索</a>
 			</fieldset>
 		</div>
 		<!--                       ランキング                               -->
