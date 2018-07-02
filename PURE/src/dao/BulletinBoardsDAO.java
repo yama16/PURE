@@ -53,9 +53,23 @@ public class BulletinBoardsDAO {
     			return false;
     		}
 
+    		sql = "SELECT id FROM bulletin_boards WHERE title = ?;";
+
+    		pStmt = conn.prepareStatement(sql);
+    		pStmt.setString(1, bulletinBoard.getTitle());
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		int bulletinBoardId = 0;
+    		if(resultSet.next()){
+    			bulletinBoardId = resultSet.getInt("id");
+    		}else{
+    			conn.rollback();
+    			return false;
+    		}
+
     		if(bulletinBoard.getTagList() != null){
 				TagsDAO dao = new TagsDAO();
-	    		if(!dao.createAll(bulletinBoard.getId(), bulletinBoard.getTagList(), conn)){
+	    		if(!dao.createAll(bulletinBoardId, bulletinBoard.getTagList(), conn)){
 	    			conn.rollback();
 	    			return false;
 	    		}
