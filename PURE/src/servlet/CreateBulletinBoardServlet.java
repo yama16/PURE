@@ -3,6 +3,7 @@ package servlet;
 import java.io.IOException;
 import java.sql.Timestamp;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,16 +31,22 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 		System.out.println(title);
 		long now = System.currentTimeMillis();
 
-		TagList test = new TagList();
+		TagList tags = new TagList();
+		System.out.println(request.getParameter("tag1"));
 		for(int i = 1; i <= 6; i++) {
 			String tag = request.getParameter("tag"+i);
-			if(!(tag.equals(null))) {
-				test.add(tag);
+			if(!(tag == null)) {
+				tags.add(tag);
+			}else{
+				break;
 			}
 		}
 
 		System.out.println(account.getId());
 		System.out.println("testBoardCreate");
+		for(int i = 0; i < tags.size(); i++ ) {
+			System.out.println(tags.get(i));
+		}
 
 		BulletinBoard bulletinBoard = new BulletinBoard();
 
@@ -47,7 +54,7 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 		bulletinBoard.setAccountId(accountId);
 		bulletinBoard.setCreatedAt(new Timestamp(now));
 
-		bulletinBoard.setTagList(test);
+		bulletinBoard.setTagList(tags);
 
 		System.out.println("lolo");
 
@@ -55,6 +62,9 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 		createBoardLogic.execute(bulletinBoard);
 
 		System.out.println("koko");
+
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/accountHome.jsp");
+		dispatcher.forward(request, response);
 	}
 
 }
