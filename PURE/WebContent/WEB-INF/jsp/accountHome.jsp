@@ -5,7 +5,7 @@
 <%
 Account account = (Account) session.getAttribute("account");
 String id = account.getId();
-String nickname = account.getNickname();
+String nickname = account.getNickname().replace("\\", "\\\\").replace("\"", "\\\"");
 Timestamp createTime = account.getCreatedAt();
 Timestamp updateTime = account.getUpdatedAt();
 %>

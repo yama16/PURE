@@ -36,10 +36,12 @@ public class SearchBulletinBoardServlet extends HttpServlet {
 					SearchTitleLogic searchTitleLogic = new SearchTitleLogic();
 					bulletinBoards = searchTitleLogic.execute(keyword);
 				}
-				response.setContentType("application/json;charset=UTF-8");
-				PrintWriter pw = response.getWriter();
-				pw.print(bulletinBoards.toString());
-				pw.close();
+
+				request.setAttribute("bulletinBoards", bulletinBoards);
+
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/search.jsp");
+				dispatcher.forward(request, response);
+
 			}else{
 				response.setContentType("application/json;charset=UTF-8");
 				PrintWriter pw = response.getWriter();
