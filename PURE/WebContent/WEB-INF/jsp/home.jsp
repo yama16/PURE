@@ -30,7 +30,7 @@ CommentList commentList;
 			<h2>最新</h2>
 			<div id="new">
 				<% for(int i = 0; i < newList.size(); i++) { %>
-					<p><%= newList.get(i).getTitle() %></p>
+					<p><a href="/PURE/BulletinBoardServlet?id=<%= newList.get(i).getId() %>"><%= newList.get(i).getTitle() %></a></p>
 				<% } %>
 			</div>
 		</section>
@@ -50,7 +50,7 @@ CommentList commentList;
 			<h2><a href="/PURE/RankingServlet">ランキング</a></h2>
 			<div id="ranking">
 				<% for(int i = 0; i < rankingList.size(); i++) { %>
-					<p><%= rankingList.get(i).getTitle() %></p>
+					<p><a href="/PURE/BulletinBoardServlet?id=<%= rankingList.get(i).getId() %>"><%= rankingList.get(i).getTitle() %></a></p>
 				<% } %>
 			</div>
 		</div>
