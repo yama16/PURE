@@ -8,24 +8,36 @@
 <body>
     <h1>PURE</h1>
 <div id="create">
+	<h2>アカウント作成</h2>
 	<!--入力フォーム-->
 	<form id="form" action="ConfirmCreateAccountServlet" method="post">
 		<p>
-			ニックネーム：<input id="nickname" type="text" name="nickname" value=<%= nickname %>>
+			<label>ニックネーム</label>
+			<input id="nickname" type="text" name="nickname">
 			<output id="nicknameErrMsg"></output>
+			<br>
+				<small id="nick">半角英数字 10 文字以下</small>
 		</p>
 		<p>
-			ID:<input id="id" type="text" name="id" value=<%= id %>>
+			<label>ID</label>
+			<input id="id" type="text" name="id" >
 			<output id="idErrMsg"></output>
+			<br>
+			<small id="idsmall">半角英数字 6 ~ 12 </small>
 		</p>
 		<p>
-			パスワード：<input id="pass" type="password" name="pass" value=<%= pass %>>
-			<output id="passErrMsg"></output>
+			<label>パスワード</label>
+			<input id="pass" type="password" name="pass">
+			<output id="passErrMsg"></output><br>
+				<small id="passsmall">半角英数字 8 ~ 16 </small>
 		</p>
 		<p>
-			パスワード再入力：<input id="passConfirm" type="password" name="passConfirm">
-			<output id="passConfirmErrMsg"></output>
+			<label>パスワード再入力</label>
+			<input id="passConfirm" type="password" name="passConfirm">
+			<output id="passConfirmErrMsg"></output><br>
+			<small>もう一度パスワードを入力したください</small>
 		</p><br>
+
 
 		<input type="submit" value="作成">
 	</form>
