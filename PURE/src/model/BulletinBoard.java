@@ -42,7 +42,7 @@ public class BulletinBoard implements Serializable {
 		json.append("{\"id\":")
 			.append(id)
 			.append(", \"title\":\"")
-			.append(title)
+			.append(title.replace("\\", "\\\\").replace("\n", "\\n").replace("\"", "\\\""))
 			.append("\", \"accountId\":\"")
 			.append(accountId)
 			.append("\", \"createdAt\":\"")
