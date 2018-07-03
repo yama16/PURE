@@ -79,12 +79,19 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       req.onreadystatechange = function() {
         if(req.readyState == 4) {
           if(req.status == 200) {
-            // データ受信成功時の処理
-            // お気に入りボタンの色を変える！！
+            switch (req.response) {
+              case 0:
+                break;
+              case 1:
+                break;
+              case -1:
+                break;
+              default:
+            }
           }
         }
       }
-      req.open("POST", "");
+      req.open("POST", "/PURE/UpdateFavoriteServlet");
       req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       req.send(null);
     }, false)
@@ -128,7 +135,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       }
     }, false);
 
-    // コメントデータを受け取り画面に表示する処理
+ 	// コメントデータを受け取り画面に表示する処理
     function commentDisplay(commentArray) {
       // 初期処理
       let commentField = document.getElementById("commentField");   // コメント欄のdiv要素取得
@@ -226,12 +233,19 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       req.onreadystatechange = function() {
         if(req.readyState == 4) {
           if(req.status == 200) {
-            // データ受信成功時の処理
-            // PURE解除の場合も考慮する処理！！
+            switch (req.response) {
+              case 0:
+                break;
+              case 1:
+                break;
+              case -1:
+                break;
+              default:
+            }
           }
         }
       }
-      req.open("POST", "");
+      req.open("POST", "/PURE/UpdatePureServlet");
       req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       req.send( "commentId=" + commentId );
     }
