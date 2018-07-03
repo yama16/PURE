@@ -17,8 +17,7 @@ CommentList commentList;
 <body>
 	<div id="page">
 		<header>
-			<a href="#"><h1>PURE</h1></a>
-
+			<h1>PURE</h1>
 		</header>
 		<main>
 		<section>
@@ -42,8 +41,7 @@ CommentList commentList;
 				<a href="/PURE/LoginServlet">ログイン</a><br> <a href="#">新規の方はこちら！！！</a><br>
 			</fieldset>
 			<fieldset>
-				<input type="search" name="search" placeholder="タグ名を入力"> <input
-					type="submit" name="submit" value="検索">
+				<a href="/PURE/SearchBulletinBoardServlet">検索</a>
 			</fieldset>
 		</div>
 		<!--                       ランキング                               -->
@@ -64,10 +62,12 @@ CommentList commentList;
 		<input type="submit" value="アカウント作成">
 	</form>
 	<script>
-	let rialtime = document.getElementById("realtime");
-	let commentList = new Array();
-
 	document.addEventListener('DOMContentLoaded', function(){
+
+		let nowTime = Date.now();
+		let rialtime = document.getElementById("realtime");
+		let commentList = new Array();
+
 		setInterval(getComment, 5000);
 		setInterval(function(){
 			for(let comment of commentList) {
@@ -77,28 +77,29 @@ CommentList commentList;
 				bulletinBoards.shiht();
 			}
 		},1000);
-	},false);
 
-	function getComment(){
-		let bulletinBoardList;
-		let req = new XMLHttpRequest();
+		function getComment(){
+			let bulletinBoardList;
+			let req = new XMLHttpRequest();
 
-		req.onreadystatechange = function() {
-			if (req.readyState == 4 && req.status == 200) {
-				bulletinBoardList = JSON.parse(req.response);
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status == 200) {
+					bulletinBoardList = JSON.parse(req.response);
 
-				for(let bulletinBoard of bulletinBoardList) {
-					for(let comment of bulletinBoard.commentList) {
-						comment = {id: bulletinBoard.id, title: bulletinBoard.title, comment: comment};
-						commentList.push(comment);
+					for(let bulletinBoard of bulletinBoardList) {
+						for(let comment of bulletinBoard.commentList) {
+							comment = {id: bulletinBoard.id, title: bulletinBoard.title, comment: comment};
+							commentList.push(comment);
+						}
 					}
 				}
-			}
-		};
+			};
 
-		req.open("GET","/PURE/GetRialcommentServlet");
-		req.send(null);
-	}
+			req.open("GET","/PURE/GetRealTimeCommentServlet?time=" + nowTime);
+			req.send(null);
+			nowTime = Date.now();
+		}
+	},false);
 
 	//要素の作成
 	function elt(name, attributes) {

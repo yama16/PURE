@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.BulletinBoard;
 import model.BulletinBoardList;
@@ -254,6 +256,44 @@ public class CommentsDAO {
     	}
 
     	return bulletinBoardList;
+    }
+
+    /**
+     *
+     * @param bulletinBoardId
+     * @return
+     */
+    public List<Integer> pureComments(int bulletinBoardId){
+    	Connection conn = null;
+    	List<Integer> list = new ArrayList<>();
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+
+    		String sql = "SELECT id FROM comments WHERE bulletin_board_id = ? AND pure_quantity >= 1";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setInt(1, bulletinBoardId);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		while(resultSet.next()){
+    			list.add(resultSet.getInt("id"));
+    		}
+
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    		return null;
+    	}finally{
+    		if(conn != null){
+    			try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return null;
+				}
+    		}
+    	}
+
+    	return list;
     }
 
 }

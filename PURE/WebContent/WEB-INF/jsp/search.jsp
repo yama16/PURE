@@ -9,7 +9,7 @@
   </head>
   <body>
     <header>
-        <a href="#"><h1>PURE</h1></a>
+        <h1><a href="/PURE/HomeServlet">PURE</a></h1>
     </header>
     <form id="sea">
         <select id="searchSelect">

@@ -21,13 +21,19 @@ public class GetRealTimeCommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		long now = System.currentTimeMillis();
+		long now = 0;
+
+		try{
+			now = Long.parseLong(request.getParameter("time"));
+		}catch(NumberFormatException e) {
+			e.printStackTrace();
+			now = System.currentTimeMillis();
+		}
+
 		GetRealTimeCommentLogic realTimeComments = new GetRealTimeCommentLogic();
 		BulletinBoardList bulletinBoards = new BulletinBoardList();
 
-		System.out.println("1");
 		bulletinBoards = realTimeComments.execute(new Timestamp(now));
-		System.out.println("2");
 
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter pw = response.getWriter();
