@@ -19,8 +19,10 @@ public class SearchBulletinBoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String target = request.getParameter("target");
-		String keyword = request.getParameter("keyword");
+		String keyword = request.getParameter("search");
+		String target = request.getParameter("searchSelect");
+		System.out.println(keyword);
+		System.out.println(target);
 
 		if(target != null && keyword != null) {
 			BulletinBoardList bulletinBoards = null;

@@ -412,7 +412,7 @@ Timestamp updateTime = account.getUpdatedAt();
 						for(let comment of myCommentBulletinBoard.commentList) {
 								let inputTagP = elt("p");
 								menu.appendChild(inputTagP);
-								inputTagP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id="+comment.id}, comment.comment));
+								inputTagP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id="+myCommentBulletinBoard.id}, comment.comment));
 						}
 					}
 				}
