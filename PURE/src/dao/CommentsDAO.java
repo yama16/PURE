@@ -206,11 +206,9 @@ public class CommentsDAO {
     	String sql = "UPDATE comments SET pure_quantity = pure_quantity + ? WHERE id=? AND bulletin_board_id=?;";
 
     	PreparedStatement pStmt = conn.prepareStatement(sql);
-    	pStmt.setInt(1, commentId);
-    	pStmt.setInt(2, bulletinBoardId);
-    	pStmt.setInt(3, update);
-    	pStmt.setInt(4, commentId);
-    	pStmt.setInt(5, bulletinBoardId);
+    	pStmt.setInt(1, update);
+    	pStmt.setInt(2, commentId);
+    	pStmt.setInt(3, bulletinBoardId);
 
     	int result = pStmt.executeUpdate();
     	if(result != 1){
