@@ -289,7 +289,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
 
     function replyButtonEvent(e) {
       let commentId = e.currentTarget.parentNode.getAttribute("id");
-      document.getElementById("inputField").value += ">>>" + commentId;
+      document.getElementById("inputField").value += ">>>" + commentId + "\n";
     }
   </script>
 </html>
