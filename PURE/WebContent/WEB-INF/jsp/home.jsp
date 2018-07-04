@@ -90,8 +90,8 @@ CommentList commentList;
 					bulletinBoardList = JSON.parse(req.response);
 
 					for(let bulletinBoard of bulletinBoardList) {
-						for(let comment of bulletinBoard.commentList) {
-							comment = {id: bulletinBoard.id, title: bulletinBoard.title, comment: comment.comment};
+						for(let commentObject of bulletinBoard.commentList) {
+							comment = {id: bulletinBoard.id, title: bulletinBoard.title, comment: commentObject.comment};
 							commentList.push(comment);
 						}
 					}

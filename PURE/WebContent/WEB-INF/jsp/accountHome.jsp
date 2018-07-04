@@ -240,12 +240,24 @@ Timestamp updateTime = account.getUpdatedAt();
 
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
-					let myBulletinBoard = JSON.parse(req.response);
 					menu.appendChild(elt("h2", null, "現在立てている掲示板"));
-					for(let boards of myBulletinBoard) {
-						let inputTagP = elt("p");
+					let myBulletinBoard = JSON.parse(req.response);
+					if(myBulletinBoard) {
+						for(let board of myBulletinBoard) {
+							let counter = 1;
+							let bulletinBoardDisplay = elt("div");
+							let inputTagP = elt("p");
+							menu.appendChild(bulletinBoardDisplay);
+							bulletinBoardDisplay.appendChild(inputTagP);
+							inputTagP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id="+board.id}, board.title));
+
+							for(let tag of board.tagList) {
+								bulletinBoardDisplay.appendChild(elt("a", {href: "/PURE/SearchBulletinBoardServlet?search="+tag+"&searchSelect=1"}, tag));
+							}
+						}
+					}else{
+						let inputTagP = elt("h2", null, "現在作成立てている掲示板はありません");
 						menu.appendChild(inputTagP);
-						inputTagP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id="+boards.id}, boards.title));
 					}
 
 					//作成画面への遷移ボタンの設定
@@ -415,7 +427,7 @@ Timestamp updateTime = account.getUpdatedAt();
 
 					for(let myCommentBulletinBoard of myCommentBulletinBoardList) {
 						for(let comment of myCommentBulletinBoard.commentList) {
-								let inputTagP = elt("p");
+								let inputTagP = elt("p", null, myCommentBulletinBoard.title + ":");
 								menu.appendChild(inputTagP);
 								inputTagP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id="+myCommentBulletinBoard.id}, comment.comment));
 						}
