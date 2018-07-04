@@ -21,7 +21,7 @@ public class TagList extends AbstractList<String> implements Serializable {
 				json.append(",");
 			}
 			json.append("\"")
-				.append(super.get(i))
+				.append(super.get(i).replace("\\", "\\\\").replace("\"", "\\\"").replace("\'", "\\\'"))
 				.append("\"");
 		}
 		json.append("]");
