@@ -23,9 +23,6 @@ public class PassCheckServlet extends HttpServlet {
 		Account account = (Account) session.getAttribute("account");
 		boolean check = false;
 
-		System.out.println(pass);
-		System.out.println("checkck");
-
 		if(pass.equals(account.getPassword())) {
 			check = true;
 		}

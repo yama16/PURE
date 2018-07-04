@@ -13,16 +13,15 @@ import java.sql.SQLException;
  */
 public class PuresDAO {
 
-	private final String DRIVER_NAME = "org.h2.Driver";
-    private final String JDBC_URL = "jdbc:h2:C:/data/pure";
-    private final String DB_USER = "sa";
+    private final String JDBC_URL = "jdbc:mysql://localhost:3306/pure?useUnicode=true&characterEncoding=utf8";
+    private final String DB_USER = "root";
     private final String DB_PASS = "";
 
     static{
         try {
-            Class.forName("org.h2.Driver");
+            Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        	e.printStackTrace();
         }
     }
 
@@ -36,7 +35,7 @@ public class PuresDAO {
      * @throws SQLException
      */
     private int create(String accountId, int commentId, int bulletinBoardId, Connection conn) throws SQLException{
-    	String sql = "INSERT INTO pures VALUES(?, ?, ?)";
+    	String sql = "INSERT INTO pures(account_id, comment_id, bulletin_board_id) VALUES(?, ?, ?);";
 
     	PreparedStatement pStmt = conn.prepareStatement(sql);
     	pStmt.setString(1, accountId);

@@ -71,8 +71,9 @@ CommentList commentList;
 		setInterval(getComment, 5000);
 		setInterval(function(){
 			for(let comment of commentList) {
-
-				rialtime.appendChild(elt("p", null, comment));
+				let inputTagP = elt("p");
+				rialtime.appendChild(inputTagP);
+				inputTagP.appendChild(elt("a", null, comment));
 
 				bulletinBoards.shiht();
 			}

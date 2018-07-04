@@ -20,16 +20,15 @@ import model.CommentList;
  */
 public class CommentsDAO {
 
-	private final String DRIVER_NAME = "org.h2.Driver";
-    private final String JDBC_URL = "jdbc:h2:C:/data/pure";
-    private final String DB_USER = "sa";
+    private final String JDBC_URL = "jdbc:mysql://localhost:3306/pure?useUnicode=true&characterEncoding=utf8";
+    private final String DB_USER = "root";
     private final String DB_PASS = "";
 
     static{
         try {
-            Class.forName("org.h2.Driver");
+            Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        	e.printStackTrace();
         }
     }
 
@@ -77,7 +76,7 @@ public class CommentsDAO {
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a WHERE c.bulletin_board_id = ? AND c.id > ?";
+    		String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a ON c.account_id = a.id WHERE c.bulletin_board_id = ? AND c.id > ?";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoardId);
@@ -113,14 +112,29 @@ public class CommentsDAO {
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "INSERT INTO comments(id, bulletin_board_id, account_id, comment, created_at) VALUES((SELECT COALESCE(MAX(id),0)+1 FROM comments WHERE bulletin_board_id = ?), ?, ?, ?, COALESCE(?, CURRENT_TIMESTAMP()));";
+    		String sql = "SELECT COALESCE(MAX(id),0)+1 AS commentId FROM comments WHERE bulletin_board_id = ?;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoardId);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		int commentId = 0;
+    		if(resultSet.next()){
+    			commentId = resultSet.getInt("commentId");
+    		}else{
+    			return false;
+    		}
+
+    		sql = "INSERT INTO comments(id, bulletin_board_id, account_id, comment, created_at) VALUES(?, ?, ?, ?, COALESCE(?, CURRENT_TIMESTAMP()));";
+
+    		pStmt = conn.prepareStatement(sql);
+    		pStmt.setInt(1, commentId);
     		pStmt.setInt(2, bulletinBoardId);
     		pStmt.setString(3, accountId);
     		pStmt.setString(4, comment);
     		pStmt.setTimestamp(5, createdAt);
+
+    		System.out.println(pStmt);
 
     		int result = pStmt.executeUpdate();
     		if(result != 1){

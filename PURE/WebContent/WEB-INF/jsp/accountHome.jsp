@@ -5,7 +5,7 @@
 <%
 Account account = (Account) session.getAttribute("account");
 String id = account.getId();
-String nickname = account.getNickname();
+String nickname = account.getNickname().replace("\\", "\\\\").replace("\"", "\\\"");
 Timestamp createTime = account.getCreatedAt();
 Timestamp updateTime = account.getUpdatedAt();
 %>
@@ -52,20 +52,18 @@ Timestamp updateTime = account.getUpdatedAt();
 			menu.textContent = null;
 
 			//現在のニックネームを表示
-			let nicknameDisplay = elt("p", null, "<%= nickname %>");
-			let nicknameChangeButton = elt("input", {type: "button", id: "nicknameChange", value: "変更"});
+			let nicknameDisplay = elt("p", null, "現在のID: <%= nickname %>");
+			let nicknameChangeButton = elt("input", {type: "button", id: "nicknameChange", value: "ニックネーム変更"});
 			menu.appendChild(nicknameDisplay);
 			menu.appendChild(nicknameChangeButton);
 			console.log("ok");
 
 			//現在のIDを表示
-			let idDisplay = elt("p", null, "<%= id %>");
+			let idDisplay = elt("p", null, "現在のID: <%= id %>");
 			menu.appendChild(idDisplay);
 
 			//パスワード変更
-			let passChangeDisplay = elt("p", null, "パスワード変更");
-			let passChangeButton = elt("input", {type: "button", id: "passChange", value: "変更"});
-			menu.appendChild(passChangeDisplay);
+			let passChangeButton = elt("input", {type: "button", id: "passChange", value: "パスワード変更"});
 			menu.appendChild(passChangeButton);
 
 			//アカウント作成日時を表示
@@ -76,11 +74,12 @@ Timestamp updateTime = account.getUpdatedAt();
 			let updateTimeDisplay = elt("p", null, "最終更新日："+"<%= updateTime %>");
 			menu.appendChild(updateTimeDisplay);
 
-			//変更ボタンが押されたら入力ページを表示
+			//ニックネーム変更ボタンが押されたら入力ページを表示
 			let nickname = document.getElementById("nicknameChange");
-			let pass = document.getElementById("passChange");
-
 			nickname.addEventListener("click",nicknameChange,false);
+
+			//パスワード変更ボタンが押されたら入力ページを表示
+			let pass = document.getElementById("passChange");
 			pass.addEventListener("click",passChange,false);
 		}
 
@@ -97,7 +96,7 @@ Timestamp updateTime = account.getUpdatedAt();
 			inputNicknameForm.appendChild(nicknameDisplay);
 
 			//新しいニックネームの入力設定
-			let guideDisplayMsg = elt("p", null, "新しいニックネームを入力してください");
+			let guideDisplayMsg = elt("p", null, "新しいニックネームを入力してください(1～10文字)");
 			let inputNewNickname = elt("input",{type: "text", id: "newNickname", name: "newNickname"});
 			inputNicknameForm.appendChild(guideDisplayMsg);
 			inputNicknameForm.appendChild(inputNewNickname);
@@ -105,6 +104,15 @@ Timestamp updateTime = account.getUpdatedAt();
 			//送信ボタンの設定
 			let changeSubmit = elt("input",{type: "submit", id: "changeSubmit", value: "変更"});
 			inputNicknameForm.appendChild(changeSubmit);
+
+			//戻るボタン設定
+			let back = elt("input", {id: "back", type: "button", value: "戻る"});
+			inputNicknameForm.appendChild(back);
+			document.getElementById("back").addEventListener("click",personalSetting,false);
+
+			//エラーメッセージを表示する欄の作成
+			let errorMsgDisplay = elt("div", {id: "errorMsg"});
+			inputNicknameForm.appendChild(errorMsgDisplay);
 
 			//ニックネームが未入力または入力制限を超えていた場合送信を中止
 			let nicknameForm = document.getElementById("nicknameForm");
@@ -117,15 +125,11 @@ Timestamp updateTime = account.getUpdatedAt();
 					inputNicknameCheck = false;
 				}
 				if(!(inputNicknameCheck)) {
-					inputNicknameForm.appendChild(elt("p", null, "※ニックネームの入力が正しくありません"));
+					errorMsgDisplay.textContent = null;
+					errorMsgDisplay.appendChild(elt("p", null, "※ニックネームの入力が正しくありません"));
 					e.preventDefault();
 				}
 			},false);
-
-			//戻るボタン設定
-			let back = elt("input", {id: "back", type: "button", value: "戻る"});
-			inputNicknameForm.appendChild(back);
-			document.getElementById("back").onclick = personalSetting;
 
 		}
 
@@ -145,20 +149,20 @@ Timestamp updateTime = account.getUpdatedAt();
 
 			//新しいパスワードを入力
 			let guideNewDisplay = elt("p", null, "新しいパスワードを入力してください");
-			let inputNewPass = elt("input",{type: "password", id: "newPass", name: "pass"});
+			let inputNewPass = elt("input",{type: "password", id: "newPass", name: "newPass"});
 			inputPassForm.appendChild(guideNewDisplay);
 			inputPassForm.appendChild(inputNewPass);
 
 			//確認パスワードを入力
 			let guideConfirmDisplay = elt("p", null, "もう一度入力してください");
-			let inputConfirmPass = elt("input",{type: "password", id: "confirmPass"});
+			let inputConfirmPass = elt("input",{type: "password", id: "confirmPass", name: "confirmPass"});
 			inputPassForm.appendChild(guideConfirmDisplay);
 			inputPassForm.appendChild(inputConfirmPass);
 
 			//戻るボタン
 			let back = elt("input", {type: "button",id: "back", value: "戻る"});
 			inputPassForm.appendChild(back);
-			document.getElementById("back").onclick = personalSetting;
+			document.getElementById("back").addEventListener("click",personalSetting,false);
 
 			//送信ボタンの作成
 			let passSubmit = elt("input", {type: "submit", value: "送信", id: "passSubmit"});

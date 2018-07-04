@@ -3,7 +3,7 @@
 <%@ page import="model.BulletinBoard" %>
 <%@ page import="model.BulletinBoardList" %>
 <%
-BulletinBoardList bulletinBoards = (BulletinBoardList) session.getAttribute("bulletinBoards");
+BulletinBoardList bulletinBoards = (BulletinBoardList) request.getAttribute("bulletinBoards");
 
 %>
 <!DOCTYPE html>
@@ -18,7 +18,7 @@ BulletinBoardList bulletinBoards = (BulletinBoardList) session.getAttribute("bul
         <h1><a href="/PURE/HomeServlet">PURE</a></h1>
     </header>
     <form id="sea" action="/PURE/SearchBulletinBoardServlet">
-        <select id="searchSelect">
+        <select name="searchSelect">
             <option value="1"> タグ</option>
             <option value="2">掲示板</option>
         </select>
@@ -27,7 +27,11 @@ BulletinBoardList bulletinBoards = (BulletinBoardList) session.getAttribute("bul
             <hr>
     </form>
     <div id="searchResult">
-
+	    <% if(bulletinBoards != null) { %>
+			<% for(int i = 0; i < bulletinBoards.size(); i++) { %>
+				<p><a href="/PURE/BulletinBoardServlet?id=<%= bulletinBoards.get(i).getId() %>"><%= bulletinBoards.get(i).getTitle() %></a></p>
+			<% } %>
+		<% } %>
     </div>
     <script>
   		document.addEventListener('DOMContentLoaded',function() {
