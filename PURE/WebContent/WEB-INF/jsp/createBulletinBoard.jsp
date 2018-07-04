@@ -14,7 +14,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="commentDesign.css">
+    <link rel="stylesheet" href="">
     <title>PURE</title>
   </head>
   <body>
@@ -23,7 +23,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     <div id="commentField">
       <div id="title">
       	<p><%= bulletinBoardTitle %></p>
-      	<input id="favoriteButton" type="button" value="お気に入り">
+      	<input id="favoriteButton" type="button" value="お気に入り登録">
       </div>
       <!-- 以下コメントが入る -->
       <%
@@ -72,19 +72,26 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
           button.addEventListener("click", replyButtonEvent, false);
         }
     }
-    favoriteButton.addEventListener("click", function() {
+    favoriteButton.addEventListener("click", function(e) {
       // 初期処理
+      let favorite = e.currentTarget;
       let req = new XMLHttpRequest();
       // リクエスト処理
       req.onreadystatechange = function() {
         if(req.readyState == 4 && req.status == 200) {
-          switch (req.response) {
+          switch (JSON.parse(req.response)) {
             case 0:
+
               break;
+
             case 1:
+              favorite.value = "お気に入り解除";
               break;
+
             case -1:
+              favorite.value = "お気に入り登録";
               break;
+
             default:
           }
         }
@@ -282,7 +289,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
 
     function replyButtonEvent(e) {
       let commentId = e.currentTarget.parentNode.getAttribute("id");
-      document.getElementById("inputField").value += ">>>" + commentId;
+      document.getElementById("inputField").value += ">>>" + commentId + "\n";
     }
   </script>
 </html>
