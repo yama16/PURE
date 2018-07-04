@@ -77,17 +77,15 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       let req = new XMLHttpRequest();
       // リクエスト処理
       req.onreadystatechange = function() {
-        if(req.readyState == 4) {
-          if(req.status == 200) {
-            switch (req.response) {
-              case 0:
-                break;
-              case 1:
-                break;
-              case -1:
-                break;
-              default:
-            }
+        if(req.readyState == 4 && req.status == 200) {
+          switch (req.response) {
+            case 0:
+              break;
+            case 1:
+              break;
+            case -1:
+              break;
+            default:
           }
         }
       }
@@ -118,15 +116,13 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
         let req = new XMLHttpRequest();
         // リクエスト処理
         req.onreadystatechange = function() {
-          if(req.readyState == 4) {
-            if(req.status == 200) {
-              // データ受信成功時の処理
-              if(req.response) {
-                console.log("受信成功！！");
-                getNewComment();
-              }
-              text.value = ""; // 入力欄をクリア
+          if(req.readyState == 4 && req.status == 200) {
+            // データ受信成功時の処理
+            if(req.response) {
+              console.log("受信成功！！");
+              getNewComment();
             }
+            text.value = ""; // 入力欄をクリア
           }
         }
         req.open("POST", "/PURE/PostCommentServlet");
@@ -136,13 +132,13 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     }, false);
 
  	// コメントデータを受け取り画面に表示する処理
-    function commentDisplay(commentArray) {
+    function commentDisplay(commentList) {
       // 初期処理
       let commentField = document.getElementById("commentField");   // コメント欄のdiv要素取得
 
       // コメントを表示またはコメントをPURE(未実装)
-      for(let cmtObj of commentArray) {
-    	commentField.appendChild( createCommentFrame(cmtObj) );         // コメント枠をコメント欄に追加
+      for(let cmtObj of commentList) {
+    	   commentField.appendChild( createCommentFrame(cmtObj) );         // コメント枠をコメント欄に追加
       }
     }
 
@@ -163,7 +159,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       replyButton.setAttribute("type", "button");
       replyButton.setAttribute("value", "返信");
       commentFrame.setAttribute("class", "comment");             // コメント枠にclass属性を設定
-      commentFrame.setAttribute("id", commentObject.id);  // コメント枠にId属性(commentId)を設定
+      commentFrame.setAttribute("id", commentObject.id);  		 // コメント枠にId属性(commentId)を設定
 
       // span要素にcmtObjのフィールドを追加
       spanElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );
@@ -203,20 +199,42 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       return commentFrame;
     }
 
+    function pureComment(pureCommentList) {
+      // pureCommentListに存在するコメントでPUREされていなったらPUREする
+      for(let commentId of pureCommentList) {
+        let pureComment = document.getElementById(commentId);
+        if(pureComment.className.indexOf("pure") == -1) {
+          pureComment.classList.add("pure");
+        }
+      }
+
+      // PUREされているコメントでPUREを解除する
+      let pureComments = document.getElementsByClassName("pure");
+      for(let comment of pureComments) {
+        for(let i = 0; i < pureCommentList.length; i++) {
+          if(comment.id == pureCommentList[i]) {
+            break;
+          } else if(i == pureCommentList.length - 1) {
+            // 解除する処理
+            document.getElementById(pureCommentList[i]).classList.remove("pure");
+          }
+        }
+      }
+    }
+
     function getNewComment() {
       // 初期処理
       let req = new XMLHttpRequest();
       // リクエスト処理
       req.onreadystatechange = function() {
-        if(req.readyState == 4) {
-          if(req.status == 200) {
-            // データ受信成功時の処理
-            if(req.response) {
-           	  console.log(req.response);
-           	  let obj = JSON.parse(req.response);
-           	  console.log(obj);
-           	  commentDisplay( obj );
-            }
+        if(req.readyState == 4 && req.status == 200) {
+          // データ受信成功時の処理
+          if(req.response) {
+            console.log(req.response);
+            let commentData = JSON.parse(req.response);
+            console.log(commentData);
+            commentDisplay(commentData.commentList);
+            pureComment(commentData.pureCommentList);
           }
         }
       }
@@ -226,22 +244,34 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     }
 
     function pureButtonEvent(e) {
+   	  console.log("PUREボタン入力確認");
       // 初期処理
-      let commentId =  e.currentTarget.parentNode.getAttribute("id");
+      let pureButton = e.currentTarget;
+      let commentId = e.currentTarget.parentNode.getAttribute("id");
       let req = new XMLHttpRequest();
       // リクエスト処理
       req.onreadystatechange = function() {
-        if(req.readyState == 4) {
-          if(req.status == 200) {
-            switch (req.response) {
-              case 0:
-                break;
-              case 1:
-                break;
-              case -1:
-                break;
-              default:
-            }
+        if(req.readyState == 4 && req.status == 200) {
+          console.log("PUREボタンのレスポンス:" + req.response);
+
+          switch (JSON.parse(req.response)) {
+            case 0:
+              break;
+
+            case 1:
+              getNewComment();
+              pureButton.value = "PURE解除";
+              console.log("PURE解除");
+              break;
+
+            case -1:
+              getNewComment();
+              pureButton.value = "PURE";
+              console.log("PURE");
+              break;
+
+            default:
+            	console.log("不正な値です");
           }
         }
       }
