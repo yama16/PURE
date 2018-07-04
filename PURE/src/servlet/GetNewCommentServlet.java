@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import bo.GetNewCommentLogic;
+import bo.GetPureCommentsLogic;
 import model.BulletinBoard;
 import model.CommentList;
 
@@ -32,17 +34,34 @@ public class GetNewCommentServlet extends HttpServlet {
 		int bulletin_board_id = bulletinBoard.getId();
 		int last_comment_id = bulletinBoard.getCommentList().size();
 		System.out.println("last_comment_id:" + last_comment_id);
+
 		// 最新コメントが入ったリストをを取得
 		GetNewCommentLogic logic = new GetNewCommentLogic();
 		CommentList newCommentList = logic.execute(bulletin_board_id, last_comment_id);
+		// PUREされたコメントリストを取得
+		GetPureCommentsLogic getPureCommentLogic = new GetPureCommentsLogic();
+		List<Integer> pureCommentList = getPureCommentLogic.execute(bulletin_board_id);
 
 		// セッションスコープに保存した掲示板の更新に成功したらJSON形式に変換
-		String json;
+		StringBuffer json = new StringBuffer();
+		json.append("{");
+		json.append("\"commentList\":");
 		if( bulletinBoard.getCommentList().addAll(newCommentList) ) {
-			json = newCommentList.toString(); // JSON形式に変換
+			json.append(newCommentList.toString());
 		} else {
-			json = null;
+			json.append("[]");
 		}
+		json.append(",");
+		// pureCommentListをJSON形式に変換し、追加する
+		json.append("\"pureCommentList\":[");
+		for(int i = 0; i < pureCommentList.size(); i++) {
+			json.append( pureCommentList.get(i) );
+			if(i != pureCommentList.size() - 1) {
+				json.append(",");
+			}
+		}
+		json.append("]");
+		json.append("}");
 
 		// レスポンス処理
 		response.setContentType("application/json;charset=UTF-8");

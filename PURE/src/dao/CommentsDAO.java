@@ -42,7 +42,7 @@ public class CommentsDAO {
 
     	CommentList commentList = new CommentList();
 
-    	String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a ON c.account_id = a.id WHERE c.bulletin_board_id = ?";
+    	String sql = "SELECT c.id, c.bulletin_board_id, c.account_id, c.comment, c.created_at, c.pure_quantity, a.nickname FROM comments AS c LEFT OUTER JOIN accounts AS a ON c.account_id = a.id WHERE c.bulletin_board_id = ? ORDER BY c.id";
 
     	PreparedStatement pStmt = conn.prepareStatement(sql);
     	pStmt.setInt(1, bulletinBoardId);
@@ -206,11 +206,9 @@ public class CommentsDAO {
     	String sql = "UPDATE comments SET pure_quantity = pure_quantity + ? WHERE id=? AND bulletin_board_id=?;";
 
     	PreparedStatement pStmt = conn.prepareStatement(sql);
-    	pStmt.setInt(1, commentId);
-    	pStmt.setInt(2, bulletinBoardId);
-    	pStmt.setInt(3, update);
-    	pStmt.setInt(4, commentId);
-    	pStmt.setInt(5, bulletinBoardId);
+    	pStmt.setInt(1, update);
+    	pStmt.setInt(2, commentId);
+    	pStmt.setInt(3, bulletinBoardId);
 
     	int result = pStmt.executeUpdate();
     	if(result != 1){

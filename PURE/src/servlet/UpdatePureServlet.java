@@ -31,6 +31,7 @@ public class UpdatePureServlet extends HttpServlet {
 		int commentId = 0;
 		try {
 			commentId = Integer.parseInt(request.getParameter("commentId"));
+			System.out.println("PUREボタンから" + commentId + "を取得") ;
 		} catch(NumberFormatException e) {
 			System.out.println(e.getMessage());
 		}
