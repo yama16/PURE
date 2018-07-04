@@ -25,10 +25,17 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("errorcheck");
 		//リクエストパラメータの取得
 		request.setCharacterEncoding("UTF-8");
 		String id = request.getParameter("id");
 		String pass = request.getParameter("pass");
+
+		//入力された文字数が正しくなかった場合
+		if(id == null || pass == null || id.length() < 6 || id.length() > 12 || pass.length() < 8 || pass.length() > 16) {
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
+			dispatcher.forward(request, response);
+		}
 
 		//Loginインスタンス（入力情報）の生成
 		Login login = new Login(id,pass);

@@ -29,7 +29,12 @@ public class NicknameChangeServlet extends HttpServlet {
 		String nickname = request.getParameter("newNickname");
 		HttpSession session = request.getSession();
 		Account account = (Account) session.getAttribute("account");
-		System.out.println(nickname);
+
+		if(!nickname.matches(".{1,10}")) {
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/accountHome.jsp");
+			dispatcher.forward(request, response);
+		}
+
 		account.setNickname(nickname);
 		long now = System.currentTimeMillis();
 		account.setUpdatedAt(new Timestamp(now));

@@ -25,7 +25,7 @@ if(login != null) {
 	<% } %>
 
 	<!-- 未入力の項目がある場合エラーメッセージを表示 -->
-	<p><output id="empty"></output></p>
+	<p id="errorMsg"></p>
 
 	<!-- ログインページ -->
 	<form action="/PURE/LoginServlet" method="post" id="form">
@@ -39,16 +39,28 @@ if(login != null) {
 		let id = document.getElementById("id");			//入力されたIDを取得
 		let pass = document.getElementById("pass");		//入力されたパスワードを取得
 		let form = document.getElementById("form");
+		let empty = document.getElementById("errorMsg");
 
-		form.onsubmit = function(){
-			if(!(id.value) || !(pass.value)) {
-				let empty = document.getElementById("empty");
-				empty.innerHTML = "未入力の項目があります";
-				return false;
-			}else{
-				return true;
+		form.addEventListener("submit",function(e){
+
+			if(id.value.length < 6 || id.value.length > 12) {
+				console.log("11");
+				//errorMsgDisplay("IDの入力文字数に誤りがあります");
+				e.preventDefault();
 			}
-		};
+
+			if(pass.value.length < 8 || pass.value.length > 16) {
+				console.log("22");
+				//errorMsgDisplay("パスワードの入力文字数に誤りがあります");
+				e.preventDefault();
+			}
+
+		},false);
+
+		function errorMsgDisplay(error) {
+			let errorMsg = dpcument.createTextNode(error);
+			empty.appendChild(errorMsg);
+		}
 	</script>
 </body>
 </html>
