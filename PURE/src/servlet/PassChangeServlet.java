@@ -21,11 +21,19 @@ public class PassChangeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String pass = request.getParameter("pass");
+		String nowPass = request.getParameter("nowPass");
+		String newPass = request.getParameter("newPass");
+		String confirmPass = request.getParameter("confirmPass");
+
+		if(!(nowPass.matches("[a-zA-Z0-9]{8,16}") && newPass.matches("[a-zA-Z0-9]{8,16}") && confirmPass.matches("[a-zA-Z0-9]{8,16}"))) {
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/accountHome.jsp");
+			dispatcher.forward(request, response);
+		}
+
 		HttpSession session = request.getSession();
 		Account account = (Account) session.getAttribute("account");
-		System.out.println(pass);
-		account.setPassword(pass);
+
+		account.setPassword(newPass);
 		long now = System.currentTimeMillis();
 		account.setUpdatedAt(new Timestamp(now));
 
