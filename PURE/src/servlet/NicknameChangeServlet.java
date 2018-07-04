@@ -33,22 +33,23 @@ public class NicknameChangeServlet extends HttpServlet {
 		if(!nickname.matches(".{1,10}")) {
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/accountHome.jsp");
 			dispatcher.forward(request, response);
+		}else{
+
+			account.setNickname(nickname);
+			long now = System.currentTimeMillis();
+			account.setUpdatedAt(new Timestamp(now));
+
+			UpdateAccountLogic update = new UpdateAccountLogic();
+			update.execute(account.getId(), account);
+
+			Login login = new Login(account.getId(),account.getPassword());
+			LoginLogic logic = new LoginLogic();
+			account = logic.execute(login);
+
+			session.setAttribute("account",account);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/accountHome.jsp");
+			dispatcher.forward(request, response);
 		}
-
-		account.setNickname(nickname);
-		long now = System.currentTimeMillis();
-		account.setUpdatedAt(new Timestamp(now));
-
-		UpdateAccountLogic update = new UpdateAccountLogic();
-		update.execute(account.getId(), account);
-
-		Login login = new Login(account.getId(),account.getPassword());
-		LoginLogic logic = new LoginLogic();
-		account = logic.execute(login);
-
-		session.setAttribute("account",account);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/accountHome.jsp");
-		dispatcher.forward(request, response);
 	}
 
 }

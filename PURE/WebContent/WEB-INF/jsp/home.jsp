@@ -70,12 +70,14 @@ CommentList commentList;
 
 		setInterval(getComment, 5000);
 		setInterval(function(){
-			for(let comment of commentList) {
+			if(commentList[0]) {
+				let comment = commentList[0];
+
 				let inputTagP = elt("p");
 				rialtime.appendChild(inputTagP);
-				inputTagP.appendChild(elt("a", null, comment));
+				inputTagP.appendChild(elt("a", null, comment.comment));
 
-				bulletinBoards.shiht();
+				commentList.shift();
 			}
 		},1000);
 
@@ -89,7 +91,7 @@ CommentList commentList;
 
 					for(let bulletinBoard of bulletinBoardList) {
 						for(let comment of bulletinBoard.commentList) {
-							comment = {id: bulletinBoard.id, title: bulletinBoard.title, comment: comment};
+							comment = {id: bulletinBoard.id, title: bulletinBoard.title, comment: comment.comment};
 							commentList.push(comment);
 						}
 					}
@@ -99,6 +101,7 @@ CommentList commentList;
 			req.open("GET","/PURE/GetRealTimeCommentServlet?time=" + nowTime);
 			req.send(null);
 			nowTime = Date.now();
+			console.log(nowTime);
 		}
 	},false);
 

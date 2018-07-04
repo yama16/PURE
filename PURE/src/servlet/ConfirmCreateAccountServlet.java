@@ -38,11 +38,12 @@ public class ConfirmCreateAccountServlet extends HttpServlet {
 
 		if(!nickname.matches(".{1,10}") || !id.matches("[a-zA-Z0-9]{6,12}") || !pass.matches("[a-zA-Z0-9]{8,16}")){
 			response.sendRedirect("/PURE/CreateAccountServlet");
-		}
+		}else{
 
-		//確認画面にフォワード
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/confirmCreateAccount.jsp");
-		dispatcher.forward(request, response);
+			//確認画面にフォワード
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/confirmCreateAccount.jsp");
+			dispatcher.forward(request, response);
+		}
 	}
 
 }

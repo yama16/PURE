@@ -241,6 +241,7 @@ Timestamp updateTime = account.getUpdatedAt();
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
 					let myBulletinBoard = JSON.parse(req.response);
+					menu.appendChild(elt("h2", null, "現在立てている掲示板"));
 					for(let boards of myBulletinBoard) {
 						let inputTagP = elt("p");
 						menu.appendChild(inputTagP);
