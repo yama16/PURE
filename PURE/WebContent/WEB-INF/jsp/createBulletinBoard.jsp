@@ -14,7 +14,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="commentDesign.css">
+    <link rel="stylesheet" href="">
     <title>PURE</title>
   </head>
   <body>
