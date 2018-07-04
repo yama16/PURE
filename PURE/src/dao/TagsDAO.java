@@ -14,16 +14,15 @@ import model.TagList;
  */
 public class TagsDAO {
 
-	private final String DRIVER_NAME = "org.h2.Driver";
-    private final String JDBC_URL = "jdbc:h2:C:/data/pure";
-    private final String DB_USER = "sa";
+    private final String JDBC_URL = "jdbc:mysql://localhost:3306/pure?useUnicode=true&characterEncoding=utf8";
+    private final String DB_USER = "root";
     private final String DB_PASS = "";
 
     static{
         try {
-            Class.forName("org.h2.Driver");
+            Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        	e.printStackTrace();
         }
     }
 

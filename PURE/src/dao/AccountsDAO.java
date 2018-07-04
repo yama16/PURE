@@ -20,16 +20,15 @@ import model.Login;
  */
 public class AccountsDAO {
 
-    private final String DRIVER_NAME = "org.h2.Driver";
-    private final String JDBC_URL = "jdbc:h2:C:/data/pure";
-    private final String DB_USER = "sa";
+    private final String JDBC_URL = "jdbc:mysql://localhost:3306/pure?useUnicode=true&characterEncoding=utf8";
+    private final String DB_USER = "root";
     private final String DB_PASS = "";
 
     static{
         try {
-            Class.forName("org.h2.Driver");
+            Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-        	Logger.getLogger(AccountsDAO.class.getName()).log(Level.SEVERE, null, e);
+        	e.printStackTrace();
         }
     }
 
@@ -42,7 +41,7 @@ public class AccountsDAO {
      */
     public boolean isUsable(String id){
         try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-            String sql = "SELECT id FROM accounts WHERE id = ?";
+            String sql = "SELECT id FROM accounts WHERE id = ?;";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, id);
             ResultSet resultSet = pStmt.executeQuery();
@@ -95,7 +94,7 @@ public class AccountsDAO {
 
         try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-            String sql = "SELECT id, nickname, password, created_at, updated_at, is_deleted FROM accounts WHERE id = ? AND password = ?";
+            String sql = "SELECT id, nickname, password, created_at, updated_at, is_deleted FROM accounts WHERE id = ? AND password = ?;";
 
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, login.getId());
