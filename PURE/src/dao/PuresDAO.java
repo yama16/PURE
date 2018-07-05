@@ -162,7 +162,7 @@ public class PuresDAO {
     	try{
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-    		String sql = "SELECT id FROM pures WHERE account_id = ? AND bulletin_board_id = ?;";
+    		String sql = "SELECT comment_id FROM pures WHERE account_id = ? AND bulletin_board_id = ?;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, accountId);
@@ -170,7 +170,7 @@ public class PuresDAO {
 
     		ResultSet resultSet = pStmt.executeQuery();
     		while(resultSet.next()){
-    			pureCommentList.add(resultSet.getInt("id"));
+    			pureCommentList.add(resultSet.getInt("comment_id"));
     		}
 
     	}catch(SQLException e){
