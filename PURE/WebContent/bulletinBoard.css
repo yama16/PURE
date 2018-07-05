@@ -28,7 +28,7 @@ h1{
 #commentField {
   margin: 0 auto;
   width: 500px;
-  height: 600px;;
+  height: auto;
   border: solid 7px pink;
 }
 
@@ -42,10 +42,14 @@ h1{
   padding: 10px 10px 10px 10px;
   margin: 10px 40px;
   border-radius: 10px;
-  background-color: rgba(192,192,192,0.3);
+  background-color: rgba(255,171,206,0.3);
   box-shadow: inset 1px 1px 0 #fff, 1px 1px 3px rgba(0,0,0,0.5);
   overflow: hidden;
   word-wrap: break-word;
+}
+
+.pure {
+	background-color: black;
 }
 
 footer {

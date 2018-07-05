@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * puresテーブルにアクセスするDAO。
@@ -146,6 +148,46 @@ public class PuresDAO {
 			}
 		}
     	return result;
+    }
+
+    /**
+     *
+     * @param accountId
+     * @param bulletinBoardId
+     * @return
+     */
+    public List<Integer> getPureCommentList(String accountId, int bulletinBoardId){
+    	Connection conn = null;
+    	List<Integer> pureCommentList = new ArrayList<>();
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+
+    		String sql = "SELECT comment_id FROM pures WHERE account_id = ? AND bulletin_board_id = ?;";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setString(1, accountId);
+    		pStmt.setInt(2, bulletinBoardId);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		while(resultSet.next()){
+    			pureCommentList.add(resultSet.getInt("comment_id"));
+    		}
+
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    		return null;
+    	}finally{
+    		if(conn != null){
+    			try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return null;
+				}
+    		}
+    	}
+
+    	return pureCommentList;
     }
 
 }

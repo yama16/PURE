@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import bo.GetBulletinBoardLogic;
+import bo.GetPureCommentsLogic;
 import model.BulletinBoard;
 
 /**
@@ -22,13 +24,18 @@ public class BulletinBoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// リクエストスコープに保存を取得
+		// パラメータを取得
 		int id = Integer.parseInt(request.getParameter("id"));
 		System.out.println("掲示板ID:" + id + " がリクエストされました"); // テスト
 
 		// GetBulletinBoardLogicにIDを渡し、掲示板オブジェクトを取得
 		GetBulletinBoardLogic getBulletinBoard = new GetBulletinBoardLogic();
 		BulletinBoard bulletinBoard = getBulletinBoard.execute(id);
+
+		// pureCommentListを取得し、リクエストスコープに保存
+		GetPureCommentsLogic getPureCommentLogic = new GetPureCommentsLogic();
+		List<Integer> pureCommentList = getPureCommentLogic.execute(id);
+		request.setAttribute("pureCommentList", pureCommentList);
 
 		// nullではなかったらセッションスコープに掲示板オブジェクトを保存
 		if(bulletinBoard != null) {

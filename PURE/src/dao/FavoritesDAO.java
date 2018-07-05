@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -139,6 +141,80 @@ public class FavoritesDAO {
 			}
 		}
     	return result;
+    }
+
+    /**
+     *
+     * @param accountId
+     * @param bulletinBoardId
+     * @return
+     */
+    public boolean find(String accountId, int bulletinBoardId){
+    	Connection conn = null;
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+
+    		String sql = "SELECT * FROM favorites WHERE account_id = ? AND bulletin_board_id;";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setString(1, accountId);
+    		pStmt.setInt(2, bulletinBoardId);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		if(!resultSet.next()){
+    			return false;
+    		}
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    		return false;
+    	}finally{
+    		if(conn != null){
+    			try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return false;
+				}
+    		}
+    	}
+
+    	return true;
+    }
+
+    /**
+     *
+     * @param accountId
+     * @return
+     */
+    public List<Integer> findByAccountId(String accountId){
+    	List<Integer> favoriteList = new ArrayList<>();
+    	Connection conn = null;
+    	try{
+    		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+
+    		String sql = "SELECT bulletin_board_id FROM favorites WHERE account_id = ?;";
+
+    		PreparedStatement pStmt = conn.prepareStatement(sql);
+    		pStmt.setString(1, accountId);
+
+    		ResultSet resultSet = pStmt.executeQuery();
+    		while(resultSet.next()){
+    			favoriteList.add(resultSet.getInt("bulletin_board_id"));
+    		}
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    		return null;
+    	}finally{
+    		if(conn != null){
+    			try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return null;
+				}
+    		}
+    	}
+    	return favoriteList;
     }
 
 }
