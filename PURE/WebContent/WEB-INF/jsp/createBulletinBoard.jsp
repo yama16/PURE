@@ -5,11 +5,15 @@
 <%@ page import="model.CommentList" %>
 <%@ page import="java.util.List" %>
 <%
+// 掲示板とコメントリストを取得
 BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
 CommentList commentList = bulletinBoard.getCommentList();
+// PUREされているコメントのリストを取得
 List<Integer> pureCommentList = (List<Integer>) request.getAttribute("pureCommentList");
-String bulletinBoardTitle = bulletinBoard.getTitle();
-String ceatedAt = bulletinBoard.getCreatedAt().toString();
+// 自分がPUREしているコメントのリストを取得
+List<Integer> myPureCommentList = (List<Integer>) request.getAttribute("myPureCommentList");
+// 掲示板をお気に入りに入れているか判断する
+boolean isFavorite = (boolean) request.getAttribute("isFavorite");
 %>
 <!DOCTYPE html>
 <html>
@@ -23,8 +27,8 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     <!-- 　コメント欄　 -->
     <div id="commentField">
       <div id="title">
-      	<p><%= bulletinBoardTitle %></p>
-      	<input id="favoriteButton" type="button" value="お気に入り登録">
+      	<h2><%= bulletinBoard.getTitle() %></h2>
+      	<input id="favoriteButton" type="button" value="<%= isFavorite==true?"お気に入り解除":"お気に入り登録" %>">
       </div>
       <!-- 以下コメントが入る -->
       <%
@@ -32,9 +36,13 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
     	String buttonName = "PURE";
     	String className = "comment";
     	Comment comment = commentList.get(i);
+    	for(int myPureCommentId: myPureCommentList) {
+    		if(comment.getId() == myPureCommentId) {
+    			buttonName = "PURE解除";
+    		}
+    	}
     	for(int pureCommentId: pureCommentList) {
     		if(comment.getId() == pureCommentId) {
-    			buttonName = "PURE解除";
     			className = "comment pure";
     		}
     	}

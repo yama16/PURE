@@ -154,7 +154,7 @@ public class FavoritesDAO {
     	try{
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-    		String sql = "SELECT * FROM favorites WHERE account_id = ? AND bulletin_board_id;";
+    		String sql = "SELECT * FROM favorites WHERE account_id = ? AND bulletin_board_id = ?;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, accountId);
