@@ -30,16 +30,16 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       <%
       for(int i = 0; i < commentList.size(); i++) {
     	String buttonName = "PURE";
-    	String classElement = "comment";
+    	String className = "comment";
     	Comment comment = commentList.get(i);
     	for(int pureCommentId: pureCommentList) {
     		if(comment.getId() == pureCommentId) {
     			buttonName = "PURE解除";
-    			classElement = "comment pure";
+    			className = "comment pure";
     		}
     	}
       %>
-      	<div class="<%= classElement %>" id="<%= comment.getId() %>">
+      	<div class="<%= className %>" id="<%= comment.getId() %>">
       		<dl>
       			<dt>
       			  <span>No.<%= comment.getId() %></span>
