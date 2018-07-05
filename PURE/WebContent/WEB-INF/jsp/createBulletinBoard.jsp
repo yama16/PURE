@@ -7,6 +7,7 @@
 <%
 BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
 CommentList commentList = bulletinBoard.getCommentList();
+List<Integer> pureCommentList = (List<Integer>) request.getAttribute("pureCommentList");
 String bulletinBoardTitle = bulletinBoard.getTitle();
 String ceatedAt = bulletinBoard.getCreatedAt().toString();
 %>
@@ -14,7 +15,7 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="bulletinBoard.css">
     <title>PURE</title>
   </head>
   <body>
@@ -27,11 +28,18 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       </div>
       <!-- 以下コメントが入る -->
       <%
-      	for(int i = 0; i < commentList.size(); i++) {
-    	  Comment comment = commentList.get(i);
+      for(int i = 0; i < commentList.size(); i++) {
+    	String buttonName = "PURE";
+    	String classElement = "comment";
+    	Comment comment = commentList.get(i);
+    	for(int pureCommentId: pureCommentList) {
+    		if(comment.getId() == pureCommentId) {
+    			buttonName = "PURE解除";
+    			classElement = "comment pure";
+    		}
+    	}
       %>
-
-      	<div class="comment" id="<%= comment.getId() %>">
+      	<div class="<%= classElement %>" id="<%= comment.getId() %>">
       		<dl>
       			<dt>
       			  <span>No.<%= comment.getId() %></span>
@@ -41,10 +49,12 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       			</dt>
       			<dd><%= comment.getComment() %></dd>
       		</dl>
-      		<input class="pureButton" type="button" value="PURE">
+      		<input class="pureButton" type="button" value="<%= buttonName %>">
       		<input class="replyButton" type="button" value="返信">
       	</div>
-      <% } %>
+      <%
+      }
+      %>
     </div>
 
     <form id="inputComment">
@@ -210,21 +220,25 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
       // pureCommentListに存在するコメントでPUREされていなったらPUREする
       for(let commentId of pureCommentList) {
         let pureComment = document.getElementById(commentId);
-        if(pureComment.className.indexOf("pure") == -1) {
+        if(!pureComment.classList.contains("pure")) {
           pureComment.classList.add("pure");
         }
       }
 
-      // PUREされているコメントでPUREを解除する
+      // PUREされているコメントでpureCommentListに存在しないコメントをのPURE解除する
       let pureComments = document.getElementsByClassName("pure");
       for(let comment of pureComments) {
-        for(let i = 0; i < pureCommentList.length; i++) {
-          if(comment.id == pureCommentList[i]) {
-            break;
-          } else if(i == pureCommentList.length - 1) {
-            // 解除する処理
-            document.getElementById(pureCommentList[i]).classList.remove("pure");
-          }
+        if(pureCommentList.length == 0) {
+        	comment.classList.remove("pure");
+        } else {
+        	for(let i = 0; i < pureCommentList.length; i++) {
+                if(comment.id == pureCommentList[i]) {
+                  break;
+                } else if(i == pureCommentList.length - 1) {
+                  // 解除する処理
+                 	comment.classList.remove("pure");
+                }
+              }
         }
       }
     }
