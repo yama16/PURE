@@ -282,13 +282,13 @@ String ceatedAt = bulletinBoard.getCreatedAt().toString();
             case 1:
               getNewComment();
               pureButton.value = "PURE解除";
-              console.log("PURE解除");
+              console.log("PUREしました");
               break;
 
             case -1:
               getNewComment();
               pureButton.value = "PURE";
-              console.log("PURE");
+              console.log("PURE解除しました");
               break;
 
             default:
