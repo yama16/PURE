@@ -215,11 +215,12 @@ public class BulletinBoardsDAO {
      */
     public BulletinBoardList findByKeyword(String keyword){
     	BulletinBoardList list = new BulletinBoardList();
+    	keyword.replace("$", "$$").replace("%", "$%").replace("_", "$_");
     	keyword = "%" + keyword + "%";
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE title LIKE ? ORDER BY id;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE title LIKE ? ESCAPE '$' ORDER BY id;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, keyword);
@@ -255,6 +256,7 @@ public class BulletinBoardsDAO {
      * @return 検索した掲示板のリスト
      */
     public BulletinBoardList findByTag(String keyword, boolean partial){
+    	keyword.replace("$", "$$").replace("%", "$%").replace("_", "$_");
     	if(partial){
     		keyword = "%" + keyword + "%";
     	}
@@ -262,7 +264,7 @@ public class BulletinBoardsDAO {
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE id IN (SELECT DISTINCT bulletin_board_id FROM tags WHERE tag LIKE ?) ORDER BY id;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE id IN (SELECT DISTINCT bulletin_board_id FROM tags WHERE tag LIKE ? ESCAPE '$') ORDER BY id;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, keyword);
