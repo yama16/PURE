@@ -12,11 +12,11 @@ public class Sanitize {
 		if(str == null) {
 	        return null;
 	    } else {
-		    str = str.replaceAll("&" , "＆amp;" );
-		    str = str.replaceAll("<" , "＆lt;"  );
-		    str = str.replaceAll(">" , "＆gt;"  );
-		    str = str.replaceAll("\"", "＆quot;");
-		    str = str.replaceAll("'" , "＆＃39;" );
+		    str = str.replaceAll("&" , "&amp;" );
+		    str = str.replaceAll("<" , "&lt;"  );
+		    str = str.replaceAll(">" , "&gt;"  );
+		    str = str.replaceAll("\"", "&quot;");
+		    str = str.replaceAll("\'" , "&＃39;" );
 	    }
 
 		return str;
