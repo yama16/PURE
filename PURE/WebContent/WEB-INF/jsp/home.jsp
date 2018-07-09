@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="model.Account" %>
 <%@ page import="model.BulletinBoard" %>
 <%@ page import="model.BulletinBoardList" %>
 <%@ page import="model.CommentList" %>
 <%
+Account account = (Account) session.getAttribute("account");
 BulletinBoardList newList = (BulletinBoardList) request.getAttribute("newList");
 BulletinBoardList rankingList = (BulletinBoardList) request.getAttribute("rankingList");
 CommentList commentList;
@@ -38,7 +40,12 @@ CommentList commentList;
 		<!--                        ログイン・検索                         -->
 		<div id="login">
 			<fieldset>
-				<a href="/PURE/LoginServlet">ログイン</a><br> <a href="#">新規の方はこちら！！！</a><br>
+				<% if(account == null) { %>
+					<a href="/PURE/LoginServlet">ログイン</a><br>
+				<% }else{ %>
+					<a href="/PURE/AccountHomeServlet">アカウントホーム</a><br>
+				<% } %>
+				<a href="#">新規の方はこちら！！！</a><br>
 			</fieldset>
 			<fieldset>
 				<a href="/PURE/SearchBulletinBoardServlet">検索</a>
@@ -55,9 +62,15 @@ CommentList commentList;
 			</div>
 		</div>
 	</div>
-	<form action="/PURE/LoginServlet" method="get">
-		<input type="submit" value="ログイン">
-	</form>
+	<% if(account == null) { %>
+		<form action="/PURE/LoginServlet" method="get">
+			<input type="submit" value="ログイン">
+		</form>
+	<% }else{ %>
+		<form action="/PURE/AccountHomeServlet" method="get">
+			<input type="submit" value="アカウントホーム">
+		</form>
+	<% } %>
 	<form action="/PURE/CreateAccountServlet" method="get">
 		<input type="submit" value="アカウント作成">
 	</form>

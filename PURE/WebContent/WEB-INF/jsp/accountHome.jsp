@@ -22,20 +22,15 @@ Timestamp updateTime = account.getUpdatedAt();
 			<h1><a href="/PURE/HomeServlet">PURE</a></h1>
 			<p><a href="/PURE/LogoutServlet">ログアウト</a></p>
 		</header>
-		<main>
 			<input type="button" value="個人設定" id="personal" style="width:200px; height:30px;"><br>
 			<input type="button" value="掲示板" id="bulletinBoard" style="width:200px; height:30px;"><br>
 			<input type="button" value="お気に入り" id="favorite" style="width:200px; height:30px;"><br>
 			<input type="button" value="コメント履歴" id="commentHistory" style="width:200px; height:30px;">
-			<form action="/PURE/AccountDeleteServlet" method="get">
-				<input type="submit" value="アカウント削除">
-			</form>
-		</main>
-		<div id="menu"></div>
+		<div id="accountMenu"></div>
 	</div>
 </body>
 <script>
-	let menu = document.getElementById("menu");
+	let menu = document.getElementById("accountMenu");
 	let personal = document.getElementById("personal");
 	let bulletinBoard = document.getElementById("bulletinBoard");
 	let favorite = document.getElementById("favorite");
@@ -76,6 +71,11 @@ Timestamp updateTime = account.getUpdatedAt();
 		//アカウント更新日時を表示
 		let updateTimeDisplay = elt("p", null, "最終更新日："+"<%= updateTime %>");
 		menu.appendChild(updateTimeDisplay);
+
+		//アカウント削除ボタンの設定
+		let accountDeleteForm = elt("form", {action: "/PURE/AccountDeleteConfirmServlet", method: "get"});
+		menu.appendChild(accountDeleteForm);
+		accountDeleteForm.appendChild(elt("input", {type: "submit", value: "アカウント削除"}));
 
 		//ニックネーム変更ボタンが押されたら入力ページを表示
 		let nickname = document.getElementById("nicknameChange");
