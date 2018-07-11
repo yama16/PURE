@@ -27,7 +27,7 @@ h1{
 
 #commentField {
   margin: 0 auto;
-  width: 500px;
+  width: 600px;
   height: auto;
   border: solid 7px pink;
 }
@@ -48,8 +48,8 @@ h1{
   word-wrap: break-word;
 }
 
-.pure {
-	background-color: black;
+.pure > p {
+	display: none;
 }
 
 footer {
