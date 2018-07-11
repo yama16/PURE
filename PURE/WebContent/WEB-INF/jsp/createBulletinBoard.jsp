@@ -225,7 +225,7 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
     }
 
     function pureComment(pureCommentList) {
-    	console.log("pureComment実行されました");
+    	console.log("pureComment関数が実行されました");
     	// 初期宣言
     	let pureComments = document.getElementsByClassName("pure"); // 現在PUREしているコメント
       	/*let pureImg = document.createElement("img");                // imgタグ
@@ -237,37 +237,46 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
       	let max1 = pureCommentList.length;
       	let max2 = pureComments.length;
 
+		for(let p of pureComments) {
+			console.log("pureComments:" + p.id);
+		}
+		for(let pc of pureCommentList) {
+			console.log("pureCommentList:" + pc)
+		}
       	while(index1 < max1 || index2 < max2) {
       		console.log("index1:" + index1);
 			console.log("index2:" + index2);
       		if(index1 < max1 && index2 >= max2) {
-      			console.log("PUREを実行");
-      			console.log("pureCommentListId:" + pureCommentList[index1]);
+      			console.log("index2がMAXの時のPUREを実行");
+      			console.log("PUREしたIDはpureCommentListId:" + pureCommentList[index1]);
       			document.getElementById(pureCommentList[index1]).classList.add("pure");
       			index1++;
       			continue;
       		}
 			if(index2 < max2 && index1 >= max1) {
-				console.log("PURE解除");
-				console.log("pureComments:" + pureComments[index2]);
+				console.log("index1がMAXの時のPURE解除");
+				console.log("PUREを解除したIDはpureComments:" + pureComments[index2].id);
 				pureComments[index2].classList.remove("pure");
       			index2++;
       			continue;
       		}
+			console.log("2index1:" + index1);
+			console.log("2index2:" + index2);
       		if(pureCommentList[index1] > Number(pureComments[index2].id)) {
       			// PURE解除
       			console.log("PURE解除");
-      			console.log("pureComments:" + pureComments[index2]);
+      			console.log("PUREを解除したIDはpureComments:" + pureComments[index2].id);
       			pureComments[index2].classList.remove("pure");
       			index2++;
 
-      		} else if(pureCommentList[index1] < Number(pureComments[index2].id)) {
-      			// PUREを実行
-      			console.log("PUREを実行");
-      			console.log("pureCommentListId:" + pureCommentList[index1]);
-      			document.getElementById(pureCommentList[index1]).classList.add("pure");
-      			index1++;
-
+      		} else if(index1 < max1 && index2 < max2) {
+      			if(pureCommentList[index1] < Number(pureComments[index2].id)) {
+          			// PUREを実行
+          			console.log("PUREを実行");
+          			console.log("PUREしたIDはpureCommentListId:" + pureCommentList[index1]);
+          			document.getElementById(pureCommentList[index1]).classList.add("pure");
+          			index1++;
+      			}
       		} else {
       			console.log("両方一致");
       			index1++;
