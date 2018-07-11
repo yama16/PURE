@@ -2,7 +2,6 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 /**
  * ひとつのコメントの情報を保持するクラス。
@@ -36,7 +35,6 @@ public class Comment implements Serializable{
 	 */
 	@Override
 	public String toString(){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/H:m:s");
 		StringBuffer json = new StringBuffer();
 		json.append("{\"id\":")
 			.append(id)
@@ -49,7 +47,7 @@ public class Comment implements Serializable{
 			.append("\",\"comment\":\"")
 			.append(comment.replace("\\", "\\\\").replace("\n", "\\n").replace("\"", "\\\""))
 			.append("\",\"createdAt\":\"")
-			.append(sdf.format(createdAt.getTime()))
+			.append(createdAt)
 			.append("\",\"pureQuantity\":")
 			.append(pureQuantity)
 			.append("}");
