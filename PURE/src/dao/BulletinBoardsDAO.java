@@ -16,7 +16,7 @@ import model.BulletinBoardList;
  */
 public class BulletinBoardsDAO {
 
-    private final String JDBC_URL = "jdbc:mysql://localhost:3306/pure?useUnicode=true&characterEncoding=utf8";
+    private final String JDBC_URL = "jdbc:mysql://localhost:3306/pure?useUnicode=true&characterEncoding=utf8&useSSL=false";
     private final String DB_USER = "root";
     private final String DB_PASS = "root";
 
