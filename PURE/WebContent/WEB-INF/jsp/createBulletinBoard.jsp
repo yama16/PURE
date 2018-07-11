@@ -17,12 +17,12 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
 %>
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
+<head>
+	<meta charset="utf-8">
     <link rel="stylesheet" href="bulletinBoard.css">
     <title>PURE</title>
-  </head>
-  <body>
+</head>
+<body>
     <h1>PURE</h1>
     <!-- 　コメント欄　 -->
     <div id="commentField">
@@ -50,13 +50,13 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
       	<div class="<%= className %>" id="<%= comment.getId() %>">
       		<dl>
       			<dt>
-      			  <span>No.<%= comment.getId() %></span>
-      			  <span><%= comment.getNickname() %></span>
-      			  <span><%= comment.getAccountId() %></span>
-      			  <span><%= comment.getCreatedAt() %></span>
+      			  <small>No.<%= comment.getId() %></small>
+      			  <small><%= comment.getNickname() %></small>
+      			  <small>ID:<%= comment.getAccountId() %></small>
+      			  <small><%= comment.getCreatedAt() %></small>
       			</dt>
-      			<dd><%= comment.getComment() %></dd>
       		</dl>
+      		<p><%= comment.getComment(true) %></p>
       		<input class="pureButton" type="button" value="<%= buttonName %>">
       		<input class="replyButton" type="button" value="返信">
       	</div>
@@ -75,9 +75,9 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
     <footer>
       <address></address>
     </footer>
-  </body>
-  <script type="text/javascript">
-    // ボタン初期設定(PUREボタン, 返信ボタン, お気に入りボタン)
+</body>
+<script type="text/javascript">
+	// ボタン初期設定(PUREボタン, 返信ボタン, お気に入りボタン)
     if( document.getElementsByClassName("comment") ) {
     	let pureButtons = document.getElementsByClassName("pureButton");
         let replyButtons = document.getElementsByClassName("replyButton");
@@ -91,32 +91,32 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
         }
     }
     favoriteButton.addEventListener("click", function(e) {
-      // 初期処理
-      let favorite = e.currentTarget;
-      let req = new XMLHttpRequest();
-      // リクエスト処理
-      req.onreadystatechange = function() {
-        if(req.readyState == 4 && req.status == 200) {
-          switch (JSON.parse(req.response)) {
-            case 0:
+		// 初期処理
+      	let favorite = e.currentTarget;
+      	let req = new XMLHttpRequest();
+      	// リクエスト処理
+      	req.onreadystatechange = function() {
+        	if(req.readyState == 4 && req.status == 200) {
+          		switch (JSON.parse(req.response)) {
+            		case 0:
 
-              break;
+              		break;
 
-            case 1:
-              favorite.value = "お気に入り解除";
-              break;
+            		case 1:
+              		favorite.value = "お気に入り解除";
+              		break;
 
-            case -1:
-              favorite.value = "お気に入り登録";
-              break;
+            		case -1:
+              		favorite.value = "お気に入り登録";
+              		break;
 
-            default:
-          }
-        }
-      }
-      req.open("POST", "/PURE/UpdateFavoriteServlet");
-      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      req.send(null);
+            		default:
+          		}
+        	}
+      	}
+      	req.open("POST", "/PURE/UpdateFavoriteServlet");
+      	req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      	req.send(null);
     }, false)
 
     // 5秒ごとに更新情報を取得
@@ -124,194 +124,219 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
 
     // クリアボタン
     document.getElementById("clearButton").addEventListener("click", function() {
-      let inputField = document.getElementById("inputField");
-      if(inputField.value) {
-        inputField.value = "";
-      }
+		let inputField = document.getElementById("inputField");
+      	if(inputField.value) {
+        	inputField.value = "";
+      	}
     }, false);
 
     // 送信ボタンを押したらコメントを送信
     document.getElementById("sendButton").addEventListener("click", function() {
-      console.log("sendButton入力確認"); // テスト
-      // 初期処理
-      let text = document.getElementById("inputField");
-      let comment = text.value;
-      // textareaに文字列が入力されているかチェック
-      if(comment) {
-        let req = new XMLHttpRequest();
-        // リクエスト処理
-        req.onreadystatechange = function() {
-          if(req.readyState == 4 && req.status == 200) {
-            // データ受信成功時の処理
-            if(req.response) {
-              console.log("受信成功！！");
-              getNewComment();
-            }
-            text.value = ""; // 入力欄をクリア
-          }
-        }
-        req.open("POST", "/PURE/PostCommentServlet");
-        req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        req.send( "comment=" + comment ); // コメントオブジェクトを送信
-      }
+      	console.log("sendButton入力確認"); // テスト
+      	// 初期処理
+      	let text = document.getElementById("inputField");
+      	let comment = text.value;
+      	// textareaに文字列が入力されているかチェック
+      	if(comment) {
+        	let req = new XMLHttpRequest();
+        	// リクエスト処理
+        	req.onreadystatechange = function() {
+          		if(req.readyState == 4 && req.status == 200) {
+            		// データ受信成功時の処理
+            		if(req.response) {
+              			console.log("受信成功！！");
+              			getNewComment();
+            		}
+            		text.value = ""; // 入力欄をクリア
+          		}
+        	}
+        	req.open("POST", "/PURE/PostCommentServlet");
+        	req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        	req.send( "comment=" + comment ); // コメントオブジェクトを送信
+     	}
     }, false);
 
  	// コメントデータを受け取り画面に表示する処理
     function commentDisplay(commentList) {
-      // 初期処理
-      let commentField = document.getElementById("commentField");   // コメント欄のdiv要素取得
+      	// 初期処理
+      	let commentField = document.getElementById("commentField");   // コメント欄のdiv要素取得
 
-      // コメントを表示またはコメントをPURE(未実装)
-      for(let cmtObj of commentList) {
-    	   commentField.appendChild( createCommentFrame(cmtObj) );         // コメント枠をコメント欄に追加
-      }
+      	// コメントを表示またはコメントをPURE(未実装)
+      	for(let cmtObj of commentList) {
+    	   	commentField.appendChild( createCommentFrame(cmtObj) );   // コメント枠をコメント欄に追加
+      	}
     }
 
     function createCommentFrame(commentObject) {
-      // 初期処理
-      let commentFrame = document.createElement("div");          // コメント枠を生成　
-      let dlElement = document.createElement("dl");              // dl要素生成
-      let dtElement = document.createElement("dt");              // dt要素生成
-      let ddElementComment = document.createElement("dd");       // dd要素生成
-      let spanElementCommentId = document.createElement("span"); // span要素(commentId)
-      let spanElementNickName = document.createElement("span");  // span要素(NickName)
-      let spanElementAccountId = document.createElement("span"); // span要素(AccountId)
-      let spanElementCreatedAt = document.createElement("span"); // span要素(CreatedAt)
-      let pureButton = document.createElement("input");          // input要素(PUREボタン)
-      pureButton.setAttribute("type", "button");
-      pureButton.setAttribute("value", "PURE");
-      let replyButton = document.createElement("input");         // input要素(返信ボタン)
-      replyButton.setAttribute("type", "button");
-      replyButton.setAttribute("value", "返信");
-      commentFrame.setAttribute("class", "comment");             // コメント枠にclass属性を設定
-      commentFrame.setAttribute("id", commentObject.id);  		 // コメント枠にId属性(commentId)を設定
+		// 初期処理
+      	let commentFrame = document.createElement("div");          // コメント枠を生成　
+		let dlElement = document.createElement("dl");              // dl要素生成
+		let dtElement = document.createElement("dt");              // dt要素生成
+		let ddElementComment = document.createElement("dd");       // dd要素生成
+		let spanElementCommentId = document.createElement("span"); // span要素(commentId)
+      	let spanElementNickName = document.createElement("span");  // span要素(NickName)
+      	let spanElementAccountId = document.createElement("span"); // span要素(AccountId)
+      	let spanElementCreatedAt = document.createElement("span"); // span要素(CreatedAt)
+      	let pureButton = document.createElement("input");          // input要素(PUREボタン)
+      	pureButton.setAttribute("type", "button");
+      	pureButton.setAttribute("value", "PURE");
+		let replyButton = document.createElement("input");         // input要素(返信ボタン)
+      	replyButton.setAttribute("type", "button");
+      	replyButton.setAttribute("value", "返信");
+      	commentFrame.setAttribute("class", "comment");             // コメント枠にclass属性を設定
+      	commentFrame.setAttribute("id", commentObject.id);  		 // コメント枠にId属性(commentId)を設定
 
-      // span要素にcmtObjのフィールドを追加
-      spanElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );
-      spanElementNickName.appendChild( document.createTextNode(commentObject.nickname) );
-      spanElementAccountId.appendChild( document.createTextNode(commentObject.accountId) );
-      spanElementCreatedAt.appendChild( document.createTextNode(commentObject.createdAt) );
-      // dt要素にspan要素を追加
-      dtElement.appendChild(spanElementCommentId);
-      dtElement.appendChild(spanElementNickName);
-      dtElement.appendChild(spanElementAccountId);
-      dtElement.appendChild(spanElementCreatedAt);
+      	// span要素にcmtObjのフィールドを追加
+      	spanElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );
+      	spanElementNickName.appendChild( document.createTextNode(commentObject.nickname) );
+      	spanElementAccountId.appendChild( document.createTextNode(commentObject.accountId) );
+      	spanElementCreatedAt.appendChild( document.createTextNode(commentObject.createdAt) );
+      	// dt要素にspan要素を追加
+      	dtElement.appendChild(spanElementCommentId);
+      	dtElement.appendChild(spanElementNickName);
+      	dtElement.appendChild(spanElementAccountId);
+      	dtElement.appendChild(spanElementCreatedAt);
 
-      // linesを改行処理してdd要素にコメントを追加
-      let lines = commentObject.comment.replace(/\r\n|\r/g, "\n");     // 改行コードを"\n"に変換(変換は何でもいい)
-      lines = lines.split("\n");                                       // "\n"で分割して配列に
-      for(let i = 0; i < lines.length; i++) {
-        let cText = document.createTextNode( lines[i] );               // textNode生成
-        ddElementComment.appendChild(cText);                           // TextNodeをp要素に追加
-        ddElementComment.appendChild( document.createElement("br") );  // <br>を生成してp要素に追加
-      }
+      	// linesを改行処理してdd要素にコメントを追加
+      	let lines = commentObject.comment.replace(/\r\n|\r/g, "\n");      // 改行コードを"\n"に変換(変換は何でもいい)
+      	lines = lines.split("\n");                                        // "\n"で分割して配列に
+      	for(let i = 0; i < lines.length; i++) {
+        	let cText = document.createTextNode( lines[i] );              // textNode生成
+        	ddElementComment.appendChild(cText);                          // TextNodeをp要素に追加
+        	ddElementComment.appendChild( document.createElement("br") ); // <br>を生成してp要素に追加
+      	}
 
-      // dl要素にdt要素とdd要素を追加
-      dlElement.appendChild(dtElement);
-      dlElement.appendChild(ddElementComment);
+      	// dl要素にdt要素とdd要素を追加
+      	dlElement.appendChild(dtElement);
+      	dlElement.appendChild(ddElementComment);
 
-      // PUREボタンと返信ボタンにイベントハンドラを登録
-      // PUREボタン
-      pureButton.addEventListener("click", pureButtonEvent, false);
-      // 返信ボタン
-      replyButton.addEventListener("click", replyButtonEvent, false);
+      	// PUREボタンと返信ボタンにイベントハンドラを登録
+      	// PUREボタン
+      	pureButton.addEventListener("click", pureButtonEvent, false);
+      	// 返信ボタン
+      	replyButton.addEventListener("click", replyButtonEvent, false);
 
-      // コメント枠に追加
-      commentFrame.appendChild(dlElement);
-      commentFrame.appendChild(pureButton);
-      commentFrame.appendChild(replyButton);
+		// コメント枠に追加
+		commentFrame.appendChild(dlElement);
+		commentFrame.appendChild(pureButton);
+		commentFrame.appendChild(replyButton);
 
-      return commentFrame;
+      	return commentFrame;
     }
 
     function pureComment(pureCommentList) {
-      // pureCommentListに存在するコメントでPUREされていなったらPUREする
-      for(let commentId of pureCommentList) {
-        let pureComment = document.getElementById(commentId);
-        if(!pureComment.classList.contains("pure")) {
-          pureComment.classList.add("pure");
-        }
-      }
+    	console.log("pureComment実行されました");
+    	// 初期宣言
+    	let pureComments = document.getElementsByClassName("pure"); // 現在PUREしているコメント
+      	/*let pureImg = document.createElement("img");                // imgタグ
+      	pureImg.setAttribute("class", "pureImg");
+      	pureImg.setAttribute("src", "/WebContent/pure_img.JPG");*/
 
-      // PUREされているコメントでpureCommentListに存在しないコメントをのPURE解除する
-      let pureComments = document.getElementsByClassName("pure");
-      for(let comment of pureComments) {
-        if(pureCommentList.length == 0) {
-        	comment.classList.remove("pure");
-        } else {
-        	for(let i = 0; i < pureCommentList.length; i++) {
-                if(comment.id == pureCommentList[i]) {
-                  break;
-                } else if(i == pureCommentList.length - 1) {
-                  // 解除する処理
-                 	comment.classList.remove("pure");
-                }
-              }
-        }
-      }
+      	let index1 = 0;
+      	let index2 = 0;
+      	let max1 = pureCommentList.length;
+      	let max2 = pureComments.length;
+
+      	while(index1 < max1 || index2 < max2) {
+      		console.log("index1:" + index1);
+			console.log("index2:" + index2);
+      		if(index1 < max1 && index2 >= max2) {
+      			console.log("PUREを実行");
+      			console.log("pureCommentListId:" + pureCommentList[index1]);
+      			document.getElementById(pureCommentList[index1]).classList.add("pure");
+      			index1++;
+      			continue;
+      		}
+			if(index2 < max2 && index1 >= max1) {
+				console.log("PURE解除");
+				console.log("pureComments:" + pureComments[index2]);
+				pureComments[index2].classList.remove("pure");
+      			index2++;
+      			continue;
+      		}
+      		if(pureCommentList[index1] > Number(pureComments[index2].id)) {
+      			// PURE解除
+      			console.log("PURE解除");
+      			console.log("pureComments:" + pureComments[index2]);
+      			pureComments[index2].classList.remove("pure");
+      			index2++;
+
+      		} else if(pureCommentList[index1] < Number(pureComments[index2].id)) {
+      			// PUREを実行
+      			console.log("PUREを実行");
+      			console.log("pureCommentListId:" + pureCommentList[index1]);
+      			document.getElementById(pureCommentList[index1]).classList.add("pure");
+      			index1++;
+
+      		} else {
+      			console.log("両方一致");
+      			index1++;
+      			index2++;
+      		}
+      	}
     }
 
     function getNewComment() {
-      // 初期処理
-      let req = new XMLHttpRequest();
-      // リクエスト処理
-      req.onreadystatechange = function() {
-        if(req.readyState == 4 && req.status == 200) {
-          // データ受信成功時の処理
-          if(req.response) {
-            console.log(req.response);
-            let commentData = JSON.parse(req.response);
-            console.log(commentData);
-            commentDisplay(commentData.commentList);
-            pureComment(commentData.pureCommentList);
-          }
-        }
-      }
-      req.open("GET", "/PURE/GetNewCommentServlet");
-      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      req.send(null);
+      	// 初期処理
+      	let req = new XMLHttpRequest();
+      	// リクエスト処理
+      	req.onreadystatechange = function() {
+        	if(req.readyState == 4 && req.status == 200) {
+          		// データ受信成功時の処理
+          		if(req.response) {
+            		console.log(req.response);
+            		let commentData = JSON.parse(req.response);
+            		console.log(commentData);
+            		commentDisplay(commentData.commentList);
+            		pureComment(commentData.pureCommentList);
+          		}
+        	}
+      	}
+      	req.open("GET", "/PURE/GetNewCommentServlet");
+      	req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      	req.send(null);
     }
 
     function pureButtonEvent(e) {
-   	  console.log("PUREボタン入力確認");
-      // 初期処理
-      let pureButton = e.currentTarget;
-      let commentId = e.currentTarget.parentNode.getAttribute("id");
-      let req = new XMLHttpRequest();
-      // リクエスト処理
-      req.onreadystatechange = function() {
-        if(req.readyState == 4 && req.status == 200) {
-          console.log("PUREボタンのレスポンス:" + req.response);
+   	  	console.log("PUREボタン入力確認");
+      	// 初期処理
+      	let pureButton = e.currentTarget;
+      	let commentId = e.currentTarget.parentNode.getAttribute("id");
+      	let req = new XMLHttpRequest();
+      	// リクエスト処理
+      	req.onreadystatechange = function() {
+        	if(req.readyState == 4 && req.status == 200) {
+          		console.log("PUREボタンのレスポンス:" + req.response);
 
-          switch (JSON.parse(req.response)) {
-            case 0:
-              break;
+          		switch (JSON.parse(req.response)) {
+            		case 0:
+              		break;
 
-            case 1:
-              getNewComment();
-              pureButton.value = "PURE解除";
-              console.log("PUREしました");
-              break;
+            		case 1:
+              			getNewComment();
+              			pureButton.value = "PURE解除";
+              			console.log("PUREしました");
+              			break;
 
-            case -1:
-              getNewComment();
-              pureButton.value = "PURE";
-              console.log("PURE解除しました");
-              break;
+            		case -1:
+              			getNewComment();
+              			pureButton.value = "PURE";
+              			console.log("PURE解除しました");
+              			break;
 
-            default:
-            	console.log("不正な値です");
-          }
-        }
-      }
-      req.open("POST", "/PURE/UpdatePureServlet");
-      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      req.send( "commentId=" + commentId );
+            		default:
+            			console.log("不正な値です");
+          		}
+          	}
+      	}
+      	req.open("POST", "/PURE/UpdatePureServlet");
+      	req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      	req.send( "commentId=" + commentId );
     }
 
     function replyButtonEvent(e) {
-      let commentId = e.currentTarget.parentNode.getAttribute("id");
-      document.getElementById("inputField").value += ">>>" + commentId + "\n";
+      	let commentId = e.currentTarget.parentNode.getAttribute("id");
+      	document.getElementById("inputField").value += ">>>" + commentId + "\n";
     }
-  </script>
+</script>
 </html>
