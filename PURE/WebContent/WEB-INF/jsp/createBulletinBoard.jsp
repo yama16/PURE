@@ -56,7 +56,7 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
       			  <small><%= comment.getCreatedAt() %></small>
       			</dt>
       		</dl>
-      		<p><%= comment.getComment(true) %></p>
+      		<p><%= comment.getComment(true).replace(" ", "\n") %></p>
       		<input class="pureButton" type="button" value="<%= buttonName %>">
       		<input class="replyButton" type="button" value="返信">
       	</div>
@@ -66,7 +66,7 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
     </div>
 
     <form id="inputComment">
-      <label>コメント入力：</label><br>
+      <label>コメント入力</label><br>
       <textarea id="inputField" rows="5" cols="40" maxlength="200"></textarea><br>
       <input id="sendButton" type="button" value="送信">
       <input id="clearButton" type="button" value="クリア">
@@ -169,33 +169,33 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
 
     function createCommentFrame(commentObject) {
 		// 初期処理
-      	let commentFrame = document.createElement("div");          // コメント枠を生成　
-		let dlElement = document.createElement("dl");              // dl要素生成
-		let dtElement = document.createElement("dt");              // dt要素生成
-		let ddElementComment = document.createElement("dd");       // dd要素生成
-		let spanElementCommentId = document.createElement("span"); // span要素(commentId)
-      	let spanElementNickName = document.createElement("span");  // span要素(NickName)
-      	let spanElementAccountId = document.createElement("span"); // span要素(AccountId)
-      	let spanElementCreatedAt = document.createElement("span"); // span要素(CreatedAt)
-      	let pureButton = document.createElement("input");          // input要素(PUREボタン)
+      	let commentFrame = document.createElement("div");            // コメント枠を生成　
+		let dlElement = document.createElement("dl");                // dl要素生成
+		let dtElement = document.createElement("dt");                // dt要素生成
+		let ddElementComment = document.createElement("dd");         // dd要素生成
+		let smallElementCommentId = document.createElement("small"); // small要素(commentId)
+      	let smallElementNickName = document.createElement("small");  // small要素(NickName)
+      	let smallElementAccountId = document.createElement("small"); // small要素(AccountId)
+      	let smallElementCreatedAt = document.createElement("small"); // small要素(CreatedAt)
+      	let pureButton = document.createElement("input");            // input要素(PUREボタン)
       	pureButton.setAttribute("type", "button");
       	pureButton.setAttribute("value", "PURE");
-		let replyButton = document.createElement("input");         // input要素(返信ボタン)
+		let replyButton = document.createElement("input");           // input要素(返信ボタン)
       	replyButton.setAttribute("type", "button");
       	replyButton.setAttribute("value", "返信");
-      	commentFrame.setAttribute("class", "comment");             // コメント枠にclass属性を設定
+      	commentFrame.setAttribute("class", "comment");               // コメント枠にclass属性を設定
       	commentFrame.setAttribute("id", commentObject.id);  		 // コメント枠にId属性(commentId)を設定
 
       	// span要素にcmtObjのフィールドを追加
-      	spanElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );
-      	spanElementNickName.appendChild( document.createTextNode(commentObject.nickname) );
-      	spanElementAccountId.appendChild( document.createTextNode(commentObject.accountId) );
-      	spanElementCreatedAt.appendChild( document.createTextNode(commentObject.createdAt) );
-      	// dt要素にspan要素を追加
-      	dtElement.appendChild(spanElementCommentId);
-      	dtElement.appendChild(spanElementNickName);
-      	dtElement.appendChild(spanElementAccountId);
-      	dtElement.appendChild(spanElementCreatedAt);
+      	smallElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );
+      	smallElementNickName.appendChild( document.createTextNode(commentObject.nickname) );
+      	smallElementAccountId.appendChild( document.createTextNode(commentObject.accountId) );
+      	smallElementCreatedAt.appendChild( document.createTextNode(commentObject.createdAt) );
+      	// dt要素にsmall要素を追加
+      	dtElement.appendChild(smallElementCommentId);
+      	dtElement.appendChild(smallElementNickName);
+      	dtElement.appendChild(smallElementAccountId);
+      	dtElement.appendChild(smallElementCreatedAt);
 
       	// linesを改行処理してdd要素にコメントを追加
       	let lines = commentObject.comment.replace(/\r\n|\r/g, "\n");      // 改行コードを"\n"に変換(変換は何でもいい)
