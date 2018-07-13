@@ -48,8 +48,8 @@ h1{
   word-wrap: break-word;
 }
 
-.pure {
-	background-color: black;
+.pure > p{
+	display: none;
 }
 
 footer {

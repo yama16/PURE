@@ -230,28 +230,36 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
     	let index1 = pureCommentList.length - 1;
       	let index2 = pureComments.length - 1;
 
-      	/*let pureImg = document.createElement("img");                // imgタグ
-      	pureImg.setAttribute("class", "pureImg");
-      	pureImg.setAttribute("src", "/WebContent/pure_img.JPG");*/
+
 
       	while(index1 >= 0 || index2  >= 0) {
       		if(index1 >= 0 && index2 <= -1) {
       			// コメントをPURE
+      			let pureImg = document.createElement("img");                // imgタグ
+      			pureImg.setAttribute("class", "pureImg");
+      			pureImg.setAttribute("src", "/PURE/pure_img.JPG");
+      			document.getElementById(pureCommentList[index1]).appendChild(pureImg);
       			document.getElementById(pureCommentList[index1--]).classList.add("pure");
       			continue;
       		}
 			if(index2 >= 0 && index1 <= -1) {
 				// PUREを解除
+				pureComments[index2].removeChild(pureComments[index2].querySelector("img"));
 				pureComments[index2--].classList.remove("pure");
       			continue;
       		}
       		if(pureCommentList[index1] < Number(pureComments[index2].id)) {
       			// PUREを解除
+      			pureComments[index2].removeChild(pureComments[index2].querySelector("img"));
       			pureComments[index2--].classList.remove("pure");
       			continue;
 
       		} else if(pureCommentList[index1] > Number(pureComments[index2].id)) {
       			// コメントをPURE
+      			let pureImg = document.createElement("img");                // imgタグ
+      			pureImg.setAttribute("class", "pureImg");
+      			pureImg.setAttribute("src", "/PURE/pure_img.JPG");
+      			document.getElementById(pureCommentList[index1]).appendChild(pureImg);
       			document.getElementById(pureCommentList[index1--]).classList.add("pure");
       			continue;
 
