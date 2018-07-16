@@ -39,6 +39,7 @@ public class SearchBulletinBoardServlet extends HttpServlet {
 
 				request.setAttribute("bulletinBoards", bulletinBoards);
 				request.setAttribute("keyword", keyword);
+				request.setAttribute("target", target);
 
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/search.jsp");
 				dispatcher.forward(request, response);
