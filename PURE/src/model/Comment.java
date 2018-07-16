@@ -45,7 +45,7 @@ public class Comment implements Serializable{
 			.append("\",\"accountId\":\"")
 			.append(accountId)
 			.append("\",\"comment\":\"")
-			.append(comment.replace("\\", "\\\\").replace("\n", "\\n").replace("\"", "\\\""))
+			.append(comment.replace("\\", "\\\\").replace("\n", "\\n").replace("\r", "\\r").replace("\"", "\\\""))
 			.append("\",\"createdAt\":\"")
 			.append(createdAt)
 			.append("\",\"pureQuantity\":")

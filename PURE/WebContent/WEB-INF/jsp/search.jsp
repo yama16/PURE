@@ -4,7 +4,8 @@
 <%@ page import="model.BulletinBoardList" %>
 <%
 BulletinBoardList bulletinBoards = (BulletinBoardList) request.getAttribute("bulletinBoards");
-
+String keyword = (String)request.getAttribute("keyword");
+String target = (String)request.getAttribute("target");
 %>
 <!DOCTYPE html>
 <html>
@@ -19,13 +20,14 @@ BulletinBoardList bulletinBoards = (BulletinBoardList) request.getAttribute("bul
     </header>
     <form id="sea" action="/PURE/SearchBulletinBoardServlet">
         <select name="searchSelect">
-            <option value="1"> タグ</option>
-            <option value="2">掲示板</option>
+            <option value="1" <%= (target != null && target.equals("1")) ? "selected" : "" %>> タグ</option>
+            <option value="2" <%= (target != null && target.equals("2")) ? "selected" : "" %>>掲示板</option>
         </select>
-            <input type="search" id="search" name="search" placeholder="キーワードを入力" style="width:300px;">
-            <input type="submit" id="submit" name="submit" value="検索">
-            <hr>
+        <input type="search" id="search" name="search" value="<%= keyword == null ? "" : keyword %>" placeholder="キーワードを入力" style="width:300px;">
+        <input type="submit" id="submit" name="submit" value="検索">
     </form>
+    <p><%= bulletinBoards == null ? 0 : bulletinBoards.size() %>件</p>
+    <hr>
     <div id="searchResult">
 	    <% if(bulletinBoards != null) { %>
 			<% for(int i = 0; i < bulletinBoards.size(); i++) { %>

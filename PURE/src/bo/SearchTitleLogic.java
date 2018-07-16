@@ -17,7 +17,7 @@ public class SearchTitleLogic {
 	 */
 	public BulletinBoardList execute(String keyword){
 		BulletinBoardsDAO dao = new BulletinBoardsDAO();
-		BulletinBoardList list = dao.findByKeyword(keyword);
+		BulletinBoardList list = dao.findByKeyword(keyword.split(" "));
 		return list;
 	}
 
