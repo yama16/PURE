@@ -213,17 +213,26 @@ public class BulletinBoardsDAO {
      * @param keyword 検索する部分文字列
      * @return 検索結果の掲示板のリスト
      */
-    public BulletinBoardList findByKeyword(String keyword){
+    public BulletinBoardList findByKeyword(String[] keywords){
     	BulletinBoardList list = new BulletinBoardList();
-    	keyword.replace("$", "$$").replace("%", "$%").replace("_", "$_");
-    	keyword = "%" + keyword + "%";
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE title LIKE ? ESCAPE '$' ORDER BY id;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE";
+    		for(int i = 0; i < keywords.length; i++){
+    			if(i != 0){
+    				sql += "OR";
+    			}
+    			sql += " title LIKE ? ESCAPE '$'";
+    		}
+    		sql += " ORDER BY id;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setString(1, keyword);
+    		for(int i = 0; i < keywords.length; i++){
+    	    	keywords[i] = keywords[i].replace("$", "$$").replace("%", "$%").replace("_", "$_");
+    	    	keywords[i] = "%" + keywords[i] + "%";
+    			pStmt.setString(i + 1, keywords[i]);
+    		}
 
     		ResultSet resultSet = pStmt.executeQuery();
 			TagsDAO dao = new TagsDAO();
@@ -250,24 +259,28 @@ public class BulletinBoardsDAO {
 
     /**
      * 引数で指定したタグから掲示板を検索するメソッド。
-     * 第2引数にtrueを指定すれば部分一致検索、falseを指定すれば完全一致検索になる。
      * @param keyword 検索するタグ
-     * @param partial 部分一致検索ならtrue、完全一致検索ならfalseを指定。
      * @return 検索した掲示板のリスト
      */
-    public BulletinBoardList findByTag(String keyword, boolean partial){
-    	keyword.replace("$", "$$").replace("%", "$%").replace("_", "$_");
-    	if(partial){
-    		keyword = "%" + keyword + "%";
-    	}
+    public BulletinBoardList findByTag(String[] keywords){
     	BulletinBoardList list = new BulletinBoardList();
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE id IN (SELECT DISTINCT bulletin_board_id FROM tags WHERE tag LIKE ? ESCAPE '$') ORDER BY id;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards WHERE id IN (SELECT DISTINCT bulletin_board_id FROM tags WHERE";
+    		for(int i = 0; i < keywords.length; i++){
+    			if(i != 0){
+    				sql += " OR";
+    			}
+    			sql += " tag LIKE ? ESCAPE '$'";
+    		}
+    		sql += ") ORDER BY id;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
-    		pStmt.setString(1, keyword);
+    		for(int i = 0; i < keywords.length; i++){
+    	    	keywords[i] = keywords[i].replace("$", "$$").replace("%", "$%").replace("_", "$_");
+    			pStmt.setString(i + 1, keywords[i]);
+    		}
 
     		ResultSet resultSet = pStmt.executeQuery();
     		TagsDAO dao = new TagsDAO();
