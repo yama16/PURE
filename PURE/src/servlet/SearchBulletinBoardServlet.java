@@ -30,7 +30,7 @@ public class SearchBulletinBoardServlet extends HttpServlet {
 			if(target != null && (target.equals("1") || target.equals("2"))) {
 				if(target.equals("1")) {
 					SearchTagLogic searchTagLogic = new SearchTagLogic();
-					bulletinBoards = searchTagLogic.execute(keyword, true);
+					bulletinBoards = searchTagLogic.execute(keyword);
 
 				}else if(target.equals("2")) {
 					SearchTitleLogic searchTitleLogic = new SearchTitleLogic();
@@ -38,6 +38,7 @@ public class SearchBulletinBoardServlet extends HttpServlet {
 				}
 
 				request.setAttribute("bulletinBoards", bulletinBoards);
+				request.setAttribute("keyword", keyword);
 
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/search.jsp");
 				dispatcher.forward(request, response);
@@ -45,7 +46,7 @@ public class SearchBulletinBoardServlet extends HttpServlet {
 			}else{
 				response.setContentType("application/json;charset=UTF-8");
 				PrintWriter pw = response.getWriter();
-				pw.print("検索できへんかったなもし");
+				pw.print("\"検索できへんかったなもし\"");
 				pw.close();
 			}
 		}else{
