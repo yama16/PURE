@@ -5,10 +5,10 @@
 	<title>アカウント作成</title>
   <link rel="stylesheet" href="account_create.css">
 </head>
-<body>
-    <h1>PURE</h1>
+<div id="account_create">
+      <h1><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/homenav.html">PURE</a></h1>
 <div id="create">
-	<h2>アカウント作成</h2>
+	<h3>アカウント作成</h3>
 	<!--入力フォーム-->
 	<form id="form" action="ConfirmCreateAccountServlet" method="post">
 		<p>
@@ -16,7 +16,7 @@
 			<input id="nickname" type="text" name="nickname">
 			<output id="nicknameErrMsg"></output>
 			<br>
-				<small id="nick">半角英数字 10 文字以下</small>
+				<small id="nick">半角英数字 1 ~ 10</small>
 		</p>
 		<p>
 			<label>ID</label>
@@ -42,5 +42,5 @@
 		<input type="submit" value="作成">
 	</form>
 </div>
-  </body>
+</div>
 </html>
