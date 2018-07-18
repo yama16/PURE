@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class PuresDAO {
 
-    private final String JDBC_URL = "jdbc:mysql://localhost:3306/pure?useUnicode=true&characterEncoding=utf8";
+    private final String JDBC_URL = "jdbc:mysql://localhost:3306/pure?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
     private final String DB_USER = "root";
-    private final String DB_PASS = "";
+    private final String DB_PASS = "root";
 
     static{
         try {
@@ -151,10 +151,10 @@ public class PuresDAO {
     }
 
     /**
-     *
-     * @param accountId
-     * @param bulletinBoardId
-     * @return
+     * 引数のアカウントIDと掲示板IDから、そのアカウントがその掲示板でPUREしているコメントのIDのリストを返すメソッド。
+     * @param accountId 調べるアカウントのID
+     * @param bulletinBoardId 調べる掲示板のID
+     * @return 引数の掲示板でPUREしているコメントのIDのリスト。エラーが起きればnullを返す。
      */
     public List<Integer> getPureCommentList(String accountId, int bulletinBoardId){
     	Connection conn = null;

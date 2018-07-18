@@ -22,27 +22,21 @@ Timestamp updateTime = account.getUpdatedAt();
 			<h1><a href="/PURE/HomeServlet">PURE</a></h1>
 			<p><a href="/PURE/LogoutServlet">ログアウト</a></p>
 		</header>
-		<main>
 			<input type="button" value="個人設定" id="personal" style="width:200px; height:30px;"><br>
 			<input type="button" value="掲示板" id="bulletinBoard" style="width:200px; height:30px;"><br>
 			<input type="button" value="お気に入り" id="favorite" style="width:200px; height:30px;"><br>
 			<input type="button" value="コメント履歴" id="commentHistory" style="width:200px; height:30px;">
-			<form action="/PURE/AccountDeleteServlet" method="get">
-				<input type="submit" value="アカウント削除">
-			</form>
-		</main>
-		<div id="menu"></div>
+		<div id="accountMenu"></div>
 	</div>
 </body>
 <script>
-	let menu = document.getElementById("menu");
+	let menu = document.getElementById("accountMenu");
 	let personal = document.getElementById("personal");
 	let bulletinBoard = document.getElementById("bulletinBoard");
 	let favorite = document.getElementById("favorite");
 	let commentHistory = document.getElementById("commentHistory");
 	let favoriteBulletinBoard;
 	let passUseble = false;
-	let titleUseble = false;
 
 	// ページを読み込んだ時個人設定画面を表示
 	window.onload = personalSetting;
@@ -54,8 +48,11 @@ Timestamp updateTime = account.getUpdatedAt();
 	function personalSetting() {
 		menu.textContent = null;
 
+		//個人設定メニューの表示
+		menu.appendChild(elt("h2", null, "個人設定画面"));
+
 		//現在のニックネームを表示
-		let nicknameDisplay = elt("p", null, "現在のID: <%= nickname %>");
+		let nicknameDisplay = elt("p", null, "現在のニックネーム: <%= nickname %>");
 		let nicknameChangeButton = elt("input", {type: "button", id: "nicknameChange", value: "ニックネーム変更"});
 		menu.appendChild(nicknameDisplay);
 		menu.appendChild(nicknameChangeButton);
@@ -76,6 +73,11 @@ Timestamp updateTime = account.getUpdatedAt();
 		//アカウント更新日時を表示
 		let updateTimeDisplay = elt("p", null, "最終更新日："+"<%= updateTime %>");
 		menu.appendChild(updateTimeDisplay);
+
+		//アカウント削除ボタンの設定
+		let accountDeleteForm = elt("form", {action: "/PURE/AccountDeleteConfirmServlet", method: "get"});
+		menu.appendChild(accountDeleteForm);
+		accountDeleteForm.appendChild(elt("input", {type: "submit", value: "アカウント削除"}));
 
 		//ニックネーム変更ボタンが押されたら入力ページを表示
 		let nickname = document.getElementById("nicknameChange");
@@ -184,7 +186,7 @@ Timestamp updateTime = account.getUpdatedAt();
 			console.log(passUseble);
 
 			if(passUseble) {
-				inputPassForm.appendChild(elt("p", null, "⚠パスワードの入力が正しくありません"));
+				inputPassForm.appendChild(elt("p", null, "パスワードの入力が正しくありません"));
 				isAppropriate = false;
 			}
 
@@ -245,18 +247,54 @@ Timestamp updateTime = account.getUpdatedAt();
 			if (req.readyState == 4 && req.status == 200) {
 				menu.appendChild(elt("h2", null, "現在立てている掲示板"));
 				let myBulletinBoard = JSON.parse(req.response);
-				if(myBulletinBoard) {
-					for(let board of myBulletinBoard) {
-						let counter = 1;
-						let bulletinBoardDisplay = elt("div");
-						let inputTagP = elt("p");
-						menu.appendChild(bulletinBoardDisplay);
-						bulletinBoardDisplay.appendChild(inputTagP);
-						inputTagP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id="+board.id}, board.title));
+				console.log("現在立てている掲示板は"+myBulletinBoard.length);
 
+				//自身の立てている掲示板がある場合表示
+				if(myBulletinBoard.length > 0) {
+
+					for(let board of myBulletinBoard) {
+						let bulletinBoardDisplay = elt("div", {id: "boardId_"+board.id});
+						let inputTitleP = elt("p");
+						menu.appendChild(bulletinBoardDisplay);
+						bulletinBoardDisplay.appendChild(inputTitleP);
+						inputTitleP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id="+board.id}, board.title));
+
+						//掲示板のタグの表示
 						for(let tag of board.tagList) {
-							bulletinBoardDisplay.appendChild(elt("a", {href: "/PURE/SearchBulletinBoardServlet?search="+tag+"&searchSelect=1"}, tag));
+							let inputTagP = elt("p", null, "tag:");
+							inputTagP.appendChild(elt("a", {href: "/PURE/SearchBulletinBoardServlet?search="+tag+"&searchSelect=1"}, tag));
+							bulletinBoardDisplay.appendChild(inputTagP);
 						}
+
+						//送信するためのフォームの作成
+						bulletinBoardDisplay.appendChild(elt("input", {type: "button", value: "タグ編集", id: "tagEditing_boardId_"+board.id}));
+						let tagEditMenu = elt("form", {action: "/PURE/TagsUpdateServlet", method: "post", id: "tagEditMenu"});
+						bulletinBoardDisplay.appendChild(tagEditMenu);
+
+						//タグ編集ボタンが押されたら場合、編集するための各ボタンやタグを表示
+						document.getElementById("tagEditing_boardId_"+board.id).addEventListener("click", function() {
+							tagEditMenu.textContent = null;
+							tagEditMenu.appendChild(elt("input", {type: "hidden", name: "boardId", value: board.id}));
+							tagEdit(tagEditMenu, board.tagList, board.id);
+							let tagEditCancel = elt("input", {type: "button", value: "取り消し", id: "tagEditCancel"});
+							tagEditCancel.addEventListener("click", function() {
+								tagEditMenu.textContent = null;
+							},false);
+							tagEditMenu.appendChild(tagEditCancel);
+						},false);
+
+						//タグ編集での送信の入力値チェック
+						tagEditMenu.addEventListener("submit",function(e) {
+							let boardTagsCounter = document.getElementById("tags_boardId_"+board.id).childElementCount;
+
+							//未入力のタグがないかのチェック
+							if(inputTagsCheck(boardTagsCounter)) {
+								console.log("errorOK");
+								e.preventDefault();
+							}
+
+						},false);
+
 					}
 				}else{
 					let inputTagP = elt("h2", null, "現在作成立てている掲示板はありません");
@@ -270,104 +308,164 @@ Timestamp updateTime = account.getUpdatedAt();
 				//掲示板作成画面の表示
 				document.getElementById("createBoard").addEventListener("click",function() {
 					menu.textContent = null;
+					let counter = 0;
 
 					//掲示板作成フォーム設定
 					let createBoardForm = elt("form",{action: "/PURE/CreateBulletinBoardServlet", method: "post", id: "boardForm"});
 					menu.appendChild(createBoardForm);
 
 					//タイトル入力設定
-					let counter = 0;
-					let inputTags = elt("div",{id: "tags"});
 					let inputTitleDisplay = elt("label", null, "タイトル入力:");
 					let inputTitle = elt("input",{type: "text", id: "title", name: "title"});
 					createBoardForm.appendChild(inputTitleDisplay);
 					inputTitleDisplay.appendChild(inputTitle);
+
+					//タグを追加するための各ボタンの表示
+					tagEdit(createBoardForm);
 					createBoardForm.appendChild(elt("br"));
-					createBoardForm.appendChild(inputTags);
-					createBoardForm.appendChild(elt("br"));
-
-					//タグ追加ボタンの設定
-					let addTag = elt("input", {type: "button", id: "addTag", value: "タグ追加"});
-					createBoardForm.appendChild(addTag);
-
-					document.getElementById("addTag").addEventListener("click", function(){
-
-						if(counter < 6) {
-							counter++;
-							let inputTagP = elt("p");
-							let inputTagDisplay = elt("label", null, "タグ" + counter);
-							let inputTag = elt("input", {type: "text", id: "tag"+counter, name: "tag"+counter});
-							inputTags.appendChild(inputTagP);
-							inputTagP.appendChild(inputTagDisplay);
-							inputTagDisplay.appendChild(inputTag);
-						}
-					}, false);
-
-					//タグ削除ボタンの設定
-					let tags = document.getElementById("tags");
-					let removeTag = elt("input", {type: "button", id: "removeTag", value: "削除"});
-					createBoardForm.appendChild(removeTag);
-
-					document.getElementById("removeTag").addEventListener("click",function(){
-						if(counter >= 1) {
-							counter--;
-							tags.removeChild(tags.lastElementChild);
-						}
-					},false);
 
 					//戻るボタン設定
 					let back = elt("input", {type: "button",id: "back", value: "戻る"});
 					createBoardForm.appendChild(back);
 					document.getElementById("back").addEventListener("click",bulletinBoardCreate,false);
 
-					//掲示板作成の確定ボタン設定
-					let createConfirm = elt("input", {type: "submit", value: "確定"});
-					createBoardForm.appendChild(createConfirm);
-
 					//掲示板のタイトルが他のと重複していないかのチェック
-					document.getElementById("title").addEventListener("blur",titleCheck,false);
+					let titleUseble = false;
+					document.getElementById("title").addEventListener("blur",function() {
+						let req = new XMLHttpRequest();
+						let getTitle = document.getElementById("title").value;
+
+						req.onreadystatechange = function() {
+							if (req.readyState == 4 && req.status == 200) {
+								if (!(JSON.parse(req.response))) {
+									titleUseble = true;
+								}
+							}
+						};
+
+						//TitleCheckServletに入力されたタイトルを送信
+						req.open("GET","/PURE/TitleCheckServlet?title=" + getTitle);
+						req.send(null);
+					},false);
 
 					//掲示板作成時の入力値チェック
-					let boardForm = document.getElementById("boardForm");
-					boardForm.addEventListener("submit",function(e) {
+					createBoardForm.addEventListener("submit",function(e) {
 						let title = document.getElementById("title").value;
+						boardCounter = document.getElementById("tags_boardId_undefined").childElementCount;
+						console.log(boardCounter);
 						console.log(titleUseble);
 
-						if(counter === 1) {
-							let tag = document.getElementById("tag1").value;
-							if(tag.length <= 0) {
-								console.log("dodo");
-								e.preventDefault();
-							}
-						}else{
-							for(let i = 1; i < counter; i++) {
-								let tag = document.getElementById("tag"+ i).value;
-								let nextTag = document.getElementById("tag" + (i+1)).value;
-
-								if(tag === nextTag) {
-									console.log("bobo");
-									e.preventDefault();
-								}
-
-								if(tag.length <= 0 || nextTag.length <= 0) {
-									console.log("vovo");
-									e.preventDefault();
-								}
-							}
+						//入力した掲示板タイトルが既に登録されていた場合送信中止
+						if(inputTagsCheck(boardCounter)) {
+							console.log("errorInputTags");
+							e.preventDefault();
 						}
-						console.log("1");
 
 						if(titleUseble) {
+							console.log("theSameTitle");
 							e.preventDefault();
 						}
-						console.log("2");
 
 						if(title.length <= 0) {
+							console.log("NotInput");
 							e.preventDefault();
 						}
-						console.log("3");
+
 					},false);
 				},false);
+
+				//タグの重複や未入力のチェック
+				function inputTagsCheck(counter) {
+					console.log("現在のカウンタ"+counter);
+					if(counter === 1) {
+						let tag = document.getElementById("tag1").value;
+						if(tag.length <= 0) {
+							console.log("dodo");
+							return true;
+						}
+					}else{
+						for(let i = 1; i <= counter; i++) {
+							let tag = document.getElementById("tag"+ i).value;
+
+							for(let j = i; j < counter; j++) {
+								let nextTag = document.getElementById("tag"+(j+1)).value;
+								if(tag === nextTag) {
+									console.log("bobo");
+									return true;
+								}
+							}
+
+							if(tag.length <= 0) {
+								console.log("vovo");
+								return true;
+							}
+						}
+					}
+					return false;
+				}
+
+				//タグ編集のための追加、削除、確定ボタンの作成
+				function tagEdit(editingTag, tagList, boardId) {
+					let inputTags = elt("div",{id: "tags_boardId_"+boardId});
+					editingTag.appendChild(inputTags);
+					let counter = 0;
+
+					function tagEditAddInputField(tag) {
+						counter++;
+						console.log("タグADD"+counter);
+						console.log("ok"+counter);
+						let inputTagP = elt("p");
+						let inputTagDisplay = elt("label", null, "タグ" + counter);
+						let inputTag;
+						if(tag) {
+							inputTag = elt("input", {type: "text", id: "tag"+counter, name: "tag"+counter, value: tag});
+						}else{
+							inputTag = elt("input", {type: "text", id: "tag"+counter, name: "tag"+counter});
+						}
+						editingTag.appendChild(inputTags);
+						inputTags.appendChild(inputTagP);
+						inputTagP.appendChild(inputTagDisplay);
+						inputTagDisplay.appendChild(inputTag);
+					}
+
+					if(tagList) {
+						for(let tag of tagList) {
+							tagEditAddInputField(tag);
+						}
+					}
+
+					//タグ追加ボタンの設定
+					let addTag = elt("input", {type: "button", id: "addTag", value: "タグ追加"});
+					editingTag.appendChild(addTag);
+
+					addTag.addEventListener("click", function(){
+
+						if(counter < 6) {
+							console.log("clickok");
+							tagEditAddInputField();
+						}
+
+					}, false);
+
+
+					//タグ削除ボタンの設定
+					let tags = document.getElementById("tags");
+					let removeTag = elt("input", {type: "button", id: "removeTag", value: "削除"});
+					editingTag.appendChild(removeTag);
+
+					removeTag.addEventListener("click",function(){
+						if(counter >= 1) {
+							counter--;
+							inputTags.removeChild(inputTags.lastElementChild);
+						}
+					},false);
+
+					//タグの確定ボタン設定
+					let createConfirm = elt("input", {type: "submit", value: "確定"});
+					editingTag.appendChild(createConfirm);
+
+				}
+
 			}
 		};
 
@@ -376,25 +474,7 @@ Timestamp updateTime = account.getUpdatedAt();
 		req.send(null);
 	}
 
-	//掲示板のタイトル検索
-	function titleCheck(){
-		let req = new XMLHttpRequest();
-		let getTitle = document.getElementById("title").value;
 
-		req.onreadystatechange = function() {
-			if (req.readyState == 4 && req.status == 200) {
-				if (!(JSON.parse(req.response))) {
-					titleUseble = true;
-				} else {
-					titleUseble = false;
-				}
-			}
-		};
-
-		//PassCheckServletに入力されたPassを送信
-		req.open("GET","/PURE/TitleCheckServlet?title=" + getTitle);
-		req.send(null);
-	}
 
 	//お気に入り画面の表示
 	favorite.addEventListener("click",function(){
@@ -405,6 +485,7 @@ Timestamp updateTime = account.getUpdatedAt();
 
 		req.onreadystatechange = function() {
 			if (req.readyState == 4 && req.status == 200) {
+				menu.appendChild(elt("h2", null, "お気に入りの掲示板"));
 				favoriteBulletinBoard = JSON.parse(req.response);
 
 				for(let favoriteBoard of favoriteBulletinBoard) {
@@ -426,7 +507,9 @@ Timestamp updateTime = account.getUpdatedAt();
 
 		req.onreadystatechange = function() {
 			if (req.readyState == 4 && req.status == 200) {
+				menu.appendChild(elt("h2", null, "コメント履歴"));
 				let myCommentBulletinBoardList = JSON.parse(req.response);
+				console.log(myCommentBulletinBoardLis);
 
 				for(let myCommentBulletinBoard of myCommentBulletinBoardList) {
 					for(let comment of myCommentBulletinBoard.commentList) {

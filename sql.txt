@@ -6,7 +6,7 @@ CREATE TABLE bulletin_boards (
     created_at        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     view_quantity     INTEGER     NOT NULL DEFAULT 0,
     favorite_quantity INTEGER     NOT NULL DEFAULT 0
-)DEFAULT CHARACTER SET=utf8;
+)DEFAULT CHARACTER SET=utf8mb4;
 
 
 /* タグーテーブル */
@@ -14,7 +14,7 @@ CREATE TABLE tags (
     bulletin_board_id  INTEGER   REFERENCES bulletin_boards (id),
     tag    VARCHAR(10)     ,
     PRIMARY KEY (bulletin_board_id, tag)
-)DEFAULT CHARACTER SET=utf8;
+)DEFAULT CHARACTER SET=utf8mb4;
 
 /* アカウントテーブル */
 CREATE TABLE accounts (
@@ -24,18 +24,18 @@ CREATE TABLE accounts (
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     is_deleted  BOOLEAN      NOT NULL DEFAULT false 
-)DEFAULT CHARACTER SET=utf8;
+)DEFAULT CHARACTER SET=utf8mb4;
 
 /* コメントテーブル */
 CREATE TABLE comments (
     id                  INTEGER      ,
     bulletin_board_id   INTEGER      REFERENCES bulletin_boards (id),
     account_id          VARCHAR(12)  REFERENCES accounts (id),
-    comment             VARCHAR(200) NOT NULL,
+    comment             VARCHAR(2048) NOT NULL,
     created_at          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     pure_quantity       INTEGER      NOT NULL DEFAULT 0,
     PRIMARY KEY (id, bulletin_board_id)
-)DEFAULT CHARACTER SET=utf8;
+)DEFAULT CHARACTER SET=utf8mb4;
 
 /* PUREしたコメント */
 CREATE TABLE pures(
@@ -43,11 +43,11 @@ CREATE TABLE pures(
     comment_id          INTEGER     REFERENCES comments (id),
     bulletin_board_id   INTEGER     REFERENCES bulletin_boards (id),
     PRIMARY KEY (account_id, comment_id, bulletin_board_id)
-)DEFAULT CHARACTER SET=utf8;
+)DEFAULT CHARACTER SET=utf8mb4;
 
 /* お気に入りテーブル */
 CREATE TABLE favorites (
     account_id            VARCHAR(12) REFERENCES accounts (id),
     bulletin_board_id     INTEGER     REFERENCES bulletin_boards (id),
     PRIMARY KEY (account_id, bulletin_board_id)
-)DEFAULT CHARACTER SET=utf8;
+)DEFAULT CHARACTER SET=utf8mb4;

@@ -2,7 +2,6 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 /**
  *
@@ -37,7 +36,6 @@ public class BulletinBoard implements Serializable {
 
 	@Override
 	public String toString(){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/H:m:s");
 		StringBuffer json = new StringBuffer();
 		json.append("{\"id\":")
 			.append(id)
@@ -46,7 +44,7 @@ public class BulletinBoard implements Serializable {
 			.append("\", \"accountId\":\"")
 			.append(accountId)
 			.append("\", \"createdAt\":\"")
-			.append(sdf.format(createdAt.getTime()))
+			.append(createdAt)
 			.append("\", \"viewQuantity\":")
 			.append(viewQuantity)
 			.append(", \"favoriteQuantity\":")

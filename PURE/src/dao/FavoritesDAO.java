@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class FavoritesDAO {
 
-    private final String JDBC_URL = "jdbc:mysql://localhost:3306/pure?useUnicode=true&characterEncoding=utf8";
+    private final String JDBC_URL = "jdbc:mysql://localhost:3306/pure?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
     private final String DB_USER = "root";
-    private final String DB_PASS = "";
+    private final String DB_PASS = "root";
 
     static{
         try {
@@ -154,7 +154,7 @@ public class FavoritesDAO {
     	try{
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-    		String sql = "SELECT * FROM favorites WHERE account_id = ? AND bulletin_board_id;";
+    		String sql = "SELECT * FROM favorites WHERE account_id = ? AND bulletin_board_id = ?;";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setString(1, accountId);

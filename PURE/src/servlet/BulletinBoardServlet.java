@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -12,7 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import bo.GetBulletinBoardLogic;
+import bo.GetMyPureCommentListLogic;
 import bo.GetPureCommentsLogic;
+import bo.IsFavoriteLogic;
+import model.Account;
 import model.BulletinBoard;
 
 /**
@@ -24,22 +28,49 @@ public class BulletinBoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
 		// パラメータを取得
-		int id = Integer.parseInt(request.getParameter("id"));
-		System.out.println("掲示板ID:" + id + " がリクエストされました"); // テスト
+		int bulletinBoardId = Integer.parseInt(request.getParameter("id"));
+		System.out.println("掲示板ID:" + bulletinBoardId + " がリクエストされました"); // テスト
+
+		// セッションスコープからアカウント情報(id)を取得
+		Account account = (Account) session.getAttribute("account");
+		// 初期宣言
+		boolean isFavorite = false;
+		List<Integer> myPureCommentList;
+		// アカウント情報を取得できた場合とできない場合で分岐
+		if(account != null) {
+			// myPureCommentListを取得し、リクエストスコープに保存
+			GetMyPureCommentListLogic getMyPureCommentListLogic = new GetMyPureCommentListLogic();
+			myPureCommentList = getMyPureCommentListLogic.execute(account.getId(), bulletinBoardId);
+			request.setAttribute("myPureCommentList", myPureCommentList);
+
+			// 掲示板をお気に入りに登録しているか判断
+			IsFavoriteLogic isFavoriteLogic = new IsFavoriteLogic();
+			isFavorite = isFavoriteLogic.execute(account.getId(), bulletinBoardId);
+			request.setAttribute("isFavorite", isFavorite);
+
+		} else {
+			// isFavoriteをリクエストスコープに保存
+			request.setAttribute("isFavorite", isFavorite);
+
+			// 空の状態のmyPureCommentListをリクエストスコープに追加
+			myPureCommentList = new ArrayList<>();
+			request.setAttribute("myPureCommentList", myPureCommentList);
+		}
+
 
 		// GetBulletinBoardLogicにIDを渡し、掲示板オブジェクトを取得
 		GetBulletinBoardLogic getBulletinBoard = new GetBulletinBoardLogic();
-		BulletinBoard bulletinBoard = getBulletinBoard.execute(id);
+		BulletinBoard bulletinBoard = getBulletinBoard.execute(bulletinBoardId);
 
 		// pureCommentListを取得し、リクエストスコープに保存
 		GetPureCommentsLogic getPureCommentLogic = new GetPureCommentsLogic();
-		List<Integer> pureCommentList = getPureCommentLogic.execute(id);
+		List<Integer> pureCommentList = getPureCommentLogic.execute(bulletinBoardId);
 		request.setAttribute("pureCommentList", pureCommentList);
 
 		// nullではなかったらセッションスコープに掲示板オブジェクトを保存
 		if(bulletinBoard != null) {
-			HttpSession session = request.getSession();
 			session.setAttribute("bulletinBoard", bulletinBoard);
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/createBulletinBoard.jsp");
 			dispatcher.forward(request, response);

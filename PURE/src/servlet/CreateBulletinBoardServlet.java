@@ -47,6 +47,7 @@ public class CreateBulletinBoardServlet extends HttpServlet {
 
 			System.out.println(account.getId());
 			System.out.println("testBoardCreate");
+			System.out.println(title);
 			for(int i = 0; i < tags.size(); i++ ) {
 				System.out.println(tags.get(i));
 			}
