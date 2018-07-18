@@ -14,6 +14,7 @@ CommentList commentList;
 <html>
 <head>
 <meta charset=UTF-8">
+<link rel="stylesheet" href="home.css">
 <title>ホーム</title>
 </head>
 <body>
@@ -21,6 +22,17 @@ CommentList commentList;
 		<header>
 			<img alt="" src="pure_logo.png" height = "220" width = "500">
 		</header>
+
+		<nav>
+          <ul>
+            <li><a href="/PURE/HomeServlet">TOP</a></li>
+            <li><a href="/PURE/RankingServlet">ランキング</a></li>
+            <li><a href="/PURE/SearchBulletinBoardServlet">検索</a></li>
+            <li><a href="/PURE/LoginServlet">ログイン</a></li>
+            <li><a href="/PURE/CreateAccountServlet">新規作成</a></li>
+          </ul>
+        </nav>
+
 		<main>
 		<section>
 			<h2>リアルタイム</h2>
