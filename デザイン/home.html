@@ -32,9 +32,7 @@
 		<section>
 			<h2>最新</h2>
 			<div id="new">
-				<% for(int i = 0; i < newList.size(); i++) { %>
-					<p><a href="/PURE/BulletinBoardServlet?id=<%= newList.get(i).getId() %>"><%= newList.get(i).getTitle() %></a></p>
-				<% } %>
+					<p><a href="/PURE/BulletinBoardServlet?id=<%= newList.get(i).getId() %>"></a></p>
 			</div>
 		</section>
 	</main>
@@ -44,9 +42,9 @@
 			<!--ランキング-->
 			<h2>ランキング</h2>
 			<div id="ranking">
-				<% for(int i = 0; i < rankingList.size(); i++) { %>
+
 					<p><a href="/PURE/BulletinBoardServlet?id=<%= rankingList.get(i).getId() %>"><%= rankingList.get(i).getTitle() %></a></p>
-				<% } %>
+
 			</div>
 		</div>
 
