@@ -20,7 +20,7 @@ CommentList commentList;
 <body>
 	<div id="page">
 		<header>
-			<h1>PURE</h1>
+			<img alt="" src="pure_logo.png" height = "220" width = "500">
 		</header>
 
 		<nav>
@@ -95,12 +95,13 @@ CommentList commentList;
 
 		setInterval(getComment, 5000);
 		setInterval(function(){
-			if(commentList[0]) {
+			if(commentList[0]) {;
 				let comment = commentList[0];
+				console.log(comment)
 
-				let inputTagP = elt("p");
+				let inputTagP = elt("p", null, comment.boardTitle + ":");
 				rialtime.appendChild(inputTagP);
-				inputTagP.appendChild(elt("a", null, comment.comment));
+				inputTagP.appendChild(elt("a", {href: "/PURE/BulletinBoardServlet?id=" + comment.boardId}, comment.comment));
 
 				commentList.shift();
 			}
@@ -113,10 +114,11 @@ CommentList commentList;
 			req.onreadystatechange = function() {
 				if (req.readyState == 4 && req.status == 200) {
 					bulletinBoardList = JSON.parse(req.response);
+					console.log(bulletinBoardList);
 
 					for(let bulletinBoard of bulletinBoardList) {
 						for(let commentObject of bulletinBoard.commentList) {
-							comment = {id: bulletinBoard.id, title: bulletinBoard.title, comment: commentObject.comment};
+							comment = {boardId: bulletinBoard.id, boardTitle: bulletinBoard.title, comment: commentObject.comment};
 							commentList.push(comment);
 						}
 					}
