@@ -163,7 +163,9 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
 
       	// コメントを表示またはコメントをPURE(未実装)
       	for(let cmtObj of commentList) {
-    	   	commentField.appendChild( createCommentFrame(cmtObj) );   // コメント枠をコメント欄に追加
+      		let commentFrame = createCommentFrame(cmtObj);
+    	   	commentField.appendChild( commentFrame );   // コメント枠をコメント欄に追加
+			commentFrame.scrollIntoView(true);
       	}
     }
 
@@ -188,9 +190,9 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
 
       	// span要素にcmtObjのフィールドを追加
       	smallElementCommentId.appendChild( document.createTextNode("No." + commentObject.id) );
-      	smallElementNickName.appendChild( document.createTextNode(commentObject.nickname) );
-      	smallElementAccountId.appendChild( document.createTextNode(commentObject.accountId) );
-      	smallElementCreatedAt.appendChild( document.createTextNode(commentObject.createdAt) );
+      	smallElementNickName.appendChild( document.createTextNode(" " + commentObject.nickname) );
+      	smallElementAccountId.appendChild( document.createTextNode(" ID:" + commentObject.accountId) );
+      	smallElementCreatedAt.appendChild( document.createTextNode(" " + commentObject.createdAt) );
       	// dt要素にsmall要素を追加
       	dtElement.appendChild(smallElementCommentId);
       	dtElement.appendChild(smallElementNickName);

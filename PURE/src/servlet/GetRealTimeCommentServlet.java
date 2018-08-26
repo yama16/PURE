@@ -21,6 +21,7 @@ public class GetRealTimeCommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("GetRealTimeCommentServlet");
 		long now = 0;
 
 		try{
@@ -34,6 +35,8 @@ public class GetRealTimeCommentServlet extends HttpServlet {
 		BulletinBoardList bulletinBoards = new BulletinBoardList();
 
 		bulletinBoards = realTimeComments.execute(new Timestamp(now));
+
+		System.out.println(bulletinBoards);
 
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter pw = response.getWriter();

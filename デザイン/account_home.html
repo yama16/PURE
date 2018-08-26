@@ -4,19 +4,45 @@
 <meta charset="UTF-8">
 <title>個人設定</title>
 <link rel="stylesheet" href="dzz.css">
+<link rel="stylesheet" href="PURE.css">
 </head>
 <body>
-	<div id="page">
-		<header>
-			<h1><%= nickname %></h1>
-		</header>
+	<header>
+		  <h1><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/homenav.html">PURE</a></h1>
+	</header>
+	<nav>
+		<ul>
+			<li><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/homenav.html">TOP</a></li>
+			<li><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/ranking.html">ランキング</a></li>
+			<li><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/search.html">検索</a></li>
+			<li><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/login.html">ログイン</a></li>
+			<li><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/account_create.html">新規作成</a></li>
+		</ul>
+	</nav>
 		<main>
 			<form id="confirm">
-					<input type="button" value="個人設定" id="personal" style="width:200px; height:30px;"><br>
-					<input type="button" value="掲示板" id="bulletinBoard"style="width:200px; height:30px;"><br>
-					<input type="button" value="お気に入り" id="favorite" style="width:200px; height:30px;"><br>
-					<input type="button" value="コメント履歴" id="commentHistory" style="width:200px; height:30px;">
+				<div id="selectBTN">
+					<input type="submit" value="TOP" id="TOP" style="width:200px; height:30px;"><br>
+					<input type="submit" value="個人設定" id="personal" style="width:200px; height:30px;"><br>
+					<input type="submit" value="掲示板" id="bulletinBoard"style="width:200px; height:30px;"><br>
+					<input type="submit" value="お気に入り" id="favorite" style="width:200px; height:30px;"><br>
+					<input type="submit" value="コメント履歴" id="commentHistory" style="width:200px; height:30px;">
+					<input type="submit" value="アカウント消去" id="personal" style="width:200px; height:30px;"><br>
+				</div>
 			</form>
 		</main>
+			<div id="menu">
+				<div id="num">
+				ニックネーム：山田　太郎
+				<button>変更</button>
+				<br>
+				ID:yamada0616<br>
+				パスワード：非表示
+				<button>変更</button>
+				<br>
+				作成日時:
+				更新日:
+			</div>
+		</div>
   </body>
 </html>

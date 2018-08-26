@@ -1,26 +1,33 @@
 @charset "UTF-8";
-#page {
+body {
 	margin: 0 auto;
-	width: 900px;
+	width: 600px;
 }
-
+h1{
+  font-size: 60px;
+  color: pink;
+  text-align: center;
+}
 main {
 	float: left;
 	width: 250px;
   text-align: center;
-
 }
-
-#menu {
+#logout{
 	float: right;
-	width: 650px;
-	background: pink;
-}
 
-input[type="button"] {
+
+}
+#menu {
+	font-size: 20px;
+	float: left;
+	width: 300px;
+	height: 400px;
+	background-color: rgba(255,204,216,0.28);
+	border-radius: 10px;
+	box-shadow: 3px 3px rgba(128, 128, 128,0.28);
+}
+input[type="submit"] {
   	 background: white;
      border-color: black;
-}
-input{
-	
 }

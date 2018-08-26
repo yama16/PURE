@@ -1,45 +1,52 @@
+
 <!DOCTYPE html>
 <html>
-  <head>
-      <meta charset="utf-8">
-      <title>PURE</title>
-      <link rel="stylesheet" href="test.css">
-  </head>
-  <body>
-    <header>
-        <a href="#"><h1>PURE</h1></a>
+<head>
+<meta charset="UTF-8">
+<title>ホーム</title>
+  <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="PURE.css">
+</head>
+<body>
+		<header>
+        <h1><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/homenav.html">PURE</a></h1>
+		</header>
 
-    </header>
-    <main>
-      <section>
-          <!--最新-->
-          <h2>リアルタイム</h2>
-              <textarea rows="20" cols="80"></textarea>
-      </section>
-      <section>
-          <!--リアルタイム-->
-          <h2>最新</h2>
-              <textarea rows="20" cols="80"></textarea>
-      </section>
-    </main>
-    <!--                        ログイン・検索                         -->
-    <div id="login">
-      <fieldset>
-      <a href="#">新規の方はこちら！！！</a><br>
-      <a href="#">ログイン</a><br>
-      </fieldset>
-      <fieldset>
-        <input type="button" name="submit" value="検索">
-      </fieldset>
-    </div>
-    <!--                       ランキング                               -->
-      <div id="sub">
-          <h2>人気のタグ</h2>
-              <textarea rows="30" cols="30"></textarea>
-      <!--ランキング-->
-        <a href="#"><h2>ランキング</h2></a>
-              <textarea rows="30" cols="30"></textarea>
-      </div>
+<nav>
+        <nav>
+          <ul>
+            <li><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/homenav.html">TOP</a></li>
+            <li><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/ranking.html">ランキング</a></li>
+            <li><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/search.html">検索</a></li>
+            <li><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/login.html">ログイン</a></li>
+            <li><a href="file:///C:/Users/matsumoto/Documents/GitHub/PURE/デザイン/account_create.html">新規作成</a></li>
+          </ul>
+        </nav>
+	<main>
+		<section>
+			<h2>リアルタイム</h2>
+			<div id="realtime">
 
-  </body>
+			</div>
+		</section>
+		<section>
+			<h2>最新</h2>
+			<div id="new">
+					<p><a href="/PURE/BulletinBoardServlet?id=<%= newList.get(i).getId() %>"></a></p>
+			</div>
+		</section>
+	</main>
+		<!--                        ログイン・検索                         -->
+		<!--                       ランキング                               -->
+		<div id="sub">
+			<!--ランキング-->
+			<h2>ランキング</h2>
+			<div id="ranking">
+
+					<p><a href="/PURE/BulletinBoardServlet?id=<%= rankingList.get(i).getId() %>"><%= rankingList.get(i).getTitle() %></a></p>
+
+			</div>
+		</div>
+
+</body>
 </html>

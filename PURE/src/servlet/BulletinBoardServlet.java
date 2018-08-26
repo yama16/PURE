@@ -59,7 +59,6 @@ public class BulletinBoardServlet extends HttpServlet {
 			request.setAttribute("myPureCommentList", myPureCommentList);
 		}
 
-
 		// GetBulletinBoardLogicにIDを渡し、掲示板オブジェクトを取得
 		GetBulletinBoardLogic getBulletinBoard = new GetBulletinBoardLogic();
 		BulletinBoard bulletinBoard = getBulletinBoard.execute(bulletinBoardId);

@@ -245,12 +245,13 @@ Timestamp updateTime = account.getUpdatedAt();
 
 		req.onreadystatechange = function() {
 			if (req.readyState == 4 && req.status == 200) {
-				menu.appendChild(elt("h2", null, "現在立てている掲示板"));
+
 				let myBulletinBoard = JSON.parse(req.response);
 				console.log("現在立てている掲示板は"+myBulletinBoard.length);
 
 				//自身の立てている掲示板がある場合表示
 				if(myBulletinBoard.length > 0) {
+					menu.appendChild(elt("h2", null, "現在立てている掲示板"));
 
 					for(let board of myBulletinBoard) {
 						let bulletinBoardDisplay = elt("div", {id: "boardId_"+board.id});
@@ -337,8 +338,11 @@ Timestamp updateTime = account.getUpdatedAt();
 
 						req.onreadystatechange = function() {
 							if (req.readyState == 4 && req.status == 200) {
+								console.log("titleCheck" + req.response);
 								if (!(JSON.parse(req.response))) {
 									titleUseble = true;
+								}else{
+									titleUseble = false;
 								}
 							}
 						};
@@ -422,7 +426,7 @@ Timestamp updateTime = account.getUpdatedAt();
 						}else{
 							inputTag = elt("input", {type: "text", id: "tag"+counter, name: "tag"+counter});
 						}
-						editingTag.appendChild(inputTags);
+
 						inputTags.appendChild(inputTagP);
 						inputTagP.appendChild(inputTagDisplay);
 						inputTagDisplay.appendChild(inputTag);
