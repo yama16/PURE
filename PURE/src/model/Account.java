@@ -18,10 +18,14 @@ public class Account implements Serializable {
     private String nickname;
     /** パスワード */
     private String password;
+    /** */
+    private String salt;
     /** アカウント作成をした日時 */
     private Timestamp createdAt;
     /** アカウント情報を更新した日時 */
     private Timestamp updatedAt;
+    /** */
+    private boolean isDeleted;
 
     /** 引数なしのコンストラクタ */
     public Account(){}
@@ -33,12 +37,14 @@ public class Account implements Serializable {
      * @param created_at アカウント作成をした日時
      * @param updated_at アカウント情報を更新した日時
      */
-    public Account(String id, String nickname, String password, Timestamp createdAt, Timestamp updatedAt){
+    public Account(String id, String nickname, String password, String salt, Timestamp createdAt, Timestamp updatedAt, boolean isDeleted){
         this.id = id;
         this.nickname = nickname;
         this.password = password;
+        this.salt = salt;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.isDeleted = isDeleted;
     }
 
     //全フィールドのgetterとsetter
@@ -48,9 +54,13 @@ public class Account implements Serializable {
     public void setNickname(String nickname){ this.nickname = nickname; }
     public String getPassword(){ return password; }
     public void setPassword(String password){ this.password = password; }
+    public String getSalt(){ return salt; }
+    public void setSalt(String salt){ this.salt = salt; }
     public Timestamp getCreatedAt(){ return createdAt; }
     public void setCreatedAt(Timestamp createdAt){ this.createdAt = createdAt; }
     public Timestamp getUpdatedAt(){ return updatedAt; }
     public void setUpdatedAt(Timestamp updatedAt){ this.updatedAt = updatedAt; }
+    public boolean getIsDeleted(){ return isDeleted; }
+    public void setIsDeleted(boolean isDeleted){ this.isDeleted = isDeleted; }
 
 }

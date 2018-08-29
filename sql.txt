@@ -20,7 +20,8 @@ CREATE TABLE tags (
 CREATE TABLE accounts (
     id          VARCHAR(12)  PRIMARY KEY,
     nickname    VARCHAR(10)  NOT NULL,
-    password    VARCHAR(16)  NOT NULL,
+    password    CHAR(64)     NOT NULL,
+    salt        CHAR(64)     NOT NULL,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     is_deleted  BOOLEAN      NOT NULL DEFAULT false 

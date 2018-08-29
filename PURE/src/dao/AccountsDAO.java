@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import model.Account;
+import model.Hash;
 import model.Login;
 
 /**
@@ -63,14 +64,31 @@ public class AccountsDAO {
      * @return 登録できればtrue。できなければfalse。
      */
     public boolean create(Account account){
+    	Hash hash = new Hash();
+    	byte[] salt = hash.createSalt();
+    	if(salt == null){
+    		return false;
+    	}
+    	String hashPass = hash.getHash(account.getPassword(), salt);
+    	if(hashPass == null){
+    		return false;
+    	}
+    	String hexSalt = hash.toHex(salt);
+    	if(hexSalt == null){
+    		return false;
+    	}
+    	account.setPassword(hashPass);
+    	account.setSalt(hexSalt);
         try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-            String sql = "INSERT INTO accounts (id, nickname, password, created_at, updated_at) VALUES (?, ?, ?, COALESCE(?, CURRENT_TIMESTAMP()), COALESCE(?, CURRENT_TIMESTAMP()));";
+            String sql = "INSERT INTO accounts (id, nickname, password, salt, created_at, updated_at, is_deleted) VALUES (?, ?, ?, ?, COALESCE(?, CURRENT_TIMESTAMP()), COALESCE(?, CURRENT_TIMESTAMP()), ?);";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, account.getId());
             pStmt.setString(2, account.getNickname());
             pStmt.setString(3, account.getPassword());
-            pStmt.setTimestamp(4, account.getCreatedAt());
-            pStmt.setTimestamp(5, account.getUpdatedAt());
+            pStmt.setString(4, account.getSalt());
+            pStmt.setTimestamp(5, account.getCreatedAt());
+            pStmt.setTimestamp(6, account.getUpdatedAt());
+            pStmt.setBoolean(7, false);
             int result = pStmt.executeUpdate();
             if(result != 1){
                 return false;
@@ -91,23 +109,35 @@ public class AccountsDAO {
      */
     public Account findByLogin(Login login){
         Account account = null;
+        Hash hash = new Hash();
 
         try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-            String sql = "SELECT id, nickname, password, created_at, updated_at, is_deleted FROM accounts WHERE id = ? AND password = ?;";
+        	String findSalt = getSaltById(login.getId(), conn);
+        	if(findSalt == null){
+        		return null;
+        	}
+        	String hashPass = hash.getHash(login.getPassword(), findSalt);
+        	if(hashPass == null){
+        		return null;
+        	}
+
+            String sql = "SELECT id, nickname, password, salt, created_at, updated_at, is_deleted FROM accounts WHERE id = ? AND password = ?;";
 
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, login.getId());
-            pStmt.setString(2, login.getPassword());
+            pStmt.setString(2, hashPass);
 
             ResultSet resultSet = pStmt.executeQuery();
             if(resultSet.next() && !resultSet.getBoolean("is_deleted")){
                 String id = resultSet.getString("id");
                 String nickname = resultSet.getString("nickname");
                 String password = resultSet.getString("password");
-                Timestamp created_at = resultSet.getTimestamp("created_at");
-                Timestamp updated_at = resultSet.getTimestamp("updated_at");
-                account = new Account(id, nickname, password, created_at, updated_at);
+                String salt = resultSet.getString("salt");
+                Timestamp createdAt = resultSet.getTimestamp("created_at");
+                Timestamp updatedAt = resultSet.getTimestamp("updated_at");
+                boolean isDeleted = resultSet.getBoolean("is_deleted");
+                account = new Account(id, nickname, password, salt, createdAt, updatedAt, isDeleted);
             }
 
         } catch (SQLException e) {
@@ -156,14 +186,24 @@ public class AccountsDAO {
      * @return 更新できればtrue。できなければfalse。
      */
     public boolean update(String id, Account account){
+    	Hash hash = new Hash();
 
         try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+
+        	String findSalt = getSaltById(id, conn);
+        	if(findSalt == null){
+        		return false;
+        	}
+        	String hashPass = hash.getHash(account.getPassword(), findSalt);
+        	if(hashPass == null){
+        		return false;
+        	}
 
             String sql = "UPDATE accounts SET nickname = ?, password = ?, updated_at = ? WHERE id = ?;";
 
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, account.getNickname());
-            pStmt.setString(2, account.getPassword());
+            pStmt.setString(2, hashPass);
             pStmt.setTimestamp(3, account.getUpdatedAt());
             pStmt.setString(4, id);
 
@@ -178,6 +218,20 @@ public class AccountsDAO {
         }
 
         return true;
+    }
+
+    protected String getSaltById(String id, Connection conn) throws SQLException{
+    	String sql = "SELECT salt FROM accounts WHERE id = ?;";
+
+    	PreparedStatement pStmt = conn.prepareStatement(sql);
+    	pStmt.setString(1, id);
+
+    	ResultSet resultSet = pStmt.executeQuery();
+    	if(!resultSet.next()){
+    		return null;
+    	}else{
+    		return resultSet.getString("salt");
+    	}
     }
 
 }
