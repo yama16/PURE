@@ -277,11 +277,21 @@ Timestamp updateTime = account.getUpdatedAt();
 							tagEditMenu.textContent = null;
 							tagEditMenu.appendChild(elt("input", {type: "hidden", name: "boardId", value: board.id}));
 							tagEdit(tagEditMenu, board.tagList, board.id);
+
+							let tagEditConfirm = elt("input", {type: "button", value: "確定"});
+							tagEditConfirm.addEventListener("click", function() {
+								let boardTags = document.getElementById("tags_boardId_"+board.id).children;
+								console.log("tagEditOK");
+								console.log(boardTags);
+							},false);
+							tagEditMenu.appendChild(tagEditConfirm);
+
 							let tagEditCancel = elt("input", {type: "button", value: "取り消し", id: "tagEditCancel"});
 							tagEditCancel.addEventListener("click", function() {
 								tagEditMenu.textContent = null;
 							},false);
 							tagEditMenu.appendChild(tagEditCancel);
+
 						},false);
 
 						//タグ編集での送信の入力値チェック
@@ -320,6 +330,9 @@ Timestamp updateTime = account.getUpdatedAt();
 					let inputTitle = elt("input",{type: "text", id: "title", name: "title"});
 					createBoardForm.appendChild(inputTitleDisplay);
 					inputTitleDisplay.appendChild(inputTitle);
+
+					//掲示板作成ボタン設定
+					createBoardForm.appendChild(elt("input", {type: "submit", value: "確定"}));
 
 					//タグを追加するための各ボタンの表示
 					tagEdit(createBoardForm);
@@ -390,6 +403,7 @@ Timestamp updateTime = account.getUpdatedAt();
 					}else{
 						for(let i = 1; i <= counter; i++) {
 							let tag = document.getElementById("tag"+ i).value;
+							console.log(tag);
 
 							for(let j = i; j < counter; j++) {
 								let nextTag = document.getElementById("tag"+(j+1)).value;
@@ -463,10 +477,6 @@ Timestamp updateTime = account.getUpdatedAt();
 							inputTags.removeChild(inputTags.lastElementChild);
 						}
 					},false);
-
-					//タグの確定ボタン設定
-					let createConfirm = elt("input", {type: "submit", value: "確定"});
-					editingTag.appendChild(createConfirm);
 
 				}
 
