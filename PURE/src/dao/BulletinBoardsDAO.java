@@ -110,7 +110,6 @@ public class BulletinBoardsDAO {
 			CommentsDAO commentsDAO = new CommentsDAO();
 			TagsDAO tagsDAO = new TagsDAO();
     		bulletinBoard = findById(bulletinBoardId, conn);
-    		bulletinBoard.setCommentList(commentsDAO.findByBulletinBoardId(bulletinBoardId, conn));
     		bulletinBoard.setTagList(tagsDAO.findByBulletinBoardId(bulletinBoardId, conn));
 
     	} catch(SQLException e) {

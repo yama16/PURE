@@ -77,6 +77,9 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
     </footer>
 </body>
 <script type="text/javascript">
+	// コメントを読み込む
+	window.addEventListener('DOMContentLoaded', ()=>{getNewComment();});
+
 	// ボタン初期設定(PUREボタン, 返信ボタン, お気に入りボタン)
     if( document.getElementsByClassName("comment") ) {
     	let pureButtons = document.getElementsByClassName("pureButton");
