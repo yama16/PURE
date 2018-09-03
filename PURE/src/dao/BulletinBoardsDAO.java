@@ -163,7 +163,7 @@ public class BulletinBoardsDAO {
      * @param order
      * @return
      */
-    public BulletinBoardList ranking(int order){
+    public BulletinBoardList ranking(int order, int num){
     	String order1 = "";
     	String order2 = "";
     	if(order == 1){
@@ -175,11 +175,14 @@ public class BulletinBoardsDAO {
     	}else{
     		return null;
     	}
+    	if(num < 1 || num > 100){
+    		return null;
+    	}
     	BulletinBoardList list = new BulletinBoardList();
 
     	try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
-    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards ORDER BY " + order1 + " DESC, " + order2 + " DESC LIMIT 100;";
+    		String sql = "SELECT id, title, account_id, created_at, view_quantity, favorite_quantity FROM bulletin_boards ORDER BY " + order1 + " DESC, " + order2 + " DESC LIMIT " + num + ";";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
 

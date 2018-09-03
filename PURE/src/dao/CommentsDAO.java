@@ -281,7 +281,7 @@ public class CommentsDAO {
     	try{
     		conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-    		String sql = "SELECT id FROM comments WHERE bulletin_board_id = ? AND pure_quantity >= 1";
+    		String sql = "SELECT id FROM comments WHERE bulletin_board_id = ? AND pure_quantity >= 10";
 
     		PreparedStatement pStmt = conn.prepareStatement(sql);
     		pStmt.setInt(1, bulletinBoardId);

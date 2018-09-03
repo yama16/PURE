@@ -22,7 +22,7 @@ public class HomeServlet extends HttpServlet {
 		BulletinBoardList newBulletinBoardList = getNewBulletinBoardLogic.execute();
 
 		GetRankingLogic getRankingLogic = new GetRankingLogic();
-		BulletinBoardList rankingList = getRankingLogic.execute(1);
+		BulletinBoardList rankingList = getRankingLogic.execute(1, 10);
 
 		request.setAttribute("newList", newBulletinBoardList);
 		request.setAttribute("rankingList", rankingList);

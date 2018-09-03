@@ -22,7 +22,7 @@ public class RankingServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// ランキング用にソートされたリストを取得し、リクエストスコープに保存
 		GetRankingLogic getRankingLogic = new GetRankingLogic();
-		BulletinBoardList list = getRankingLogic.execute(1);
+		BulletinBoardList list = getRankingLogic.execute(1, 100);
 		request.setAttribute("BulletinBoardList", list);
 
 		// フォワード
