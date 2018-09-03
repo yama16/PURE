@@ -36,7 +36,6 @@ Timestamp updateTime = account.getUpdatedAt();
 	let favorite = document.getElementById("favorite");
 	let commentHistory = document.getElementById("commentHistory");
 	let favoriteBulletinBoard;
-	let passUseble = false;
 
 	// ページを読み込んだ時個人設定画面を表示
 	window.onload = personalSetting;
@@ -123,23 +122,19 @@ Timestamp updateTime = account.getUpdatedAt();
 		let nicknameForm = document.getElementById("nicknameForm");
 		nicknameForm.addEventListener("submit",function(e) {
 			let newNickname = document.getElementById("newNickname");
-			let inputNicknameCheck = true;
+
 			if(newNickname.value.length <= 0) {
-				inputNicknameCheck = false;
+				e.preventDefault();
 			}else if(newNickname.value.length > 10) {
-				inputNicknameCheck = false;
-			}
-			if(!(inputNicknameCheck)) {
-				errorMsgDisplay.textContent = null;
-				errorMsgDisplay.appendChild(elt("p", null, "※ニックネームの入力が正しくありません"));
 				e.preventDefault();
 			}
+
 		},false);
 
 	}
 
 	function passChange() {
-		console.log("ohaa");
+		let passUseble = false;
 		menu.textContent = null;
 
 		//パスワード入力フォーム
@@ -177,64 +172,57 @@ Timestamp updateTime = account.getUpdatedAt();
 		document.getElementById("nowPass").addEventListener("blur",passCheck,false);
 
 		//パスワード変更のために入力した値のチェック
-		document.getElementById("passForm").onsubmit = function() {
-			console.log("moge");
+		document.getElementById("passForm").addEventListener("submit",function(e) {
+
 			let nowPass = document.getElementById("nowPass").value;
 			let newPass = document.getElementById("newPass").value;
 			let newPassConfirm = document.getElementById("confirmPass").value;
-			let isAppropriate = true;
-			console.log(passUseble);
 
 			if(passUseble) {
-				inputPassForm.appendChild(elt("p", null, "パスワードの入力が正しくありません"));
-				isAppropriate = false;
+				e.preventDefault();
 			}
 
 			if(nowPass.length <= 0) {
 				console.log("2");
-				isAppropriate = false;
+				e.preventDefault();
 			}
 
 			if(newPass.length < 8 || newPass.length > 16) {
-				inputPassForm.appendChild(elt("p", null, "パスワードの文字数が足りません"));
-				console.log("3");
-				isAppropriate = false;
+				e.preventDefault();
 			}
 
 			if(newPassConfirm.length < 8 || newPassConfirm.length > 16) {
-				console.log("4");
-				isAppropriate = false;
+				e.preventDefault();
 			}
 
 			if(newPass !== newPassConfirm) {
-				console.log("5");
-				isAppropriate = false;
+				e.preventDefault();
 			}
 
-			return isAppropriate;
+		},false);
+
+		//入力されたパスワードが自分のパスワードと一致しているかのチェック
+		function passCheck(){
+			let req = new XMLHttpRequest();
+			let nowPass = document.getElementById("nowPass");
+
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status == 200) {
+
+					if (!(JSON.parse(req.response))) {
+						passUseble = true;
+					} else {
+						passUseble = false;
+					}
+				}
+			};
+
+			//PassCheckServletに入力されたPassを送信
+			req.open("POST","/PURE/PassCheckServlet");
+			req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+			req.send("pass=" + nowPass.value);
 		}
 
-	}
-
-	//入力されたパスワードが自分のパスワードと一致しているかのチェック
-	function passCheck(){
-		let req = new XMLHttpRequest();
-		let nowPass = document.getElementById("nowPass");
-
-		req.onreadystatechange = function() {
-			if (req.readyState == 4 && req.status == 200) {
-				if (!(JSON.parse(req.response))) {
-					passUseble = true;
-				} else {
-					passUseble = false;
-				}
-			}
-		};
-
-		//PassCheckServletに入力されたPassを送信
-		req.open("POST","/PURE/PassCheckServlet");
-		req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
-		req.send("pass=" + nowPass.value);
 	}
 
 	//掲示板画面の表示
@@ -245,9 +233,7 @@ Timestamp updateTime = account.getUpdatedAt();
 
 		req.onreadystatechange = function() {
 			if (req.readyState == 4 && req.status == 200) {
-
 				let myBulletinBoard = JSON.parse(req.response);
-				console.log("現在立てている掲示板は"+myBulletinBoard.length);
 
 				//自身の立てている掲示板がある場合表示
 				if(myBulletinBoard.length > 0) {
@@ -300,7 +286,6 @@ Timestamp updateTime = account.getUpdatedAt();
 
 							//未入力のタグがないかのチェック
 							if(inputTagsCheck(boardTagsCounter)) {
-								console.log("errorOK");
 								e.preventDefault();
 							}
 
@@ -351,7 +336,6 @@ Timestamp updateTime = account.getUpdatedAt();
 
 						req.onreadystatechange = function() {
 							if (req.readyState == 4 && req.status == 200) {
-								console.log("titleCheck" + req.response);
 								if (!(JSON.parse(req.response))) {
 									titleUseble = true;
 								}else{
@@ -369,22 +353,17 @@ Timestamp updateTime = account.getUpdatedAt();
 					createBoardForm.addEventListener("submit",function(e) {
 						let title = document.getElementById("title").value;
 						boardCounter = document.getElementById("tags_boardId_undefined").childElementCount;
-						console.log(boardCounter);
-						console.log(titleUseble);
 
 						//入力した掲示板タイトルが既に登録されていた場合送信中止
 						if(inputTagsCheck(boardCounter)) {
-							console.log("errorInputTags");
 							e.preventDefault();
 						}
 
 						if(titleUseble) {
-							console.log("theSameTitle");
 							e.preventDefault();
 						}
 
 						if(title.length <= 0) {
-							console.log("NotInput");
 							e.preventDefault();
 						}
 
@@ -430,8 +409,6 @@ Timestamp updateTime = account.getUpdatedAt();
 
 					function tagEditAddInputField(tag) {
 						counter++;
-						console.log("タグADD"+counter);
-						console.log("ok"+counter);
 						let inputTagP = elt("p");
 						let inputTagDisplay = elt("label", null, "タグ" + counter);
 						let inputTag;
@@ -459,7 +436,6 @@ Timestamp updateTime = account.getUpdatedAt();
 					addTag.addEventListener("click", function(){
 
 						if(counter < 6) {
-							console.log("clickok");
 							tagEditAddInputField();
 						}
 
@@ -523,7 +499,6 @@ Timestamp updateTime = account.getUpdatedAt();
 			if (req.readyState == 4 && req.status == 200) {
 				menu.appendChild(elt("h2", null, "コメント履歴"));
 				let myCommentBulletinBoardList = JSON.parse(req.response);
-				console.log(myCommentBulletinBoardLis);
 
 				for(let myCommentBulletinBoard of myCommentBulletinBoardList) {
 					for(let comment of myCommentBulletinBoard.commentList) {

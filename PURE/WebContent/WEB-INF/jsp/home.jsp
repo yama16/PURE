@@ -30,10 +30,11 @@ CommentList commentList;
             <li><a href="/PURE/SearchBulletinBoardServlet">検索</a></li>
             <% if(account == null) { %>
             	<li><a href="/PURE/LoginServlet">ログイン</a></li>
+            	<li><a href="/PURE/CreateAccountServlet">新規作成</a></li>
             <% }else{ %>
             	<li><a href="/PURE/AccountHomeServlet">アカウントホーム</a></li>
+            	<li><a href="/PURE/LogoutServlet">ログアウト</a></li>
             <% } %>
-            <li><a href="/PURE/CreateAccountServlet">新規作成</a></li>
           </ul>
         </nav>
 
