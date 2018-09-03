@@ -36,7 +36,7 @@ public class ConfirmCreateAccountServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		session.setAttribute("createAccount", account);
 
-		if(!nickname.matches(".{1,10}") || !id.matches("[a-zA-Z0-9]{6,12}") || !pass.matches("[a-zA-Z0-9]{8,16}")){
+		if(!nickname.matches(".{1,10}") || !id.matches("[a-zA-Z0-9]{6,12}") || !pass.matches(".{8,16}")){
 			response.sendRedirect("/PURE/CreateAccountServlet");
 		}else{
 

@@ -133,20 +133,12 @@ if(account != null){
 			return true;
 		}
 		function passCheck() {
-			let regexStr = /^[a-zA-Z0-9]*$/;
-			if(!inputFormatCheck(regexStr, pass, passErrMsg)){
-				return false;
-			}
 			if(!inputLenCheck(8, 16, pass, passErrMsg)){
 				return false;
 			}
 			return true;
 		}
 		function passConfirmCheck() {
-			let regexStr = /^[a-zA-Z0-9]*$/;
-			if(!inputFormatCheck(regexStr, passConfirm, passConfirmErrMsg)){
-				return false;
-			}
 			if(!inputLenCheck(8, 16, passConfirm, passConfirmErrMsg)){
 				return false;
 			}
