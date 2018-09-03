@@ -233,5 +233,34 @@ public class AccountsDAO {
     		return resultSet.getString("salt");
     	}
     }
+    public String getSaltById(String id) {
+    	String salt = null;
+    	Connection conn = null;
+    	try {
+			conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+
+			String sql = "SELECT salt FROM accounts WHERE id = ?;";
+
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setString(1, id);
+
+			ResultSet rs = pStmt.executeQuery();
+			if(rs.next()){
+				salt = rs.getString("salt");
+			}
+
+		} catch (SQLException e) {
+			return null;
+		} finally {
+			if(conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					return null;
+				}
+			}
+		}
+    	return salt;
+    }
 
 }
