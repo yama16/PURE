@@ -6,7 +6,7 @@ boolean deleteAccountCheck = (boolean)request.getAttribute("deleteCheck");
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset=UTF-8">
+<meta charset="UTF-8">
 <title>アカウント削除完了画面</title>
 </head>
 <body>
@@ -17,7 +17,4 @@ boolean deleteAccountCheck = (boolean)request.getAttribute("deleteCheck");
 	<% } %>
 	<a href="/PURE/HomeServlet">ホーム</a>
 </body>
-<script>
-	console.log("<%= deleteAccountCheck %>");
-</script>
 </html>

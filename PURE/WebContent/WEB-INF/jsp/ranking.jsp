@@ -2,7 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ page import="model.BulletinBoardList" %>
 <%@ page import="model.BulletinBoard" %>
+<%@ page import="model.Sanitize" %>
 <%
+Sanitize sanitize = new Sanitize();
 BulletinBoardList bulletinBoardList = (BulletinBoardList) request.getAttribute("BulletinBoardList");
 %>
 <!DOCTYPE html>
@@ -13,6 +15,7 @@ BulletinBoardList bulletinBoardList = (BulletinBoardList) request.getAttribute("
     	<title>ランキング</title>
 	</head>
 	<body>
+		<a href="/PURE/HomeServlet"><img alt="" src="pure_logo.png" height = "220" width = "500"></a>
 		<h1>掲示板ランキング</h1>
 		<div id="rankingField">
 			<dl>
@@ -22,7 +25,7 @@ BulletinBoardList bulletinBoardList = (BulletinBoardList) request.getAttribute("
 			%>
 				<dt>
 					<a href="/PURE/BulletinBoardServlet?id=<%= bulletinBoard.getId() %>">
-						<%= bulletinBoard.getTitle() %>
+						<%= sanitize.execute(bulletinBoard.getTitle()) %>
 					</a>
 				</dt>
 			<% } %>

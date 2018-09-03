@@ -4,7 +4,9 @@
 <%@ page import="model.Comment" %>
 <%@ page import="model.CommentList" %>
 <%@ page import="java.util.List" %>
+<%@ page import="model.Sanitize" %>
 <%
+Sanitize sanitize = new Sanitize();
 // 掲示板とコメントリストを取得
 BulletinBoard bulletinBoard = (BulletinBoard) session.getAttribute("bulletinBoard");
 CommentList commentList = bulletinBoard.getCommentList();
@@ -23,46 +25,13 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
     <title>PURE</title>
 </head>
 <body>
-    <h1>PURE</h1>
+    <h1><a href="/PURE/HomeServlet"><img alt="" src="pure_logo.png" height = "220" width = "500"></a></h1>
     <!-- 　コメント欄　 -->
     <div id="commentField">
       <div id="title">
-      	<h2><%= bulletinBoard.getTitle() %></h2>
+      	<h2><%= sanitize.execute(bulletinBoard.getTitle()) %></h2>
       	<input id="favoriteButton" type="button" value="<%= isFavorite==true?"お気に入り解除":"お気に入り登録" %>">
       </div>
-      <!-- 以下コメントが入る -->
-      <%
-      for(int i = 0; i < commentList.size(); i++) {
-    	String buttonName = "PURE";
-    	String className = "comment";
-    	Comment comment = commentList.get(i);
-    	for(int myPureCommentId: myPureCommentList) {
-    		if(comment.getId() == myPureCommentId) {
-    			buttonName = "PURE解除";
-    		}
-    	}
-    	for(int pureCommentId: pureCommentList) {
-    		if(comment.getId() == pureCommentId) {
-    			className = "comment pure";
-    		}
-    	}
-      %>
-      	<div class="<%= className %>" id="<%= comment.getId() %>">
-      		<dl>
-      			<dt>
-      			  <small>No.<%= comment.getId() %></small>
-      			  <small><%= comment.getNickname() %></small>
-      			  <small>ID:<%= comment.getAccountId() %></small>
-      			  <small><%= comment.getCreatedAt() %></small>
-      			</dt>
-      		</dl>
-      		<p><%= comment.getComment(true).replace(" ", "\n") %></p>
-      		<input class="pureButton" type="button" value="<%= buttonName %>">
-      		<input class="replyButton" type="button" value="返信">
-      	</div>
-      <%
-      }
-      %>
     </div>
 
     <form id="inputComment">

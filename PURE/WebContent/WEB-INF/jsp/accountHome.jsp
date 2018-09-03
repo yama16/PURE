@@ -19,7 +19,7 @@ Timestamp updateTime = account.getUpdatedAt();
 <body>
 	<div id="page">
 		<header>
-			<h1><a href="/PURE/HomeServlet">PURE</a></h1>
+			<h1><a href="/PURE/HomeServlet"><img alt="" src="pure_logo.png" height = "220" width = "500"></a></h1>
 			<p><a href="/PURE/LogoutServlet">ログアウト</a></p>
 		</header>
 			<input type="button" value="個人設定" id="personal" style="width:200px; height:30px;"><br>

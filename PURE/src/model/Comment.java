@@ -66,14 +66,6 @@ public class Comment implements Serializable{
 		return true;
 	}
 
-	public String getComment(boolean isSanitize){
-		if(isSanitize){
-			Sanitize sanitize = new Sanitize();
-			return sanitize.execute(comment);
-		}
-		return comment;
-	}
-
 	public int getId(){ return id; }
 	public void setId(int id){ this.id = id; }
 	public int getBulletinBoardId(){ return bulletinBoardId; }

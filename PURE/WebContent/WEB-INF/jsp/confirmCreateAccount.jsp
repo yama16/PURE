@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="model.Account" %>
+<%@ page import="model.Sanitize" %>
 <%
+Sanitize sanitize = new Sanitize();
 Account account = (Account) session.getAttribute("createAccount");
 
 String id = account.getId();
@@ -15,8 +17,8 @@ String nickname = account.getNickname();
 </head>
 <body>
 	<h1>アカウント作成確認画面</h1>
-	<p>ID：<%= id %></p>
-	<p>ニックネーム：<%= nickname %></p>
+	<p>ID：<%= sanitize.execute(id) %></p>
+	<p>ニックネーム：<%= sanitize.execute(nickname) %></p>
 	<p>よろしいですか？</p>
 
 	<form action="CreateAccountServlet" method="post">

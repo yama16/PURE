@@ -13,7 +13,7 @@ CommentList commentList;
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset=UTF-8">
+<meta charset="UTF-8">
 <link rel="stylesheet" href="home.css">
 <title>ホーム</title>
 </head>

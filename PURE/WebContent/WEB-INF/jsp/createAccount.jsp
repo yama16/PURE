@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="model.Account" %>
+<%@ page import="model.Sanitize" %>
 <%
+Sanitize sanitize = new Sanitize();
 Account account = (Account)session.getAttribute("createAccount");
 String nickname = "";
 String id = "";
@@ -22,15 +24,15 @@ if(account != null){
 	<!--入力フォーム-->
 	<form id="form" action="ConfirmCreateAccountServlet" method="post">
 		<p>
-			ニックネーム：<input id="nickname" type="text" name="nickname" value=<%= nickname %>>
+			ニックネーム：<input id="nickname" type="text" name="nickname" value=<%= sanitize.execute(nickname) %>>
 			<output id="nicknameErrMsg"></output>
 		</p>
 		<p>
-			ID:<input id="id" type="text" name="id" value=<%= id %>>
+			ID:<input id="id" type="text" name="id" value=<%= sanitize.execute(id) %>>
 			<output id="idErrMsg"></output>
 		</p>
 		<p>
-			パスワード：<input id="pass" type="password" name="pass" value=<%= pass %>>
+			パスワード：<input id="pass" type="password" name="pass" value=<%= sanitize.execute(pass) %>>
 			<output id="passErrMsg"></output>
 		</p>
 		<p>

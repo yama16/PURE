@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import = "model.Login" %>
+<%@ page import="model.Sanitize" %>
 <%
+Sanitize sanitize = new Sanitize();
 Login login = (Login) request.getAttribute("login");
 
 //ID、パスワードを取得
@@ -29,8 +31,8 @@ if(login != null) {
 
 	<!-- ログインページ -->
 	<form action="/PURE/LoginServlet" method="post" id="form">
-		ユーザーID:<input type="text" name="id" id="id" value=<%= id %>><br>
-		パスワード:<input type="password" name="pass" id="pass"  value=<%= pass %>><br>
+		ユーザーID:<input type="text" name="id" id="id" value=<%= sanitize.execute(id) %>><br>
+		パスワード:<input type="password" name="pass" id="pass"  value=<%= sanitize.execute(pass) %>><br>
 		<input type="submit" value="ログイン" id="submit">
 	</form>
 

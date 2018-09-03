@@ -2,7 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ page import="model.BulletinBoard" %>
 <%@ page import="model.BulletinBoardList" %>
+<%@ page import="model.Sanitize" %>
 <%
+Sanitize sanitize = new Sanitize();
 BulletinBoardList bulletinBoards = (BulletinBoardList) request.getAttribute("bulletinBoards");
 String keyword = (String)request.getAttribute("keyword");
 String target = (String)request.getAttribute("target");
@@ -16,14 +18,14 @@ String target = (String)request.getAttribute("target");
   </head>
   <body>
     <header>
-        <h1><a href="/PURE/HomeServlet">PURE</a></h1>
+        <h1><a href="/PURE/HomeServlet"><img alt="" src="pure_logo.png" height = "220" width = "500"></a></h1>
     </header>
     <form id="sea" action="/PURE/SearchBulletinBoardServlet">
         <select name="searchSelect">
             <option value="1" <%= (target != null && target.equals("1")) ? "selected" : "" %>> タグ</option>
             <option value="2" <%= (target != null && target.equals("2")) ? "selected" : "" %>>掲示板</option>
         </select>
-        <input type="search" id="search" name="search" value="<%= keyword == null ? "" : keyword %>" placeholder="キーワードを入力" style="width:300px;">
+        <input type="search" id="search" name="search" value="<%= keyword == null ? "" : sanitize.execute(keyword) %>" placeholder="キーワードを入力" style="width:300px;">
         <input type="submit" id="submit" name="submit" value="検索">
     </form>
     <p><%= bulletinBoards == null ? 0 : bulletinBoards.size() %>件</p>
@@ -31,7 +33,7 @@ String target = (String)request.getAttribute("target");
     <div id="searchResult">
 	    <% if(bulletinBoards != null) { %>
 			<% for(int i = 0; i < bulletinBoards.size(); i++) { %>
-				<p><a href="/PURE/BulletinBoardServlet?id=<%= bulletinBoards.get(i).getId() %>"><%= bulletinBoards.get(i).getTitle() %></a></p>
+				<p><a href="/PURE/BulletinBoardServlet?id=<%= bulletinBoards.get(i).getId() %>"><%= sanitize.execute(bulletinBoards.get(i).getTitle()) %></a></p>
 			<% } %>
 		<% } %>
     </div>
