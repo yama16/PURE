@@ -48,7 +48,7 @@ h1{
   word-wrap: break-word;
 }
 
-.pure > p{
+.pure > dl > dd{
 	display: none;
 }
 
