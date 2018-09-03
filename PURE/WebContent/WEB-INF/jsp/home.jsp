@@ -28,8 +28,13 @@ CommentList commentList;
             <li><a href="/PURE/HomeServlet">TOP</a></li>
             <li><a href="/PURE/RankingServlet">ランキング</a></li>
             <li><a href="/PURE/SearchBulletinBoardServlet">検索</a></li>
-            <li><a href="/PURE/LoginServlet">ログイン</a></li>
-            <li><a href="/PURE/CreateAccountServlet">新規作成</a></li>
+            <% if(account == null) { %>
+            	<li><a href="/PURE/LoginServlet">ログイン</a></li>
+            	<li><a href="/PURE/CreateAccountServlet">新規作成</a></li>
+            <% }else{ %>
+            	<li><a href="/PURE/AccountHomeServlet">アカウントホーム</a></li>
+            	<li><a href="/PURE/LogoutServlet">ログアウト</a></li>
+            <% } %>
           </ul>
         </nav>
 
@@ -49,20 +54,7 @@ CommentList commentList;
 			</div>
 		</section>
 		</main>
-		<!--                        ログイン・検索                         -->
-		<div id="login">
-			<fieldset>
-				<% if(account == null) { %>
-					<a href="/PURE/LoginServlet">ログイン</a><br>
-				<% }else{ %>
-					<a href="/PURE/AccountHomeServlet">アカウントホーム</a><br>
-				<% } %>
-				<a href="#">新規の方はこちら！！！</a><br>
-			</fieldset>
-			<fieldset>
-				<a href="/PURE/SearchBulletinBoardServlet">検索</a>
-			</fieldset>
-		</div>
+
 		<!--                       ランキング                               -->
 		<div id="sub">
 			<!--ランキング-->
@@ -74,18 +66,7 @@ CommentList commentList;
 			</div>
 		</div>
 	</div>
-	<% if(account == null) { %>
-		<form action="/PURE/LoginServlet" method="get">
-			<input type="submit" value="ログイン">
-		</form>
-	<% }else{ %>
-		<form action="/PURE/AccountHomeServlet" method="get">
-			<input type="submit" value="アカウントホーム">
-		</form>
-	<% } %>
-	<form action="/PURE/CreateAccountServlet" method="get">
-		<input type="submit" value="アカウント作成">
-	</form>
+
 	<script>
 	document.addEventListener('DOMContentLoaded', function(){
 

@@ -77,19 +77,9 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
     </footer>
 </body>
 <script type="text/javascript">
-	// ボタン初期設定(PUREボタン, 返信ボタン, お気に入りボタン)
-    if( document.getElementsByClassName("comment") ) {
-    	let pureButtons = document.getElementsByClassName("pureButton");
-        let replyButtons = document.getElementsByClassName("replyButton");
-        let favoriteButton = document.getElementById("favoriteButton");
+	// コメントを読み込む
+	window.addEventListener('DOMContentLoaded', ()=>{getNewComment();});
 
-        for(let button of pureButtons) {
-          button.addEventListener("click", pureButtonEvent, false);
-        }
-        for(let button of replyButtons) {
-          button.addEventListener("click", replyButtonEvent, false);
-        }
-    }
     favoriteButton.addEventListener("click", function(e) {
 		// 初期処理
       	let favorite = e.currentTarget;
@@ -238,6 +228,7 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
       		if(index1 >= 0 && index2 <= -1) {
       			// コメントをPURE
       			let pureImg = document.createElement("img");                // imgタグ
+      			document.getElementById(pureCommentList[index1]).lastElementChild.previousElementSibling.value = "PURE解除";
       			pureImg.setAttribute("class", "pureImg");
       			pureImg.setAttribute("src", "/PURE/pure_img.JPG");
       			document.getElementById(pureCommentList[index1]).appendChild(pureImg);
@@ -247,18 +238,21 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
 			if(index2 >= 0 && index1 <= -1) {
 				// PUREを解除
 				pureComments[index2].removeChild(pureComments[index2].querySelector("img"));
+				pureComments[index2].lastElementChild.previousElementSibling.value = "PURE";
 				pureComments[index2--].classList.remove("pure");
       			continue;
       		}
       		if(pureCommentList[index1] < Number(pureComments[index2].id)) {
       			// PUREを解除
       			pureComments[index2].removeChild(pureComments[index2].querySelector("img"));
+      			pureComments[index2].lastElementChild.previousElementSibling.value = "PURE";
       			pureComments[index2--].classList.remove("pure");
       			continue;
 
       		} else if(pureCommentList[index1] > Number(pureComments[index2].id)) {
       			// コメントをPURE
       			let pureImg = document.createElement("img");                // imgタグ
+      			document.getElementById(pureCommentList[index1]).lastElementChild.previousElementSibling.value = "PURE解除";
       			pureImg.setAttribute("class", "pureImg");
       			pureImg.setAttribute("src", "/PURE/pure_img.JPG");
       			document.getElementById(pureCommentList[index1]).appendChild(pureImg);
@@ -302,27 +296,9 @@ boolean isFavorite = (boolean) request.getAttribute("isFavorite");
       	// リクエスト処理
       	req.onreadystatechange = function() {
         	if(req.readyState == 4 && req.status == 200) {
-          		console.log("PUREボタンのレスポンス:" + req.response);
-
-          		switch (JSON.parse(req.response)) {
-            		case 0:
-              		break;
-
-            		case 1:
-              			getNewComment();
-              			pureButton.value = "PURE解除";
-              			console.log("PUREしました");
-              			break;
-
-            		case -1:
-              			getNewComment();
-              			pureButton.value = "PURE";
-              			console.log("PURE解除しました");
-              			break;
-
-            		default:
-            			console.log("不正な値です");
-          		}
+        		if(JSON.parse(req.response) != 0) {
+        			getNewComment();
+        		}
           	}
       	}
       	req.open("POST", "/PURE/UpdatePureServlet");
